@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detran Aprovado — Simulado para CNH</title>
+  <meta name="description" content="Estude para a prova do Detran com simulados reais, questões comentadas e assistente IA especializado em CNH.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --laranja: #FF6B00;
+      --laranja-claro: #FFF4EE;
+      --laranja-borda: #FFD4B8;
+      --laranja-escuro: #e55f00;
+      --verde: #22C55E;
+      --verde-claro: #E8F8EE;
+      --vermelho: #EF4444;
+      --vermelho-claro: #FEE2E2;
+      --cinza: #F5F5F5;
+      --cinza-borda: #E0E0E0;
+      --cinza-texto: #888;
+      --preto: #111;
+      --branco: #fff;
+      --fonte-titulo: 'Syne', sans-serif;
+      --fonte-corpo: 'DM Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--fonte-corpo); background: var(--cinza); color: var(--preto); min-height: 100vh; }
+
+    /* ===== TELAS ===== */
+    .tela { display: none; min-height: 100vh; flex-direction: column; }
+    .tela.ativa { display: flex; }
+
+    /* ===== HEADER LARANJA ===== */
+    .header-laranja {
+      background: var(--laranja);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-laranja h1 { font-family: var(--fonte-titulo); font-size: 18px; color: #fff; }
+    .header-laranja .subtitulo { font-size: 11px; color: rgba(255,255,255,.8); margin-top: 2px; }
+
+    /* ===== BARRA INFERIOR ===== */
+    .nav-bottom {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid var(--cinza-borda);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 16px;
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 3px; cursor: pointer; padding: 4px 16px;
+    }
+    .nav-item svg { opacity: .35; transition: opacity .2s; }
+    .nav-item span { font-size: 10px; color: var(--cinza-texto); }
+    .nav-item.ativo svg { opacity: 1; }
+    .nav-item.ativo span { color: var(--laranja); font-weight: 600; }
+
+    /* ===== CONTEÚDO ===== */
+    .conteudo { flex: 1; padding: 16px; padding-bottom: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ===== CARDS ===== */
+    .card { background: #fff; border-radius: 16px; padding: 14px; border: 1.5px solid var(--cinza-borda); }
+    .card-laranja { background: var(--laranja-claro); border-color: var(--laranja-borda); }
+
+    /* ===== BOTÕES ===== */
+    .btn { width: 100%; padding: 13px; border-radius: 14px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: var(--fonte-corpo); transition: all .2s; }
+    .btn-laranja { background: var(--laranja); color: #fff; }
+    .btn-laranja:hover { background: var(--laranja-escuro); }
+    .btn-cinza { background: var(--cinza); color: #555; border: 1.5px solid var(--cinza-borda); }
+    .btn-outline { background: transparent; color: var(--laranja); border: 2px solid var(--laranja); }
+
+    /* ===== PROGRESS BAR ===== */
+    .prog-bg { background: rgba(255,255,255,.3); border-radius: 99px; height: 6px; }
+    .prog-fill { background: #fff; border-radius: 99px; height: 6px; transition: width .4s; }
+    .prog-bg-cinza { background: #F0F0F0; border-radius: 99px; height: 6px; }
+    .prog-fill-laranja { background: var(--laranja); border-radius: 99px; height: 6px; transition: width .4s; }
+    .prog-fill-verde { background: var(--verde); border-radius: 99px; height: 6px; }
+    .prog-fill-vermelho { background: var(--vermelho); border-radius: 99px; height: 6px; }
+
+    /* ===== TAGS ===== */
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+    .tag-laranja { background: var(--laranja-claro); color: var(--laranja); }
+    .tag-verde { background: var(--verde-claro); color: #15803d; }
+    .tag-vermelho { background: var(--vermelho-claro); color: #b91c1c; }
+    .tag-cinza { background: #F0F0F0; color: #555; }
+    .tag-branco { background: rgba(255,255,255,.22); color: #fff; }
+
+    /* ===== ALTERNATIVAS ===== */
+    .alt { width: 100%; padding: 12px 14px; border-radius: 14px; background: #fff; border: 1.5px solid var(--cinza-borda); color: #333; font-size: 12px; font-family: var(--fonte-corpo); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all .18s; }
+    .alt:hover { border-color: var(--laranja); background: var(--laranja-claro); }
+    .alt.correta { background: var(--verde-claro); border-color: var(--verde); color: #15803d; }
+    .alt.errada { background: var(--vermelho-claro); border-color: var(--vermelho); color: #b91c1c; }
+    .alt.revelar { background: var(--verde-claro); border-color: var(--verde); color: #15803d; }
+    .alt:disabled { pointer-events: none; }
+    .alt-letra { width: 28px; height: 28px; border-radius: 8px; background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #888; flex-shrink: 0; transition: all .18s; }
+    .alt.correta .alt-letra, .alt.revelar .alt-letra { background: var(--verde); color: #fff; }
+    .alt.errada .alt-letra { background: var(--vermelho); color: #fff; }
+
+    /* ===== CHAT ===== */
+    .chat-area { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 80px; }
+    .msg { display: flex; flex-direction: column; gap: 3px; max-width: 85%; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; }
+    .bubble { padding: 10px 13px; border-radius: 14px; font-size: 12px; line-height: 1.6; }
+    .msg.bot .bubble { background: #fff; color: #333; border-bottom-left-radius: 4px; border: 1px solid var(--cinza-borda); }
+    .msg.user .bubble { background: var(--laranja); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 9px; color: var(--cinza-texto); }
+    .msg.user .msg-time { text-align: right; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .chip { padding: 5px 11px; border-radius: 20px; font-size: 10px; background: var(--laranja-claro); border: 1px solid var(--laranja-borda); color: var(--laranja); cursor: pointer; font-family: var(--fonte-corpo); transition: all .15s; }
+    .chip:hover { background: var(--laranja); color: #fff; }
+    .chat-input-row { position: fixed; bottom: 60px; left: 0; right: 0; background: #fff; border-top: 1px solid var(--cinza-borda); padding: 10px 14px; display: flex; gap: 8px; z-index: 99; }
+    .chat-input { flex: 1; background: var(--cinza); border: 1px solid var(--cinza-borda); border-radius: 20px; padding: 9px 14px; font-size: 12px; color: var(--preto); font-family: var(--fonte-corpo); outline: none; }
+    .chat-input:focus { border-color: var(--laranja); }
+    .chat-send { width: 36px; height: 36px; border-radius: 50%; background: var(--laranja); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .typing { display: flex; align-items: center; gap: 4px; padding: 10px 13px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cinza-texto); animation: bounce .9s infinite; }
+    .dot:nth-child(2) { animation-delay: .2s; }
+    .dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)} }
+
+    /* ===== TELA DE LOGIN ===== */
+    .login-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: var(--cinza); }
+    .login-logo { width: 80px; height: 80px; background: var(--laranja); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .login-titulo { font-family: var(--fonte-titulo); font-size: 26px; font-weight: 800; color: var(--preto); text-align: center; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: var(--cinza-texto); text-align: center; margin-bottom: 28px; }
+    .login-card { background: #fff; border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; border: 1.5px solid var(--cinza-borda); display: flex; flex-direction: column; gap: 12px; }
+    .input-grupo { display: flex; flex-direction: column; gap: 5px; }
+    .input-label { font-size: 11px; font-weight: 600; color: #555; }
+    .input { padding: 11px 14px; border-radius: 12px; border: 1.5px solid var(--cinza-borda); font-size: 13px; font-family: var(--fonte-corpo); outline: none; color: var(--preto); background: #fff; }
+    .input:focus { border-color: var(--laranja); }
+    .login-tabs { display: flex; gap: 0; margin-bottom: 4px; background: var(--cinza); border-radius: 12px; padding: 3px; }
+    .login-tab { flex: 1; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; background: transparent; color: var(--cinza-texto); font-family: var(--fonte-corpo); transition: all .2s; }
+    .login-tab.ativo { background: #fff; color: var(--laranja); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .erro-msg { font-size: 11px; color: var(--vermelho); text-align: center; display: none; }
+    .divider-texto { text-align: center; font-size: 11px; color: var(--cinza-texto); position: relative; }
+    .divider-texto::before, .divider-texto::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--cinza-borda); }
+    .divider-texto::before { left: 0; }
+    .divider-texto::after { right: 0; }
+
+    /* ===== PAYWALL ===== */
+    .paywall { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; display: none; }
+    .paywall-card { background: #fff; border-radius: 24px 24px 0 0; padding: 24px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 14px; }
+    .paywall-titulo { font-family: var(--fonte-titulo); font-size: 20px; font-weight: 800; text-align: center; }
+    .paywall-sub { font-size: 12px; color: var(--cinza-texto); text-align: center; }
+    .plano-card { border-radius: 16px; padding: 16px; border: 2px solid var(--cinza-borda); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all .2s; }
+    .plano-card.destaque { border-color: var(--laranja); background: var(--laranja-claro); }
+    .plano-nome { font-weight: 600; font-size: 13px; }
+    .plano-preco { font-family: var(--fonte-titulo); font-size: 22px; font-weight: 800; color: var(--laranja); }
+    .plano-periodo { font-size: 10px; color: var(--cinza-texto); }
+    .paywall-fechar { background: none; border: none; font-size: 12px; color: var(--cinza-texto); cursor: pointer; text-align: center; font-family: var(--fonte-corpo); padding: 4px; }
+
+    /* ===== ILUSTRAÇÃO PLACA ===== */
+    .ilus-box { background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; min-height: 140px; border: 1.5px solid var(--cinza-borda); }
+
+    /* ===== COMENTÁRIO ===== */
+    .comentario { background: var(--laranja-claro); border-left: 3px solid var(--laranja); border-radius: 12px; padding: 12px 14px; display: none; }
+    .comentario-label { font-size: 10px; font-weight: 700; color: var(--laranja); margin-bottom: 4px; }
+    .comentario-texto { font-size: 11px; color: #555; line-height: 1.6; }
+
+    /* ===== GRID STATS ===== */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+    /* ===== STREAK ===== */
+    .streak-num { font-family: var(--fonte-titulo); font-size: 22px; font-weight: 800; color: var(--laranja); }
+
+    /* ===== RESPONSIVO ===== */
+    @media(min-width: 480px) {
+      .tela { max-width: 480px; margin: 0 auto; }
+      .nav-bottom { max-width: 480px; left: 50%; transform: translateX(-50%); }
+      .chat-input-row { max-width: 480px; left: 50%; transform: translateX(-50%); }
+      .paywall { align-items: center; }
+      .paywall-card { border-radius: 24px; margin: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TELA DE LOGIN ===== -->
+<div id="tela-login" class="login-wrap ativa" style="display:flex;">
+  <div class="login-logo">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+      <path d="M8 34 L22 10 L36 34 Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M14 28 L30 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="22" cy="22" r="4" fill="#fff"/>
+    </svg>
+  </div>
+  <div class="login-titulo">Detran Aprovado</div>
+  <div class="login-sub">Estude, simule e passe de primeira!</div>
+
+  <div class="login-card">
+    <div class="login-tabs">
+      <button class="login-tab ativo" id="tab-entrar" onclick="trocarTab('entrar')">Entrar</button>
+      <button class="login-tab" id="tab-cadastrar" onclick="trocarTab('cadastrar')">Cadastrar</button>
+    </div>
+
+    <div id="form-entrar">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="input-grupo">
+          <label class="input-label">E-mail</label>
+          <input type="email" id="login-email" class="input" placeholder="seu@email.com">
+        </div>
+        <div class="input-grupo">
+          <label class="input-label">Senha</label>
+          <input type="password" id="login-senha" class="input" placeholder="••••••••">
+        </div>
+        <div class="erro-msg" id="erro-login"></div>
+        <button class="btn btn-laranja" onclick="fazerLogin()">Entrar</button>
+      </div>
+    </div>
+
+    <div id="form-cadastrar" style="display:none;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="input-grupo">
+          <label class="input-label">Nome</label>
+          <input type="text" id="cad-nome" class="input" placeholder="Seu nome">
+        </div>
+        <div class="input-grupo">
+          <label class="input-label">E-mail</label>
+          <input type="email" id="cad-email" class="input" placeholder="seu@email.com">
+        </div>
+        <div class="input-grupo">
+          <label class="input-label">Senha</label>
+          <input type="password" id="cad-senha" class="input" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="erro-msg" id="erro-cadastro"></div>
+        <button class="btn btn-laranja" onclick="fazerCadastro()">Criar conta grátis</button>
+      </div>
+    </div>
+
+    <div class="divider-texto">ou continue sem conta</div>
+    <button class="btn btn-cinza" onclick="entrarSemConta()">Explorar grátis</button>
+  </div>
+</div>
+
+<!-- ===== APP PRINCIPAL ===== -->
+<div id="app" style="display:none; min-height:100vh; flex-direction:column;">
+
+  <!-- TELA HOME -->
+  <div id="tela-home" class="tela">
+    <div class="header-laranja">
+      <div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75);">Bom dia,</div>
+        <h1 id="home-nome">Estudante!</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="home-premium-badge" class="tag tag-branco" style="display:none;">⭐ Premium</span>
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="mostrarTela('perfil')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#fff" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="conteudo">
+      <!-- Prontidão -->
+      <div class="card card-laranja">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;color:var(--laranja);font-weight:600;margin-bottom:4px;">PRONTIDÃO PARA A PROVA</div>
+            <div id="home-prontidao" style="font-family:var(--fonte-titulo);font-size:32px;font-weight:800;color:var(--laranja);">0%</div>
+          </div>
+          <span id="home-nivel-badge" class="tag tag-laranja">Iniciante</span>
+        </div>
+        <div class="prog-bg-cinza" style="background:var(--laranja-borda);">
+          <div class="prog-fill-laranja" id="home-prog-bar" style="width:0%;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--laranja);margin-top:6px;" id="home-dica">Complete seu primeiro simulado para ver seu progresso!</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid-2">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:10px;color:var(--cinza-texto);margin-bottom:4px;">sequência</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
+            <svg width="14" height="18" viewBox="0 0 14 18"><path d="M7 1C4 5 2 8 2 11a5 5 0 0010 0c0-3-2-6-5-10z" fill="#FF6B00"/></svg>
+            <span id="home-streak" class="streak-num">0</span>
+            <span style="font-size:11px;color:var(--cinza-texto);">dias</span>
+          </div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:10px;color:var(--cinza-texto);margin-bottom:4px;">questões hoje</div>
+          <div style="font-family:var(--fonte-titulo);font-size:22px;font-weight:800;color:var(--preto);" id="home-questoes-hoje">0<span style="font-size:12px;font-weight:400;color:var(--cinza-texto);">/30</span></div>
+        </div>
+      </div>
+
+      <!-- CTA Principal -->
+      <div class="card card-laranja">
+        <div style="font-size:12px;font-weight:600;color:var(--laranja);margin-bottom:4px;">Pronto para estudar?</div>
+        <div style="font-size:11px;color:#666;margin-bottom:12px;">Responda questões comentadas e acompanhe seu progresso em tempo real.</div>
+        <button class="btn btn-laranja" onclick="iniciarQuestoes()">Iniciar questões</button>
+      </div>
+
+      <!-- Simulado -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--laranja-claro);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#FF6B00" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#FF6B00" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:2px;">Simulado completo</div>
+          <div style="font-size:10px;color:var(--cinza-texto);">30 questões · Igual à prova real</div>
+        </div>
+        <button class="btn btn-outline" style="width:auto;padding:8px 14px;font-size:11px;" onclick="mostrarTela('simulado')">Iniciar</button>
+      </div>
+
+      <!-- YouTube CTA -->
+      <div class="card" style="background:#111;border:none;display:flex;align-items:center;gap:12px;">
+        <svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#FF0000"/><path d="M13 11l8 5-8 5V11z" fill="#fff"/></svg>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#fff;">Canal no YouTube</div>
+          <div style="font-size:10px;color:#aaa;">Quiz de questões do Detran — novo vídeo!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA QUESTÕES -->
+  <div id="tela-questoes" class="tela">
+    <div class="header-laranja">
+      <div>
+        <span id="q-contador" class="tag tag-branco" style="font-size:11px;font-weight:700;">Questão 1 / 30</span>
+        <div style="margin-top:6px;" id="q-categoria-wrap"><span id="q-categoria" class="tag tag-branco" style="font-size:10px;">sinalização</span></div>
+      </div>
+      <button onclick="mostrarTela('home')" style="background:rgba(255,255,255,.2);border:none;border-radius:10px;padding:6px 12px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--fonte-corpo);">Sair</button>
+    </div>
+    <div style="padding:10px 16px 0;background:var(--laranja);">
+      <div class="prog-bg"><div class="prog-fill" id="q-prog" style="width:3%;"></div></div>
+    </div>
+
+    <div class="conteudo" id="q-conteudo">
+      <div class="ilus-box" id="q-ilus"></div>
+      <div class="card" id="q-enunciado" style="font-size:12px;color:#222;line-height:1.7;"></div>
+      <div id="q-alternativas" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div class="comentario" id="q-comentario">
+        <div class="comentario-label">Por que esta é a resposta correta?</div>
+        <div class="comentario-texto" id="q-comentario-texto"></div>
+        <div id="q-artigo" style="font-size:10px;color:var(--laranja);font-weight:600;margin-top:4px;"></div>
+      </div>
+      <button class="btn btn-laranja" id="q-prox-btn" style="display:none;" onclick="proximaQuestao()">Próxima questão →</button>
+    </div>
+  </div>
+
+  <!-- TELA SIMULADO -->
+  <div id="tela-simulado" class="tela">
+    <div class="header-laranja">
+      <div>
+        <h1>Simulado</h1>
+        <div class="subtitulo">Igual à prova real do Detran</div>
+      </div>
+    </div>
+    <div class="conteudo">
+      <div class="card card-laranja" style="text-align:center;padding:20px;">
+        <div style="font-size:40px;margin-bottom:8px;">📋</div>
+        <div style="font-family:var(--fonte-titulo);font-size:18px;font-weight:800;margin-bottom:6px;">Pronto para o desafio?</div>
+        <div style="font-size:12px;color:#666;margin-bottom:16px;">30 questões · 50 minutos · Igual ao Detran real<br>Você precisa acertar pelo menos 21 questões.</div>
+        <button class="btn btn-laranja" onclick="iniciarSimulado()">Iniciar simulado agora</button>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;">Últimos simulados</div>
+        <div id="historico-simulados">
+          <div style="font-size:11px;color:var(--cinza-texto);text-align:center;padding:12px 0;">Nenhum simulado realizado ainda</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DETRANBOT -->
+  <div id="tela-bot" class="tela" style="flex-direction:column;">
+    <div class="header-laranja" style="flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <h1 style="font-size:15px;">DetranBot</h1>
+          <div class="subtitulo">Especialista em CNH · online agora</div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-area" id="chat-area"></div>
+    <div class="chat-input-row">
+      <input type="text" class="chat-input" id="chat-inp" placeholder="Pergunte qualquer coisa sobre CNH..." onkeydown="if(event.key==='Enter')enviarMsg()">
+      <button class="chat-send" onclick="enviarMsg()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- TELA PERFIL -->
+  <div id="tela-perfil" class="tela">
+    <div class="header-laranja">
+      <div>
+        <h1>Meu Perfil</h1>
+        <div class="subtitulo" id="perfil-email-sub"></div>
+      </div>
+    </div>
+    <div class="conteudo">
+      <div class="card" style="text-align:center;padding:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--laranja-claro);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#FF6B00" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#FF6B00" stroke-width="2"/></svg>
+        </div>
+        <div style="font-family:var(--fonte-titulo);font-size:18px;font-weight:800;" id="perfil-nome">Estudante</div>
+        <div style="font-size:11px;color:var(--cinza-texto);" id="perfil-email"></div>
+        <div id="perfil-plano-badge" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;margin-bottom:12px;">Desempenho geral</div>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="perfil-stats">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:#555;">Total de questões respondidas</span>
+            <span style="font-weight:600;" id="stat-total">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:#555;">Taxa de acerto</span>
+            <span style="font-weight:600;color:var(--laranja);" id="stat-taxa">0%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:#555;">Simulados realizados</span>
+            <span style="font-weight:600;" id="stat-simulados">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-laranja" id="card-premium" style="display:none;">
+        <div style="font-family:var(--fonte-titulo);font-size:16px;font-weight:800;margin-bottom:6px;">🎉 Plano Premium Ativo</div>
+        <div style="font-size:11px;color:#666;">Você tem acesso ilimitado a todas as questões, simulados e ao DetranBot.</div>
+      </div>
+
+      <div class="card" id="card-assinar">
+        <div style="font-family:var(--fonte-titulo);font-size:16px;font-weight:800;margin-bottom:6px;">Desbloqueie tudo</div>
+        <div style="font-size:11px;color:#666;margin-bottom:12px;">Questões ilimitadas, simulados ilimitados e DetranBot sem restrições.</div>
+        <button class="btn btn-laranja" onclick="mostrarPaywall()">Ver planos — a partir de R$ 9,90/mês</button>
+      </div>
+
+      <button class="btn btn-cinza" onclick="fazerLogout()">Sair da conta</button>
+    </div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <nav class="nav-bottom">
+    <div class="nav-item ativo" id="nav-home" onclick="mostrarTela('home')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#FF6B00" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="#FF6B00" stroke-width="2"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" id="nav-questoes" onclick="iniciarQuestoes()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="2"/><path d="M9 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Questões</span>
+    </div>
+    <div class="nav-item" id="nav-simulado" onclick="mostrarTela('simulado')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#888" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Simulado</span>
+    </div>
+    <div class="nav-item" id="nav-bot" onclick="mostrarTela('bot')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
+      <span>Assistente</span>
+    </div>
+    <div class="nav-item" id="nav-perfil" onclick="mostrarTela('perfil')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
+      <span>Perfil</span>
+    </div>
+  </nav>
+</div>
+
+<!-- PAYWALL -->
+<div class="paywall" id="paywall">
+  <div class="paywall-card">
+    <div class="paywall-titulo">Desbloqueie tudo 🚀</div>
+    <div class="paywall-sub">Você usou suas questões gratuitas. Assine para continuar estudando sem limites.</div>
+    <div class="plano-card destaque">
+      <div>
+        <div class="plano-nome">Mensal</div>
+        <div class="plano-periodo">Cobrado mensalmente · Cancele quando quiser</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="plano-preco">R$14,90</div>
+        <div class="plano-periodo">/mês</div>
+      </div>
+    </div>
+    <div class="plano-card" style="cursor:pointer;">
+      <div>
+        <div class="plano-nome">Anual <span class="tag tag-verde" style="font-size:9px;margin-left:4px;">2 meses grátis</span></div>
+        <div class="plano-periodo">Cobrado anualmente · R$ 118,80/ano</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="plano-preco">R$9,90</div>
+        <div class="plano-periodo">/mês</div>
+      </div>
+    </div>
+    <button class="btn btn-laranja" onclick="assinar()">Assinar agora</button>
+    <button class="paywall-fechar" onclick="fecharPaywall()">Continuar com a versão gratuita</button>
+  </div>
+</div>
+
+<script>
+// ===== SUPABASE =====
+const SUPABASE_URL = 'https://uxezhlswfjcfoltorhjt.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_AlRalhmR9-LerRU9-lw05A_XIm_FClD';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== ESTADO GLOBAL =====
+let usuario = null;
+let isPremium = false;
+let questoesHoje = 0;
+let questoesRespondidas = 0;
+let acertosTotal = 0;
+let streak = 0;
+let filaQuestoes = [];
+let questaoAtual = null;
+let indiceAtual = 0;
+let respondida = false;
+let modoSimulado = false;
+let acertosSimulado = 0;
+let histChat = [];
+
+// ===== SVG DAS PLACAS =====
+const PLACAS_SVG = {
+  'R-1': `<svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,8 92,27 92,73 50,92 8,73 8,27" fill="#CC0000"/><text x="50" y="58" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="18" font-weight="900" fill="#fff">PARE</text></svg>`,
+  'R-2': `<svg width="100" height="90" viewBox="0 0 100 90"><polygon points="50,82 5,5 95,5" fill="#fff" stroke="#CC0000" stroke-width="6" stroke-linejoin="round"/></svg>`,
+  'R-19': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><text x="50" y="58" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="28" font-weight="900" fill="#111">60</text></svg>`,
+  'R-3': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#CC0000"/><rect x="20" y="44" width="60" height="12" rx="6" fill="#fff"/></svg>`,
+  'R-4a': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M60 30 Q35 50 60 70" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="20" y1="20" x2="80" y2="80" stroke="#CC0000" stroke-width="6"/></svg>`,
+  'R-4b': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M40 30 Q65 50 40 70" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="20" y1="20" x2="80" y2="80" stroke="#CC0000" stroke-width="6"/></svg>`,
+  'R-6a': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><rect x="30" y="44" width="40" height="12" rx="3" fill="#111"/><rect x="44" y="30" width="12" height="40" rx="3" fill="#111"/><line x1="20" y1="20" x2="80" y2="80" stroke="#CC0000" stroke-width="6"/></svg>`,
+  'R-7': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><circle cx="30" cy="50" r="10" fill="#111"/><circle cx="70" cy="50" r="10" fill="#111"/><line x1="20" y1="20" x2="80" y2="80" stroke="#CC0000" stroke-width="6"/></svg>`,
+  'R-20': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M30 50 Q40 35 50 45 Q60 55 70 40" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="20" y1="20" x2="80" y2="80" stroke="#CC0000" stroke-width="6"/></svg>`,
+  'A-1a': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M62 35 Q35 50 62 65" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/><polyline points="55,28 62,35 55,42" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  'A-1b': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M38 35 Q65 50 38 65" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/><polyline points="45,28 38,35 45,42" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  'A-2a': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M55 35 Q40 50 55 65" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>`,
+  'A-2b': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M45 35 Q60 50 45 65" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>`,
+  'A-5': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><line x1="50" y1="25" x2="50" y2="75" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="25" y1="50" x2="75" y2="50" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>`,
+  'A-11': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><rect x="40" y="25" width="20" height="50" rx="6" fill="#111"/><circle cx="50" cy="34" r="7" fill="#CC0000"/><circle cx="50" cy="50" r="7" fill="#FFAA00"/><circle cx="50" cy="66" r="7" fill="#22C55E"/></svg>`,
+  'A-15': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M25 60 Q37 35 50 55 Q63 75 75 50" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>`,
+  'A-19': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M28 55 Q38 40 50 58 Q62 40 72 55" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><path d="M28 65 Q38 50 50 68 Q62 50 72 65" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>`,
+  'A-24': `<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><circle cx="50" cy="30" r="8" fill="#111"/><line x1="50" y1="38" x2="50" y2="62" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="48" x2="38" y2="58" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="48" x2="62" y2="58" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="62" x2="42" y2="75" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="62" x2="58" y2="75" stroke="#111" stroke-width="4" stroke-linecap="round"/></svg>`,
+  'semaforo_verde': `<svg width="70" height="120" viewBox="0 0 70 120"><rect x="10" y="5" width="50" height="110" rx="10" fill="#1a1a1a" stroke="#444" stroke-width="2"/><circle cx="35" cy="28" r="14" fill="#333"/><circle cx="35" cy="60" r="14" fill="#333"/><circle cx="35" cy="92" r="14" fill="#22C55E"/><circle cx="35" cy="92" r="10" fill="#4ade80" opacity=".6"/><rect x="32" y="115" width="6" height="10" fill="#444"/></svg>`,
+  'semaforo_amarelo': `<svg width="70" height="120" viewBox="0 0 70 120"><rect x="10" y="5" width="50" height="110" rx="10" fill="#1a1a1a" stroke="#444" stroke-width="2"/><circle cx="35" cy="28" r="14" fill="#333"/><circle cx="35" cy="60" r="14" fill="#FFAA00"/><circle cx="35" cy="60" r="10" fill="#fcd34d" opacity=".6"/><circle cx="35" cy="92" r="14" fill="#333"/><rect x="32" y="115" width="6" height="10" fill="#444"/></svg>`,
+  'semaforo_vermelho': `<svg width="70" height="120" viewBox="0 0 70 120"><rect x="10" y="5" width="50" height="110" rx="10" fill="#1a1a1a" stroke="#444" stroke-width="2"/><circle cx="35" cy="28" r="14" fill="#CC0000"/><circle cx="35" cy="28" r="10" fill="#f87171" opacity=".6"/><circle cx="35" cy="60" r="14" fill="#333"/><circle cx="35" cy="92" r="14" fill="#333"/><rect x="32" y="115" width="6" height="10" fill="#444"/></svg>`,
+  'cruzamento': `<svg width="160" height="130" viewBox="0 0 160 130"><rect width="160" height="130" rx="8" fill="#e8e8e8"/><rect x="55" y="0" width="50" height="130" fill="#bbb"/><rect x="0" y="48" width="160" height="34" fill="#bbb"/><rect x="79" y="0" width="2" height="44" fill="#fff" opacity=".7"/><rect x="79" y="86" width="2" height="44" fill="#fff" opacity=".7"/><rect x="0" y="64" width="51" height="2" fill="#fff" opacity=".7"/><rect x="109" y="64" width="51" height="2" fill="#fff" opacity=".7"/><rect x="68" y="88" width="18" height="26" rx="4" fill="#3b82f6"/><polygon points="68,88 86,88 80,80 74,80" fill="#60a5fa"/><text x="77" y="106" text-anchor="middle" font-family="Arial" font-size="8" fill="#fff" font-weight="700">A</text><rect x="8" y="54" width="26" height="16" rx="4" fill="#FF6B00"/><polygon points="34,54 34,70 44,65 44,59" fill="#ffa040"/><text x="21" y="65" text-anchor="middle" font-family="Arial" font-size="8" fill="#fff" font-weight="700">B</text></svg>`,
+  'faixa_pedestre': `<svg width="160" height="120" viewBox="0 0 160 120"><rect width="160" height="120" rx="8" fill="#bbb"/><rect x="20" y="38" width="120" height="12" fill="#fff"/><rect x="20" y="56" width="120" height="12" fill="#fff"/><rect x="20" y="74" width="120" height="12" fill="#fff"/><circle cx="80" cy="22" r="8" fill="#FF6B00"/><line x1="80" y1="30" x2="80" y2="50" stroke="#FF6B00" stroke-width="3"/><line x1="80" y1="36" x2="70" y2="44" stroke="#FF6B00" stroke-width="3" stroke-linecap="round"/><line x1="80" y1="36" x2="90" y2="44" stroke="#FF6B00" stroke-width="3" stroke-linecap="round"/><rect x="100" y="52" width="38" height="20" rx="4" fill="#3b82f6"/><polygon points="100,52 138,52 132,44 106,44" fill="#60a5fa"/><rect x="96" y="38" width="4" height="50" fill="#FF6B00" opacity=".8"/></svg>`,
+  'default': `<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="3"/><text x="50" y="45" text-anchor="middle" font-family="Arial" font-size="12" fill="#888">Questão</text><text x="50" y="62" text-anchor="middle" font-family="Arial" font-size="11" fill="#aaa">sem ilustração</text></svg>`
+};
+
+function getIlustracao(questao) {
+  if (questao.placa_codigo && PLACAS_SVG[questao.placa_codigo]) return PLACAS_SVG[questao.placa_codigo];
+  if (questao.tipo_ilustracao === 'semaforo') {
+    if (questao.enunciado.toLowerCase().includes('vermelho')) return PLACAS_SVG['semaforo_vermelho'];
+    if (questao.enunciado.toLowerCase().includes('amarelo')) return PLACAS_SVG['semaforo_amarelo'];
+    return PLACAS_SVG['semaforo_verde'];
+  }
+  if (questao.tipo_ilustracao === 'situacao') {
+    if (questao.enunciado.toLowerCase().includes('cruzamento') || questao.enunciado.toLowerCase().includes('interseção')) return PLACAS_SVG['cruzamento'];
+    if (questao.enunciado.toLowerCase().includes('faixa') || questao.enunciado.toLowerCase().includes('pedestre')) return PLACAS_SVG['faixa_pedestre'];
+  }
+  return PLACAS_SVG['default'];
+}
+
+// ===== AUTH =====
+function trocarTab(tab) {
+  document.getElementById('tab-entrar').classList.toggle('ativo', tab === 'entrar');
+  document.getElementById('tab-cadastrar').classList.toggle('ativo', tab === 'cadastrar');
+  document.getElementById('form-entrar').style.display = tab === 'entrar' ? 'block' : 'none';
+  document.getElementById('form-cadastrar').style.display = tab === 'cadastrar' ? 'block' : 'none';
+}
+
+async function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  const erro = document.getElementById('erro-login');
+  erro.style.display = 'none';
+  if (!email || !senha) { erro.textContent = 'Preencha e-mail e senha.'; erro.style.display = 'block'; return; }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: senha });
+  if (error) { erro.textContent = 'E-mail ou senha incorretos.'; erro.style.display = 'block'; return; }
+  await carregarUsuario(data.user);
+  abrirApp();
+}
+
+async function fazerCadastro() {
+  const nome = document.getElementById('cad-nome').value.trim();
+  const email = document.getElementById('cad-email').value.trim();
+  const senha = document.getElementById('cad-senha').value;
+  const erro = document.getElementById('erro-cadastro');
+  erro.style.display = 'none';
+  if (!nome || !email || !senha) { erro.textContent = 'Preencha todos os campos.'; erro.style.display = 'block'; return; }
+  if (senha.length < 6) { erro.textContent = 'Senha deve ter pelo menos 6 caracteres.'; erro.style.display = 'block'; return; }
+  const { data, error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome } } });
+  if (error) { erro.textContent = 'Erro ao criar conta. Tente outro e-mail.'; erro.style.display = 'block'; return; }
+  await carregarUsuario(data.user);
+  abrirApp();
+}
+
+function entrarSemConta() {
+  usuario = { id: 'anonimo', email: 'visitante', user_metadata: { nome: 'Estudante' } };
+  isPremium = false;
+  abrirApp();
+}
+
+async function fazerLogout() {
+  await sb.auth.signOut();
+  usuario = null; isPremium = false; questoesHoje = 0;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'flex';
+  document.getElementById('tela-login').className = 'login-wrap ativa';
+}
+
+async function carregarUsuario(user) {
+  usuario = user;
+  const { data } = await sb.from('usuarios').select('*').eq('id', user.id).single();
+  if (!data) {
+    await sb.from('usuarios').insert({ id: user.id, email: user.email, nome: user.user_metadata?.nome || 'Estudante', plano: 'gratuito', questoes_hoje: 0, streak: 0 });
+  } else {
+    isPremium = data.plano === 'premium';
+    questoesHoje = data.questoes_hoje || 0;
+    streak = data.streak || 0;
+    questoesRespondidas = data.total_questoes || 0;
+    acertosTotal = data.total_acertos || 0;
+  }
+}
+
+function abrirApp() {
+  document.getElementById('tela-login').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  app.style.flexDirection = 'column';
+  atualizarHome();
+  mostrarTela('home');
+  iniciarBotComMensagemInicial();
+}
+
+// ===== HOME =====
+function atualizarHome() {
+  const nome = usuario?.user_metadata?.nome || usuario?.email?.split('@')[0] || 'Estudante';
+  document.getElementById('home-nome').textContent = nome + '!';
+  document.getElementById('home-streak').textContent = streak;
+  document.getElementById('home-questoes-hoje').innerHTML = questoesHoje + '<span style="font-size:12px;font-weight:400;color:var(--cinza-texto);">/30</span>';
+  const prontidao = questoesRespondidas > 0 ? Math.min(Math.round((acertosTotal / questoesRespondidas) * 100), 100) : 0;
+  document.getElementById('home-prontidao').textContent = prontidao + '%';
+  document.getElementById('home-prog-bar').style.width = prontidao + '%';
+  if (isPremium) document.getElementById('home-premium-badge').style.display = 'inline-block';
+  let nivel = 'Iniciante', dica = 'Complete seu primeiro simulado!';
+  if (prontidao >= 70) { nivel = 'Quase lá!'; dica = 'Você está quase pronto. Foco nas questões difíceis!'; }
+  else if (prontidao >= 40) { nivel = 'Evoluindo!'; dica = 'Bom progresso! Continue praticando todos os dias.'; }
+  else if (prontidao > 0) { nivel = 'Iniciante'; dica = 'Continue praticando! A consistência é o segredo.'; }
+  document.getElementById('home-nivel-badge').textContent = nivel;
+  document.getElementById('home-dica').textContent = dica;
+  atualizarPerfil();
+}
+
+function atualizarPerfil() {
+  const nome = usuario?.user_metadata?.nome || 'Estudante';
+  const email = usuario?.email || '';
+  document.getElementById('perfil-nome').textContent = nome;
+  document.getElementById('perfil-email').textContent = email;
+  document.getElementById('perfil-email-sub').textContent = email;
+  document.getElementById('stat-total').textContent = questoesRespondidas;
+  document.getElementById('stat-taxa').textContent = questoesRespondidas > 0 ? Math.round((acertosTotal / questoesRespondidas) * 100) + '%' : '0%';
+  if (isPremium) {
+    document.getElementById('card-premium').style.display = 'block';
+    document.getElementById('card-assinar').style.display = 'none';
+    document.getElementById('perfil-plano-badge').innerHTML = '<span class="tag tag-laranja">⭐ Premium</span>';
+  }
+}
+
+// ===== QUESTÕES =====
+async function iniciarQuestoes() {
+  if (!isPremium && questoesHoje >= 30) { mostrarPaywall(); return; }
+  mostrarTela('questoes');
+  const { data } = await sb.from('questoes').select('*').eq('ativo', true).order('RANDOM()').limit(30);
+  if (!data || data.length === 0) {
+    document.getElementById('q-enunciado').textContent = 'Nenhuma questão encontrada. Aguarde o banco de questões ser populado!';
+    document.getElementById('q-ilus').innerHTML = PLACAS_SVG['default'];
+    return;
+  }
+  filaQuestoes = data;
+  indiceAtual = 0;
+  renderizarQuestao();
+}
+
+function renderizarQuestao() {
+  if (indiceAtual >= filaQuestoes.length) { mostrarTela('home'); return; }
+  questaoAtual = filaQuestoes[indiceAtual];
+  respondida = false;
+  const total = filaQuestoes.length;
+  document.getElementById('q-contador').textContent = `Questão ${indiceAtual + 1} / ${total}`;
+  document.getElementById('q-categoria').textContent = questaoAtual.categoria || 'geral';
+  document.getElementById('q-prog').style.width = ((indiceAtual + 1) / total * 100) + '%';
+  document.getElementById('q-ilus').innerHTML = getIlustracao(questaoAtual);
+  document.getElementById('q-enunciado').textContent = questaoAtual.enunciado;
+  document.getElementById('q-comentario').style.display = 'none';
+  document.getElementById('q-prox-btn').style.display = 'none';
+  document.getElementById('q-comentario-texto').textContent = questaoAtual.comentario || '';
+  document.getElementById('q-artigo').textContent = questaoAtual.artigo_ctb || '';
+  const alts = document.getElementById('q-alternativas');
+  alts.innerHTML = '';
+  const letras = ['A','B','C','D'];
+  const opcoes = [questaoAtual.alternativa_a, questaoAtual.alternativa_b, questaoAtual.alternativa_c, questaoAtual.alternativa_d];
+  opcoes.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'alt';
+    btn.innerHTML = `<span class="alt-letra">${letras[i]}</span>${op}`;
+    btn.onclick = () => responder(btn, letras[i]);
+    alts.appendChild(btn);
+  });
+}
+
+function responder(btn, letra) {
+  if (respondida) return;
+  respondida = true;
+  const correta = questaoAtual.resposta_correta;
+  const letras = ['A','B','C','D'];
+  const btns = document.querySelectorAll('.alt');
+  btns.forEach(b => { b.disabled = true; });
+  btn.classList.add(letra === correta ? 'correta' : 'errada');
+  if (letra !== correta) {
+    btns[letras.indexOf(correta)].classList.add('revelar');
+  }
+  document.getElementById('q-comentario').style.display = 'block';
+  document.getElementById('q-prox-btn').style.display = 'block';
+  questoesRespondidas++;
+  questoesHoje++;
+  if (letra === correta) acertosTotal++;
+  if (modoSimulado && letra === correta) acertosSimulado++;
+  salvarProgresso();
+}
+
+function proximaQuestao() {
+  if (!isPremium && questoesHoje >= 30) { mostrarPaywall(); return; }
+  indiceAtual++;
+  renderizarQuestao();
+}
+
+async function salvarProgresso() {
+  if (!usuario || usuario.id === 'anonimo') return;
+  await sb.from('usuarios').update({ questoes_hoje: questoesHoje, total_questoes: questoesRespondidas, total_acertos: acertosTotal }).eq('id', usuario.id);
+  atualizarHome();
+}
+
+// ===== SIMULADO =====
+async function iniciarSimulado() {
+  if (!isPremium) { mostrarPaywall(); return; }
+  modoSimulado = true;
+  acertosSimulado = 0;
+  await iniciarQuestoes();
+}
+
+// ===== CHAT BOT =====
+function iniciarBotComMensagemInicial() {
+  const chatArea = document.getElementById('chat-area');
+  chatArea.innerHTML = '';
+  histChat = [];
+  adicionarMsg('bot', 'Olá! Sou o <b>DetranBot</b>, seu assistente para a prova do Detran. Pode me perguntar qualquer coisa sobre CNH, leis de trânsito ou dicas de estudo!', ['O que cai na prova?', 'O que significa placa vermelha?', 'Como funciona a CNH?', 'Quantas questões tem a prova?']);
+}
+
+function adicionarMsg(tipo, texto, chips) {
+  const chatArea = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = `msg ${tipo}`;
+  const agora = new Date();
+  const hora = agora.getHours() + ':' + String(agora.getMinutes()).padStart(2,'0');
+  div.innerHTML = `<div class="bubble">${texto}</div><div class="msg-time">${hora}</div>`;
+  if (chips && chips.length) {
+    const row = document.createElement('div');
+    row.className = 'chips';
+    chips.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = c;
+      btn.onclick = () => { document.getElementById('chat-inp').value = c; enviarMsg(); };
+      row.appendChild(btn);
+    });
+    div.appendChild(row);
+  }
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function mostrarTyping() {
+  const chatArea = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing';
+  div.innerHTML = `<div class="bubble typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+async function enviarMsg() {
+  const inp = document.getElementById('chat-inp');
+  const texto = inp.value.trim();
+  if (!texto) return;
+  inp.value = '';
+  adicionarMsg('user', texto);
+  histChat.push({ role: 'user', content: texto });
+  mostrarTyping();
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: histChat })
+    });
+    const data = await res.json();
+    document.getElementById('typing')?.remove();
+    const reply = data.content?.[0]?.text || 'Desculpe, tente novamente.';
+    histChat.push({ role: 'assistant', content: reply });
+    adicionarMsg('bot', reply);
+  } catch (e) {
+    document.getElementById('typing')?.remove();
+    adicionarMsg('bot', 'Ops! Erro de conexão. Tente novamente.');
+  }
+}
+
+// ===== PAYWALL =====
+function mostrarPaywall() {
+  document.getElementById('paywall').style.display = 'flex';
+}
+function fecharPaywall() {
+  document.getElementById('paywall').style.display = 'none';
+}
+function assinar() {
+  alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');
+  fecharPaywall();
+}
+
+// ===== NAVEGAÇÃO =====
+function mostrarTela(nome) {
+  document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+  const tela = document.getElementById(`tela-${nome}`);
+  if (tela) tela.classList.add('ativa');
+  const nav = document.getElementById(`nav-${nome}`);
+  if (nav) nav.classList.add('ativo');
+  if (nome === 'bot' && histChat.length === 0) iniciarBotComMensagemInicial();
+}
+
+// ===== INIT =====
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    await carregarUsuario(session.user);
+    abrirApp();
+  }
+}
+init();
+</script>
+</body>
+</html>
