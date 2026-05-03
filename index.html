@@ -679,7 +679,7 @@ function atualizarPerfil() {
 async function iniciarQuestoes() {
   if (!isPremium && questoesHoje >= 30) { mostrarPaywall(); return; }
   mostrarTela('questoes');
-  const { data } = await sb.from('questoes').select('*').eq('ativo', true).order('RANDOM()').limit(30);
+  const { data } = await sb.from('questoes').select('*').eq('ativo', true).limit(30);
   if (!data || data.length === 0) {
     document.getElementById('q-enunciado').textContent = 'Nenhuma questão encontrada. Aguarde o banco de questões ser populado!';
     document.getElementById('q-ilus').innerHTML = PLACAS_SVG['default'];
