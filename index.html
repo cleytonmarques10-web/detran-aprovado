@@ -658,7 +658,7 @@ function atuPerfil(){
   const el=document.getElementById('perf-assuntos-perfil');
   if(el){
     if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver</div>';}
-    else{el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':`'#EF4444'`;return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');}
+    else{el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');}
   }
   const pn=document.getElementById('p-nome');if(pn&&!pn.value)pn.value=user?.user_metadata?.nome||'';
   const pe=document.getElementById('p-email');if(pe)pe.value=user?.email||'';
