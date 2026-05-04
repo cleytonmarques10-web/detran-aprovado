@@ -12,15 +12,18 @@
 html,body{height:100%;background:#d0d0d0;}
 body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;display:flex;flex-direction:column;position:relative;}
-/* NAV SUPERIOR */
-.nt{background:#fff;border-bottom:1px solid var(--CB);display:flex;justify-content:space-around;align-items:center;height:52px;flex-shrink:0;}
+/* TOP BAR FIXO: header laranja + nav abaixo */
+.top-bar{position:sticky;top:0;z-index:100;flex-shrink:0;background:var(--C);}
+.global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
+.nt{background:#fff;border-bottom:1px solid var(--CB);display:flex;justify-content:space-around;align-items:center;height:50px;}
 .ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;flex:1;border:none;background:none;}
 .ni svg{opacity:.3;transition:opacity .2s;}
 .ni span{font-size:9px;color:var(--CT);}
 .ni.on svg{opacity:1;}
 .ni.on span{color:var(--L);font-weight:600;}
 /* TELAS */
-.tela{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.tela{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 .tela.on{display:flex;}
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
@@ -60,7 +63,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .alt.ok .al,.alt.re .al{background:var(--V);color:#fff;}
 .alt.no .al{background:var(--R);color:#fff;}
 /* CHAT */
-.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 .ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;}
 .msg{display:flex;flex-direction:column;gap:3px;max-width:85%;}
 .msg.bot{align-self:flex-start;}
@@ -136,6 +139,9 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .u-email{font-size:10px;color:var(--CT);}
 .ubtn{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);}
 .ubtn-w{background:#25D366;color:#fff;}
+.admin-filtro{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--CB);background:#fff;color:#555;cursor:pointer;font-family:var(--FC);white-space:nowrap;transition:all .2s;}
+.admin-filtro.on{background:var(--L);color:#fff;border-color:var(--L);}
+.u-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--CB);cursor:pointer;flex-shrink:0;accent-color:var(--L);}
 /* PRESSÃO */
 .pressao-card{border-radius:16px;padding:16px;margin-bottom:0;}
 .pressao-reprovado{background:linear-gradient(135deg,#b91c1c,#ef4444);color:#fff;}
@@ -177,8 +183,13 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 <!-- APP -->
 <div id="app" style="display:none;flex-direction:column;flex:1;">
 
-  <!-- NAV TOPO -->
-  <nav class="nt">
+  <!-- TOP BAR GLOBAL: HEADER LARANJA + NAV -->
+  <div class="top-bar">
+    <div class="global-hdr" id="global-hdr">
+      <div><div style="font-size:10px;color:rgba(255,255,255,.75);" id="ghdr-sub">Olá,</div><h1 id="ghdr-titulo">Detran Aprovado</h1></div>
+      <span id="hprem" class="tag tgb" style="display:none;">⭐ Premium</span>
+    </div>
+    <nav class="nt">
     <button class="ni on" id="nav-home" onclick="ir('home')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#FF6B00" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="#FF6B00" stroke-width="2"/></svg>
       <span>Home</span>
@@ -193,20 +204,18 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
     </button>
     <button class="ni" id="nav-bot" onclick="ir('bot')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
-      <span>Assistente</span>
+      <span>Professor</span>
     </button>
     <button class="ni" id="nav-perfil" onclick="ir('perfil')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
       <span>Perfil</span>
     </button>
-  </nav>
+    </nav>
+  </div><!-- fim top-bar -->
 
   <!-- HOME -->
   <div id="tela-home" class="tela on">
-    <div class="hdr">
-      <div><div style="font-size:10px;color:rgba(255,255,255,.75);">Olá,</div><h1 id="hnome">Estudante!</h1></div>
-      <span id="hprem" class="tag tgb" style="display:none;">⭐ Premium</span>
-    </div>
+
     <div class="cnt">
       <!-- CARD PRESSÃO -->
       <div id="pressao-card" class="pressao-card pressao-reprovado">
@@ -260,7 +269,6 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- TREINO -->
   <div id="tela-treino" class="tela">
-    <div class="hdr"><div><h1>Treino</h1><div class="sub">Escolha o assunto para estudar</div></div></div>
     <div class="cnt">
       <div class="ass-card" onclick="iniciarTreino('todos')">
         <div class="ass-icon" style="background:var(--LC);">📚</div>
@@ -329,7 +337,6 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- SIMULADO MENU -->
   <div id="tela-simulado" class="tela">
-    <div class="hdr"><div><h1>Simulado</h1><div class="sub">Igual à prova real do Detran</div></div></div>
     <div class="cnt">
       <div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:none;padding:20px;text-align:center;">
         <div style="font-size:36px;margin-bottom:8px;">⚡</div>
@@ -348,7 +355,6 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- RESULTADO -->
   <div id="tela-resultado" class="tela">
-    <div class="hdr"><div><h1 id="res-titulo">Resultado</h1></div></div>
     <div class="cnt">
       <div class="card" style="text-align:center;padding:20px;">
         <svg width="120" height="120" viewBox="0 0 120 120" style="display:block;margin:0 auto 12px;">
@@ -376,13 +382,13 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
     <div class="hdr" style="flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;">
         <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-        <div><h1 style="font-size:14px;">DetranBot</h1><div class="sub">Seu professor particular de CNH</div></div>
+        <div><h1 style="font-size:14px;">Prof. Detran</h1><div class="sub">Seu professor particular de CNH</div></div>
       </div>
     </div>
     <div class="chat-wrap">
       <div class="ca" id="chat-area"></div>
       <div class="cr">
-        <input type="text" class="ci" id="cinp" placeholder="Pergunte sobre CNH, placas, infrações..." onkeydown="if(event.key==='Enter')enviar()">
+        <input type="text" class="ci" id="cinp" placeholder="Pergunte ao professor sobre CNH..." onkeydown="if(event.key==='Enter')enviar()">
         <button class="cs" onclick="enviar()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
@@ -390,7 +396,6 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- PERFIL -->
   <div id="tela-perfil" class="tela">
-    <div class="hdr"><div><h1>Meu Perfil</h1><div class="sub" id="psub"></div></div></div>
     <div class="cnt">
       <div class="card" style="text-align:center;padding:18px;">
         <div style="width:60px;height:60px;border-radius:50%;background:var(--LC);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;font-family:var(--FT);font-size:22px;font-weight:800;color:var(--L);" id="pavatar">?</div>
@@ -453,14 +458,28 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   <div id="tela-admin" class="tela">
     <div class="hdr" style="display:flex;align-items:center;gap:10px;">
       <button onclick="ir('perfil')" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px;cursor:pointer;display:flex;align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <h1 style="font-size:15px;">Admin — Usuários</h1>
+      <div><h1 style="font-size:15px;">Admin — Usuários</h1><div class="sub" id="admin-subtitulo">Carregando...</div></div>
     </div>
     <div class="cnt">
       <div class="g4" id="admin-stats"></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="admin-busca" class="ii iis" placeholder="🔍 Buscar por nome ou e-mail..." style="flex:1;padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
+        <button onclick="exportarWhatsApp()" style="background:#25D366;border:none;border-radius:12px;padding:10px 12px;cursor:pointer;font-family:var(--FC);font-size:11px;font-weight:600;color:#fff;white-space:nowrap;flex-shrink:0;">📱 WA</button>
+      </div>
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;">
+        <button class="admin-filtro on" id="f-todos" onclick="setFiltro('todos')">Todos</button>
+        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">⭐ Ativos</button>
+        <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">🆓 Gratuitos</button>
+        <button class="admin-filtro" id="f-contato" onclick="setFiltro('contato')">📞 5+ dias</button>
+      </div>
+      <div id="admin-sel-wrap" style="display:none;">
+        <button class="btn btnv" onclick="enviarWaMassa()">📱 Enviar WhatsApp para selecionados (<span id="sel-count">0</span>)</button>
+      </div>
       <div id="admin-lista"></div>
       <div class="card" style="border:2px dashed var(--LB);">
         <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🎁 Liberar acesso cortesia</div>
         <div class="ig"><label class="il">E-mail do usuário</label><input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com"></div>
+        <div class="ig"><label class="il">Plano</label><select id="cort-plano" class="ii iis"><option value="premium">Premium</option></select></div>
         <button class="btn btnl" onclick="liberarCortesia()">Liberar acesso ✓</button>
         <div class="sm" id="cort-ok" style="margin-top:8px;"></div>
         <div class="em" id="cort-err" style="margin-top:8px;"></div>
@@ -536,7 +555,7 @@ function openApp(){document.getElementById('tela-login').style.display='none';co
 // HOME — PRESSÃO E RECOMENDAÇÃO
 function atuHome(){
   const n=user?.user_metadata?.nome||user?.email?.split('@')[0]||'Estudante';
-  document.getElementById('hnome').textContent=n+'!';
+  document.getElementById('ghdr-titulo').textContent=n+'!';document.getElementById('ghdr-sub').textContent='Olá,';
   document.getElementById('hstr').textContent=streak;
   document.getElementById('hhoje').innerHTML=qhoje+'<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span>';
   if(isPrem)document.getElementById('hprem').style.display='inline-block';
@@ -710,11 +729,114 @@ function hidePW(){document.getElementById('pw').style.display='none';}
 function assinar(){alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');hidePW();}
 
 // ADMIN
-async function carregarAdmin(){const{data:users}=await sb.from('usuarios').select('*').order('created_at',{ascending:false}).catch(()=>({data:[]}));if(!users)return;const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;document.getElementById('admin-stats').innerHTML=[{l:'Total de usuários',n:total,c:'#3b82f6'},{l:'Assinaturas ativas',n:ativos,c:'#22C55E'},{l:'Plano gratuito',n:grat,c:'#888'},{l:'Simulados',n:0,c:'var(--L)'}].map(s=>`<div class="stat-card"><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');const lista=document.getElementById('admin-lista');lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:8px;">Usuários</div>';users.forEach(u=>{const av=u.nome?u.nome.charAt(0).toUpperCase():'?';const tel=u.telefone?u.telefone.replace(/\D/g,''):'';const wlink=tel?`https://wa.me/55${tel}`:'';const div=document.createElement('div');div.className='u-item';div.innerHTML=`<div class="u-av">${av}</div><div class="u-info"><div class="u-nome">${u.nome||'Sem nome'}</div><div class="u-email">${u.email}</div><span class="tag ${u.plano==='premium'?'tgv':'tgl'}" style="font-size:9px;">${u.plano==='premium'?'Premium':'Gratuito'}</span></div><div>${wlink?`<button class="ubtn ubtn-w" onclick="window.open('${wlink}','_blank')">WhatsApp</button>`:''}</div>`;lista.appendChild(div);});}
+let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
+async function carregarAdmin(){
+  const{data:users}=await sb.from('usuarios').select('*').order('created_at',{ascending:false}).catch(()=>({data:[]}));
+  if(!users)return;
+  todosUsers=users;
+  const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
+  const hoje=new Date();
+  const semContato=users.filter(u=>{if(!u.telefone)return false;if(!u.created_at)return false;const diff=(hoje-new Date(u.created_at))/(1000*60*60*24);return diff>=5;}).length;
+  document.getElementById('admin-subtitulo').textContent=`${total} usuários · ${ativos} ativos`;
+  document.getElementById('admin-stats').innerHTML=[
+    {l:'Total de usuários',n:total,c:'#3b82f6',i:'👥'},
+    {l:'Assinaturas ativas',n:ativos,c:'#22C55E',i:'✅'},
+    {l:'Pagamento atrasado',n:0,c:'#f59e0b',i:'⏳'},
+    {l:'Plano gratuito',n:grat,c:'#888',i:'🆓'}
+  ].map(s=>`<div class="stat-card"><div style="font-size:18px;">${s.i}</div><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');
+  filtrarAdmin();
+}
+function setFiltro(f){
+  filtroAtual=f;
+  document.querySelectorAll('.admin-filtro').forEach(b=>b.classList.remove('on'));
+  document.getElementById('f-'+f)?.classList.add('on');
+  selectedUsers.clear();atuSelCount();
+  filtrarAdmin();
+}
+function filtrarAdmin(){
+  const busca=(document.getElementById('admin-busca')?.value||'').toLowerCase();
+  const hoje=new Date();
+  let lista=todosUsers.filter(u=>{
+    const matchBusca=!busca||u.nome?.toLowerCase().includes(busca)||u.email?.toLowerCase().includes(busca);
+    if(!matchBusca)return false;
+    if(filtroAtual==='premium')return u.plano==='premium';
+    if(filtroAtual==='gratuitos')return u.plano==='gratuito';
+    if(filtroAtual==='contato'){const diff=u.created_at?(hoje-new Date(u.created_at))/(1000*60*60*24):0;return diff>=5&&u.telefone;}
+    return true;
+  });
+  renderLista(lista);
+}
+function renderLista(users){
+  const lista=document.getElementById('admin-lista');
+  lista.innerHTML=`<div style="font-size:12px;font-weight:600;margin-bottom:8px;color:#555;">${users.length} usuário${users.length!==1?'s':''} encontrado${users.length!==1?'s':''}</div>`;
+  if(users.length===0){lista.innerHTML+='<div class="card" style="text-align:center;font-size:12px;color:var(--CT);padding:20px;">Nenhum usuário encontrado</div>';return;}
+  users.forEach(u=>{
+    const av=u.nome?u.nome.charAt(0).toUpperCase():'?';
+    const tel=u.telefone?u.telefone.replace(/\D/g,''):'';
+    const wlink=tel?`https://wa.me/55${tel}`:'';
+    const dias=u.created_at?Math.floor((new Date()-new Date(u.created_at))/(1000*60*60*24)):0;
+    const isSelected=selectedUsers.has(u.id);
+    const div=document.createElement('div');div.className='u-item';
+    div.innerHTML=`
+      <input type="checkbox" class="u-check" ${isSelected?'checked':''} onchange="toggleSelect('${u.id}','${tel}',this)" ${!tel?'disabled title="Sem telefone"':''}>
+      <div class="u-av">${av}</div>
+      <div class="u-info">
+        <div class="u-nome">${u.nome||'Sem nome'}</div>
+        <div class="u-email">${u.email}</div>
+        <div style="margin-top:2px;display:flex;align-items:center;gap:4px;">
+          <span class="tag ${u.plano==='premium'?'tgv':'tgl'}" style="font-size:9px;">${u.plano==='premium'?'Premium':'Gratuito'}</span>
+          <span style="font-size:9px;color:var(--CT);">· ${dias} dias</span>
+          ${u.telefone?`<span style="font-size:9px;color:var(--CT);">· 📞 ${u.telefone}</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${wlink?`<button class="ubtn ubtn-w" onclick="window.open('${wlink}','_blank')">WhatsApp</button>`:''}
+      </div>`;
+    lista.appendChild(div);
+  });
+}
+function toggleSelect(id,tel,cb){if(!tel)return;if(cb.checked)selectedUsers.add(id);else selectedUsers.delete(id);atuSelCount();}
+function atuSelCount(){const n=selectedUsers.size;document.getElementById('sel-count').textContent=n;document.getElementById('admin-sel-wrap').style.display=n>0?'block':'none';}
+function enviarWaMassa(){
+  const users=todosUsers.filter(u=>selectedUsers.has(u.id)&&u.telefone);
+  if(users.length===0){alert('Selecione usuários com telefone.');return;}
+  const msg=prompt('Digite a mensagem para enviar:','Olá! Aqui é o Detran Aprovado...');
+  if(!msg)return;
+  users.forEach((u,i)=>{setTimeout(()=>{const tel=u.telefone.replace(/\D/g,'');window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`,'_blank');},i*500);});
+}
+function exportarWhatsApp(){
+  const busca=(document.getElementById('admin-busca')?.value||'').toLowerCase();
+  const users=todosUsers.filter(u=>u.telefone&&(!busca||u.nome?.toLowerCase().includes(busca)||u.email?.toLowerCase().includes(busca)));
+  if(users.length===0){alert('Nenhum usuário com telefone encontrado.');return;}
+  const lista=users.map(u=>`${u.nome||'?'} — ${u.telefone} — ${u.plano}`).join('\n');
+  navigator.clipboard.writeText(lista).then(()=>alert(`${users.length} contatos copiados para a área de transferência!`)).catch(()=>alert(lista));
+}
 async function liberarCortesia(){const email=document.getElementById('cort-email').value.trim();const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');ok.style.display='none';err.style.display='none';if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}const{error}=await sb.from('usuarios').update({plano:'premium'}).eq('email',email);if(error){err.textContent='Usuário não encontrado.';err.style.display='block';return;}ok.textContent='✅ Acesso premium liberado para '+email;ok.style.display='block';document.getElementById('cort-email').value='';carregarAdmin();}
 
 // NAV
-function ir(n){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));document.getElementById('tela-'+n)?.classList.add('on');document.getElementById('nav-'+n)?.classList.add('on');if(n==='bot'&&hist.length===0)initBot();if(n==='admin')carregarAdmin();if(n==='simulado')atuHistorico();}
+function ir(n){
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));
+  document.getElementById('tela-'+n)?.classList.add('on');
+  document.getElementById('nav-'+n)?.classList.add('on');
+  // Atualizar header global
+  const hdr=document.getElementById('global-hdr');
+  const sub=document.getElementById('ghdr-sub');
+  const tit=document.getElementById('ghdr-titulo');
+  const hdrs={
+    home:{sub:'Olá,',tit:(user?.user_metadata?.nome||'Estudante')+'!'},
+    treino:{sub:'Detran Aprovado',tit:'Treino por assunto'},
+    simulado:{sub:'Detran Aprovado',tit:'Simulado completo'},
+    resultado:{sub:'Detran Aprovado',tit:'Resultado'},
+    bot:{sub:'Detran Aprovado',tit:'Prof. Detran'},
+    perfil:{sub:'Detran Aprovado',tit:'Meu Perfil'},
+    admin:{sub:'Painel de controle',tit:'Admin — Usuários'}
+  };
+  if(hdrs[n]){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
+  if(n==='bot'&&hist.length===0)initBot();
+  if(n==='admin')carregarAdmin();
+  if(n==='simulado')atuHistorico();
+}
 
 // INIT
 async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){await loadUser(session.user);openApp();}}
