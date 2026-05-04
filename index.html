@@ -649,11 +649,16 @@ function atuPerfil(){
   document.getElementById('stax').textContent=qresp>0?Math.round(acertos/qresp*100)+'%':'0%';
   document.getElementById('ssim').textContent=nsim;
   document.getElementById('serr').textContent=erros_ids.length;
-  if(isPrem){document.getElementById('cp').style.display='block';document.getElementById('ca').style.display='none';document.getElementById('pplan').innerHTML='<span class="tag tgl">⭐ Premium</span>';}
   const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
   if(_isAdm){isAdmin=true;isPrem=true;}
   const _admWrap=document.getElementById('admin-btn-wrap');
-  if(_isAdm&&_admWrap){_admWrap.style.display='flex';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
+  if(_admWrap){_admWrap.style.display=_isAdm?'flex':'none';}
+  const _pplan=document.getElementById('pplan');
+  if(_pplan){
+    if(_isAdm)_pplan.innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';
+    else if(isPrem)_pplan.innerHTML='<span class="tag tgl">⭐ Premium</span>';
+    else _pplan.innerHTML='<span class="tag tgc">🆓 Gratuito</span>';
+  }
   const el=document.getElementById('perf-assuntos-perfil');
   if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver</div>';return;}
   el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');
@@ -710,15 +715,15 @@ function responder(btn,l){
 }
 
 function proxQ(){if(!isPrem&&qhoje>=30&&modoAtual!=='simulado'){showPW();return;}idx++;renderQ();}
-async function salvar(){if(!user)return;await sb.from('usuarios').update({questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user.id).catch(()=>{});atuHome();}
+async function salvar(){if(!user)return;await sb.from('usuarios').update({questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user.id);atuHome();}
 
 async function finalizarSimulado(){
   if(simTimer)clearInterval(simTimer);
   const total=fila.length,pct=Math.round(simAcertos/total*100),passou=simAcertos>=21;
   const tempoUsado=simInicio?Math.floor((new Date()-simInicio)/1000):0;
   nsim++;
-  await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total,percentual:pct,passou,tempo_segundos:tempoUsado}).catch(()=>{});
-  await sb.from('usuarios').update({total_simulados:nsim,questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids,cat_stats:catStats}).eq('id',user?.id).catch(()=>{});
+  await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total,percentual:pct,passou,tempo_segundos:tempoUsado});
+  await sb.from('usuarios').update({total_simulados:nsim,questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids,cat_stats:catStats}).eq('id',user?.id);
   ir('resultado');
   document.getElementById('res-titulo').textContent=passou?'Aprovado! 🎉':'Reprovado 😔';
   document.getElementById('res-acertos').textContent=simAcertos;
@@ -745,7 +750,7 @@ async function finalizarSimulado(){
 
 async function atuHistorico(){
   if(!user)return;
-  const{data}=await sb.from('simulados').select('*').eq('usuario_id',user.id).order('created_at',{ascending:false}).limit(5).catch(()=>({data:null}));
+  const{data}=await sb.from('simulados').select('*').eq('usuario_id',user.id).order('created_at',{ascending:false}).limit(5).then(r=>r).catch(()=>({data:null}));
   const el=document.getElementById('hist-simulados');
   if(!data||data.length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;padding:10px 0;">Nenhum simulado realizado ainda</div>';return;}
   el.innerHTML=data.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--CB);"><div><div style="font-size:11px;font-weight:600;">${s.acertos}/30 questões</div><div style="font-size:10px;color:var(--CT);">${new Date(s.created_at).toLocaleDateString('pt-BR')}</div></div><span class="tag ${s.passou?'tgv':'tgr'}">${s.passou?'Aprovado':'Reprovado'}</span></div>`).join('');
@@ -772,7 +777,7 @@ function assinar(){alert('Redirecionando para o checkout...\n(Conecte sua Kiwify
 // ADMIN
 let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
 async function carregarAdmin(){
-  const{data:users}=await sb.from('usuarios').select('*').order('created_at',{ascending:false}).catch(()=>({data:[]}));
+  const{data:users,error:uerr}=await sb.from('usuarios').select('*').order('created_at',{ascending:false});if(uerr||!users)return;
   if(!users)return;
   todosUsers=users;
   const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
