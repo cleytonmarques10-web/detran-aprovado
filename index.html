@@ -3,46 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Detran Aprovado</title>
+<title>Detran Aprovado — Passe na prova!</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--L:#FF6B00;--LC:#FFF4EE;--LB:#FFD4B8;--LE:#e55f00;--V:#22C55E;--VC:#E8F8EE;--R:#EF4444;--RC:#FEE2E2;--C:#F5F5F5;--CB:#E0E0E0;--CT:#888;--P:#111;--FT:'Syne',sans-serif;--FC:'DM Sans',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justify-content:center;align-items:flex-start;}
-#tela-login,#app{width:100%;max-width:480px;background:var(--C);min-height:100vh;}
-/* NAV — abaixo do header, dentro do fluxo */
-.nt{background:#fff;border-bottom:1px solid var(--CB);display:flex;justify-content:space-around;align-items:center;height:52px;flex-shrink:0;position:sticky;top:0;z-index:50;}
-.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;flex:1;}
-.ni svg{opacity:.3;}
+html,body{height:100%;background:#d0d0d0;}
+body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
+.app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;display:flex;flex-direction:column;position:relative;}
+/* NAV SUPERIOR */
+.nt{background:#fff;border-bottom:1px solid var(--CB);display:flex;justify-content:space-around;align-items:center;height:52px;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;flex:1;border:none;background:none;}
+.ni svg{opacity:.3;transition:opacity .2s;}
 .ni span{font-size:9px;color:var(--CT);}
 .ni.on svg{opacity:1;}
 .ni.on span{color:var(--L);font-weight:600;}
 /* TELAS */
-.tela{display:none;flex-direction:column;min-height:calc(100vh - 52px);}
+.tela{display:none;flex-direction:column;flex:1;overflow:hidden;}
 .tela.on{display:flex;}
-/* HEADER */
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
-/* CONTEUDO */
 .cnt{flex:1;padding:14px;padding-bottom:24px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
 /* CARDS */
 .card{background:#fff;border-radius:14px;padding:13px;border:1.5px solid var(--CB);}
 .cardl{background:var(--LC);border-color:var(--LB);}
-/* BOTÕES */
-.btn{width:100%;padding:12px;border-radius:13px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);transition:all .2s;}
+.cardr{background:var(--RC);border-color:var(--R);}
+/* BOTOES */
+.btn{width:100%;padding:13px;border-radius:13px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);transition:all .2s;}
 .btnl{background:var(--L);color:#fff;}
 .btnl:hover{background:var(--LE);}
 .btnc{background:var(--C);color:#555;border:1.5px solid var(--CB);}
 .btno{background:transparent;color:var(--L);border:2px solid var(--L);}
-.btng{background:#25D366;color:#fff;}
+.btnv{background:var(--V);color:#fff;}
 /* PROGRESS */
-.pbg{background:#F0F0F0;border-radius:99px;height:6px;}
-.pfl{background:var(--L);border-radius:99px;height:6px;transition:width .4s;}
-.pfw{background:#fff;border-radius:99px;height:5px;transition:width .4s;}
+.pbg{background:#F0F0F0;border-radius:99px;height:8px;}
+.pfl{border-radius:99px;height:8px;transition:width .5s;}
 .pbw{background:rgba(255,255,255,.3);border-radius:99px;height:5px;}
+.pfw{background:#fff;border-radius:99px;height:5px;transition:width .4s;}
 /* TAGS */
 .tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;}
 .tgl{background:var(--LC);color:var(--L);}
@@ -51,17 +50,18 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 .tgb{background:rgba(255,255,255,.22);color:#fff;}
 .tgc{background:#F0F0F0;color:#555;}
 /* ALTERNATIVAS */
-.alt{width:100%;padding:11px 13px;border-radius:13px;background:#fff;border:1.5px solid var(--CB);color:#333;font-size:12px;font-family:var(--FC);text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all .18s;}
+.alt{width:100%;padding:12px 13px;border-radius:13px;background:#fff;border:1.5px solid var(--CB);color:#333;font-size:12px;font-family:var(--FC);text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all .18s;}
 .alt:hover{border-color:var(--L);background:var(--LC);}
 .alt.ok{background:var(--VC);border-color:var(--V);color:#15803d;}
 .alt.no{background:var(--RC);border-color:var(--R);color:#b91c1c;}
 .alt.re{background:var(--VC);border-color:var(--V);color:#15803d;}
 .alt:disabled{pointer-events:none;}
-.al{width:26px;height:26px;border-radius:7px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0;}
+.al{width:28px;height:28px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0;}
 .alt.ok .al,.alt.re .al{background:var(--V);color:#fff;}
 .alt.no .al{background:var(--R);color:#fff;}
 /* CHAT */
-.ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;padding-bottom:68px;}
+.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;}
 .msg{display:flex;flex-direction:column;gap:3px;max-width:85%;}
 .msg.bot{align-self:flex-start;}
 .msg.user{align-self:flex-end;}
@@ -73,20 +73,20 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .chip{padding:4px 10px;border-radius:20px;font-size:10px;background:var(--LC);border:1px solid var(--LB);color:var(--L);cursor:pointer;font-family:var(--FC);}
 .chip:hover{background:var(--L);color:#fff;}
-.cr{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--CB);padding:9px 13px;display:flex;gap:8px;z-index:99;max-width:480px;margin:0 auto;}
-.ci{flex:1;background:var(--C);border:1px solid var(--CB);border-radius:20px;padding:8px 13px;font-size:12px;color:var(--P);font-family:var(--FC);outline:none;}
+.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;}
+.ci{flex:1;background:var(--C);border:1px solid var(--CB);border-radius:20px;padding:9px 13px;font-size:12px;color:var(--P);font-family:var(--FC);outline:none;}
 .ci:focus{border-color:var(--L);}
-.cs{width:34px;height:34px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cs{width:36px;height:36px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--CT);animation:bou .9s infinite;}
 .dot:nth-child(2){animation-delay:.2s;}
 .dot:nth-child(3){animation-delay:.4s;}
 @keyframes bou{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 /* LOGIN */
-.lw{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;background:#fff;max-width:480px;margin:0 auto;}
+.lw{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;background:#fff;}
 .ll{width:72px;height:72px;background:var(--L);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
 .lt{font-family:var(--FT);font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;}
 .ls{font-size:13px;color:var(--CT);text-align:center;margin-bottom:22px;}
-.lc{background:#fff;border-radius:18px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:0;}
+.lc{width:100%;max-width:380px;display:flex;flex-direction:column;}
 .ltabs{display:flex;background:var(--C);border-radius:12px;padding:3px;gap:3px;margin-bottom:18px;}
 .ltab{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--CT);font-family:var(--FC);transition:all .2s;}
 .ltab.on{background:#fff;color:var(--P);box-shadow:0 1px 4px rgba(0,0,0,.1);}
@@ -99,38 +99,34 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 .em{font-size:11px;color:var(--R);display:none;padding:8px;background:var(--RC);border-radius:8px;text-align:center;margin-bottom:8px;}
 .sm{font-size:11px;color:#15803d;display:none;padding:8px;background:var(--VC);border-radius:8px;text-align:center;margin-bottom:8px;}
 /* QUESTÃO */
-.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:135px;border:1.5px solid var(--CB);}
+.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:130px;border:1.5px solid var(--CB);}
 .com{background:var(--LC);border-left:3px solid var(--L);border-radius:11px;padding:11px 13px;display:none;}
 .coml{font-size:10px;font-weight:700;color:var(--L);margin-bottom:3px;}
 .comt{font-size:11px;color:#555;line-height:1.6;}
-/* CRONÔMETRO */
-.timer{font-family:var(--FT);font-size:22px;font-weight:800;color:#fff;background:rgba(0,0,0,.2);padding:4px 12px;border-radius:10px;}
+/* TIMER */
+.timer{font-family:var(--FT);font-size:20px;font-weight:800;color:#fff;background:rgba(0,0,0,.2);padding:3px 10px;border-radius:10px;}
 .timer.urgente{color:#ffd4b8;animation:pulse 1s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-/* RESULTADO */
-.ring{display:flex;justify-content:center;align-items:center;margin:8px 0;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 /* PAYWALL */
-.pw{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.pw{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center;}
 .pwc{background:#fff;border-radius:22px 22px 0 0;padding:22px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:13px;}
-.plc{border-radius:14px;padding:14px;border:2px solid var(--CB);display:flex;justify-content:space-between;align-items:center;}
+.plc{border-radius:14px;padding:14px;border:2px solid var(--CB);display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
 .plc.dest{border-color:var(--L);background:var(--LC);}
 /* ABAS */
 .abas{display:flex;background:var(--C);border-radius:11px;padding:3px;gap:3px;}
-.aba{flex:1;padding:7px 4px;border-radius:9px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--CT);font-family:var(--FC);transition:all .2s;text-align:center;}
+.aba{flex:1;padding:7px 4px;border-radius:9px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--CT);font-family:var(--FC);text-align:center;}
 .aba.on{background:#fff;color:var(--L);box-shadow:0 1px 4px rgba(0,0,0,.08);}
 .abac{display:none;flex-direction:column;gap:11px;}
 .abac.on{display:flex;}
 /* GRIDS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 /* ASSUNTO CARD */
 .ass-card{background:#fff;border-radius:14px;padding:13px;border:1.5px solid var(--CB);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
 .ass-card:hover{border-color:var(--L);background:var(--LC);}
 .ass-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
-/* HISTORICO */
-.hist-item{background:#fff;border-radius:12px;padding:11px;border:1.5px solid var(--CB);display:flex;align-items:center;justify-content:space-between;}
 /* ADMIN */
-.g4{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .stat-card{background:#fff;border-radius:14px;padding:14px;border:1.5px solid var(--CB);text-align:center;}
 .stat-num{font-family:var(--FT);font-size:28px;font-weight:800;margin-top:4px;}
 .u-item{background:#fff;border-radius:12px;padding:12px;border:1.5px solid var(--CB);display:flex;align-items:center;gap:10px;margin-bottom:8px;}
@@ -140,14 +136,15 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 .u-email{font-size:10px;color:var(--CT);}
 .ubtn{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);}
 .ubtn-w{background:#25D366;color:#fff;}
-@media(min-width:480px){
-  .cr{max-width:480px;left:50%;transform:translateX(-50%);position:fixed;bottom:0;}
-  .pwc{border-radius:22px;margin:20px;}
-  .pw{align-items:center;}
-}
+/* PRESSÃO */
+.pressao-card{border-radius:16px;padding:16px;margin-bottom:0;}
+.pressao-reprovado{background:linear-gradient(135deg,#b91c1c,#ef4444);color:#fff;}
+.pressao-quase{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;}
+.pressao-aprovado{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;}
 </style>
 </head>
 <body>
+<div class="app-root">
 
 <!-- LOGIN -->
 <div id="tela-login" class="lw" style="display:flex;flex-direction:column;align-items:center;">
@@ -178,28 +175,30 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none;">
+<div id="app" style="display:none;flex-direction:column;flex:1;">
+
+  <!-- NAV TOPO -->
   <nav class="nt">
-    <div class="ni on" id="nav-home" onclick="ir('home')">
+    <button class="ni on" id="nav-home" onclick="ir('home')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#FF6B00" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="#FF6B00" stroke-width="2"/></svg>
       <span>Home</span>
-    </div>
-    <div class="ni" id="nav-treino" onclick="ir('treino')">
+    </button>
+    <button class="ni" id="nav-treino" onclick="ir('treino')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="2"/><path d="M9 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
       <span>Treino</span>
-    </div>
-    <div class="ni" id="nav-simulado" onclick="ir('simulado')">
+    </button>
+    <button class="ni" id="nav-simulado" onclick="ir('simulado')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#888" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
       <span>Simulado</span>
-    </div>
-    <div class="ni" id="nav-bot" onclick="ir('bot')">
+    </button>
+    <button class="ni" id="nav-bot" onclick="ir('bot')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
       <span>Assistente</span>
-    </div>
-    <div class="ni" id="nav-perfil" onclick="ir('perfil')">
+    </button>
+    <button class="ni" id="nav-perfil" onclick="ir('perfil')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
       <span>Perfil</span>
-    </div>
+    </button>
   </nav>
 
   <!-- HOME -->
@@ -209,45 +208,52 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
       <span id="hprem" class="tag tgb" style="display:none;">⭐ Premium</span>
     </div>
     <div class="cnt">
-      <!-- PRONTIDÃO -->
-      <div class="card cardl">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;">
-          <div><div style="font-size:10px;color:var(--L);font-weight:600;margin-bottom:3px;">PRONTIDÃO PARA A PROVA</div><div id="hpront" style="font-family:var(--FT);font-size:30px;font-weight:800;color:var(--L);">0%</div></div>
-          <span id="hnivel" class="tag tgl">Iniciante</span>
+      <!-- CARD PRESSÃO -->
+      <div id="pressao-card" class="pressao-card pressao-reprovado">
+        <div style="font-family:var(--FT);font-size:18px;font-weight:800;margin-bottom:4px;" id="pressao-titulo">Você ainda reprovaria hoje</div>
+        <div style="font-size:12px;opacity:.9;margin-bottom:12px;" id="pressao-msg">Faltam 21 acertos para passar na prova</div>
+        <div style="background:rgba(255,255,255,.25);border-radius:99px;height:8px;margin-bottom:6px;">
+          <div id="pressao-bar" style="background:#fff;border-radius:99px;height:8px;width:0%;transition:width .5s;"></div>
         </div>
-        <div class="pbg" style="background:var(--LB);"><div class="pfl" id="hbar" style="width:0%;"></div></div>
-        <div style="font-size:10px;color:var(--L);margin-top:5px;" id="hdica">Faça seu primeiro simulado para ver seu nível!</div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;opacity:.8;">
+          <span id="pressao-pct">0% de aproveitamento</span>
+          <span>Meta: 70%</span>
+        </div>
       </div>
       <!-- STATS -->
       <div class="g2">
         <div class="card" style="text-align:center;">
           <div style="font-size:10px;color:var(--CT);margin-bottom:3px;">🔥 sequência</div>
-          <div style="font-family:var(--FT);font-size:22px;font-weight:800;color:var(--L);" id="hstr">0</div>
-          <div style="font-size:10px;color:var(--CT);">dias</div>
+          <div style="font-family:var(--FT);font-size:24px;font-weight:800;color:var(--L);" id="hstr">0</div>
+          <div style="font-size:10px;color:var(--CT);">dias seguidos</div>
         </div>
         <div class="card" style="text-align:center;">
           <div style="font-size:10px;color:var(--CT);margin-bottom:3px;">📝 hoje</div>
-          <div style="font-family:var(--FT);font-size:22px;font-weight:800;" id="hhoje">0<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span></div>
+          <div style="font-family:var(--FT);font-size:24px;font-weight:800;" id="hhoje">0<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span></div>
+          <div style="font-size:10px;color:var(--CT);">questões</div>
         </div>
       </div>
-      <!-- AÇÕES RÁPIDAS -->
-      <div style="font-size:12px;font-weight:600;color:#555;">Começar agora</div>
+      <!-- RECOMENDAÇÃO -->
+      <div class="card cardl" id="recomendacao-card">
+        <div style="font-size:10px;color:var(--L);font-weight:600;margin-bottom:4px;">⚡ RECOMENDADO PARA VOCÊ</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px;" id="rec-titulo">Comece pelo simulado</div>
+        <div style="font-size:11px;color:#666;margin-bottom:12px;" id="rec-desc">Descubra seu nível atual e veja onde melhorar</div>
+        <button class="btn btnl" id="rec-btn" onclick="ir('simulado')">Fazer agora →</button>
+      </div>
+      <!-- AÇÕES -->
       <div class="ass-card" onclick="iniciarTreino('todos')">
         <div class="ass-icon" style="background:var(--LC);">📚</div>
-        <div><div style="font-size:13px;font-weight:600;">Treino livre</div><div style="font-size:11px;color:var(--CT);">Questões de todos os assuntos</div></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Treino livre</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos misturados</div></div>
+        <span style="color:var(--CT);">→</span>
       </div>
-      <div class="ass-card" onclick="ir('simulado')">
-        <div class="ass-icon" style="background:#EEF2FF;">📋</div>
-        <div><div style="font-size:13px;font-weight:600;">Simulado completo</div><div style="font-size:11px;color:var(--CT);">30 questões com cronômetro</div></div>
-      </div>
-      <div class="ass-card" id="btn-erros" onclick="iniciarModoErros()">
+      <div class="ass-card" onclick="iniciarModoErros()">
         <div class="ass-icon" style="background:var(--RC);">🔁</div>
-        <div><div style="font-size:13px;font-weight:600;">Modo só erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count">Revise o que você errou</div></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Só meus erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count">Revise o que você errou</div></div>
+        <span style="color:var(--CT);">→</span>
       </div>
-      <!-- YOUTUBE -->
       <div class="card" style="background:#111;border:none;display:flex;align-items:center;gap:11px;cursor:pointer;">
         <svg width="30" height="30" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#FF0000"/><path d="M13 11l8 5-8 5V11z" fill="#fff"/></svg>
-        <div><div style="font-size:12px;font-weight:600;color:#fff;">Canal no YouTube</div><div style="font-size:10px;color:#aaa;">Quiz do Detran — novo vídeo!</div></div>
+        <div><div style="font-size:12px;font-weight:600;color:#fff;">Canal no YouTube</div><div style="font-size:10px;color:#aaa;">Quiz do Detran — assista agora!</div></div>
       </div>
     </div>
   </div>
@@ -256,7 +262,6 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
   <div id="tela-treino" class="tela">
     <div class="hdr"><div><h1>Treino</h1><div class="sub">Escolha o assunto para estudar</div></div></div>
     <div class="cnt">
-      <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:4px;">Todos os assuntos</div>
       <div class="ass-card" onclick="iniciarTreino('todos')">
         <div class="ass-icon" style="background:var(--LC);">📚</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Treino completo</div><div style="font-size:11px;color:var(--CT);">Mistura todos os assuntos</div></div>
@@ -264,39 +269,39 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
       </div>
       <div class="ass-card" onclick="iniciarModoErros()">
         <div class="ass-icon" style="background:var(--RC);">🔁</div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Só meus erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count2">Revise o que você errou</div></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Só meus erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count2">Responda questões para ver seus erros</div></div>
         <span class="tag tgr">→</span>
       </div>
-      <div style="font-size:12px;font-weight:600;color:#555;margin-top:4px;margin-bottom:4px;">Por assunto</div>
+      <div style="font-size:12px;font-weight:600;color:#555;margin-top:4px;">Por assunto</div>
       <div class="ass-card" onclick="iniciarTreino('sinalizacao')">
         <div class="ass-icon" style="background:#FFF9E6;">🚦</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Sinalização</div><div style="font-size:11px;color:var(--CT);">Placas, semáforos e marcas</div></div>
-        <span class="tag tgl">→</span>
+        <div id="perf-sinalizacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div>
       </div>
       <div class="ass-card" onclick="iniciarTreino('legislacao')">
         <div class="ass-icon" style="background:#EEF2FF;">⚖️</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Legislação</div><div style="font-size:11px;color:var(--CT);">CTB, infrações e penalidades</div></div>
-        <span class="tag" style="background:#EEF2FF;color:#3b82f6;">→</span>
+        <div id="perf-legislacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div>
       </div>
       <div class="ass-card" onclick="iniciarTreino('direcao_defensiva')">
         <div class="ass-icon" style="background:#F0FFF4;">🚗</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Direção Defensiva</div><div style="font-size:11px;color:var(--CT);">Técnicas seguras de condução</div></div>
-        <span class="tag tgv">→</span>
+        <div id="perf-direcao_defensiva" style="font-size:11px;font-weight:600;color:var(--CT);">→</div>
       </div>
       <div class="ass-card" onclick="iniciarTreino('primeiros_socorros')">
         <div class="ass-icon" style="background:#FFF0F0;">🏥</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Primeiros Socorros</div><div style="font-size:11px;color:var(--CT);">Acidentes e emergências</div></div>
-        <span class="tag tgr">→</span>
+        <div id="perf-primeiros_socorros" style="font-size:11px;font-weight:600;color:var(--CT);">→</div>
       </div>
       <div class="ass-card" onclick="iniciarTreino('meio_ambiente')">
         <div class="ass-icon" style="background:#F0FFF4;">🌿</div>
         <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Meio Ambiente</div><div style="font-size:11px;color:var(--CT);">Responsabilidade ambiental</div></div>
-        <span class="tag tgv">→</span>
+        <div id="perf-meio_ambiente" style="font-size:11px;font-weight:600;color:var(--CT);">→</div>
       </div>
     </div>
   </div>
 
-  <!-- QUESTÃO (treino e simulado) -->
+  <!-- QUESTÃO -->
   <div id="tela-questao" class="tela">
     <div class="hdr">
       <div>
@@ -308,11 +313,11 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
         <button onclick="sairQuestao()" style="background:rgba(255,255,255,.2);border:none;border-radius:9px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--FC);">Sair</button>
       </div>
     </div>
-    <div style="padding:7px 15px;background:var(--L);"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
+    <div style="padding:7px 15px;background:var(--L);flex-shrink:0;"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
     <div class="cnt">
       <div class="ilus" id="qilus"></div>
       <div class="card" id="qenu" style="font-size:12px;color:#222;line-height:1.7;"></div>
-      <div id="qalts" style="display:flex;flex-direction:column;gap:7px;"></div>
+      <div id="qalts" style="display:flex;flex-direction:column;gap:8px;"></div>
       <div class="com" id="qcom">
         <div class="coml">Por que esta é a resposta correta?</div>
         <div class="comt" id="qcomt"></div>
@@ -322,16 +327,17 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
     </div>
   </div>
 
-  <!-- SIMULADO (menu) -->
+  <!-- SIMULADO MENU -->
   <div id="tela-simulado" class="tela">
     <div class="hdr"><div><h1>Simulado</h1><div class="sub">Igual à prova real do Detran</div></div></div>
     <div class="cnt">
-      <div class="card cardl" style="text-align:center;padding:20px;">
-        <div style="font-size:40px;margin-bottom:8px;">📋</div>
-        <div style="font-family:var(--FT);font-size:18px;font-weight:800;margin-bottom:6px;">Pronto para o desafio?</div>
-        <div style="font-size:11px;color:#666;margin-bottom:6px;">30 questões · 50 minutos · Mínimo 21 acertos</div>
-        <div style="font-size:11px;color:var(--L);font-weight:600;margin-bottom:16px;">Sem ajuda · Sem pausas</div>
-        <button class="btn btnl" onclick="iniciarSimulado()">Iniciar simulado agora</button>
+      <div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:none;padding:20px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:8px;">⚡</div>
+        <div style="font-family:var(--FT);font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Você está pronto?</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:4px;">30 questões · 50 minutos · Sem ajuda</div>
+        <div style="font-size:12px;color:var(--L);font-weight:600;margin-bottom:6px;">Precisa de 21 acertos para passar</div>
+        <div style="font-size:11px;color:#f87171;margin-bottom:18px;">⚠️ 63% dos candidatos reprovam na 1ª tentativa</div>
+        <button class="btn btnl" onclick="iniciarSimulado()">Iniciar simulado agora →</button>
       </div>
       <div class="card">
         <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📈 Histórico de simulados</div>
@@ -342,45 +348,43 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
 
   <!-- RESULTADO -->
   <div id="tela-resultado" class="tela">
-    <div class="hdr"><div><h1 id="res-titulo">Resultado</h1><div class="sub" id="res-sub">Simulado completo</div></div></div>
+    <div class="hdr"><div><h1 id="res-titulo">Resultado</h1></div></div>
     <div class="cnt">
       <div class="card" style="text-align:center;padding:20px;">
-        <div class="ring">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#F0F0F0" stroke-width="10"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--L)" stroke-width="10" stroke-dasharray="314" id="res-ring" stroke-dashoffset="314" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-            <text x="60" y="55" text-anchor="middle" font-family="Syne,sans-serif" font-size="26" font-weight="800" fill="#111" id="res-acertos">0</text>
-            <text x="60" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#888" id="res-total">de 30</text>
-          </svg>
-        </div>
-        <div style="font-family:var(--FT);font-size:22px;font-weight:800;margin-bottom:6px;" id="res-veredicto">Resultado</div>
-        <div style="font-size:12px;color:#555;" id="res-msg">Confira seu desempenho abaixo</div>
+        <svg width="120" height="120" viewBox="0 0 120 120" style="display:block;margin:0 auto 12px;">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#F0F0F0" stroke-width="10"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--L)" stroke-width="10" stroke-dasharray="314" id="res-ring" stroke-dashoffset="314" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+          <text x="60" y="55" text-anchor="middle" font-family="Syne,sans-serif" font-size="26" font-weight="800" fill="#111" id="res-acertos">0</text>
+          <text x="60" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#888" id="res-total">de 30</text>
+        </svg>
+        <div style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:6px;" id="res-veredicto">Resultado</div>
+        <div style="font-size:12px;color:#555;" id="res-msg"></div>
       </div>
       <div class="g3">
         <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">acertos</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;color:#15803d;" id="res-c">0</div></div>
         <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">erros</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;color:#b91c1c;" id="res-e">0</div></div>
         <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">tempo</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;" id="res-t">-</div></div>
       </div>
-      <div class="card" id="res-cats">
-        <div style="font-size:12px;font-weight:600;margin-bottom:10px;">Desempenho por assunto</div>
-      </div>
-      <button class="btn btnl" onclick="ir('treino')">Treinar assuntos fracos</button>
+      <div class="card" id="res-cats"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Desempenho por assunto</div></div>
+      <div id="res-proxima-acao"></div>
       <button class="btn btnc" onclick="ir('simulado')">Novo simulado</button>
     </div>
   </div>
 
   <!-- BOT -->
-  <div id="tela-bot" class="tela" style="flex-direction:column;">
+  <div id="tela-bot" class="tela">
     <div class="hdr" style="flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;">
         <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-        <div><h1 style="font-size:14px;">DetranBot</h1><div class="sub">Especialista em CNH · online</div></div>
+        <div><h1 style="font-size:14px;">DetranBot</h1><div class="sub">Seu professor particular de CNH</div></div>
       </div>
     </div>
-    <div class="ca" id="chat-area"></div>
-    <div class="cr">
-      <input type="text" class="ci" id="cinp" placeholder="Pergunte sobre CNH..." onkeydown="if(event.key==='Enter')enviar()">
-      <button class="cs" onclick="enviar()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="chat-wrap">
+      <div class="ca" id="chat-area"></div>
+      <div class="cr">
+        <input type="text" class="ci" id="cinp" placeholder="Pergunte sobre CNH, placas, infrações..." onkeydown="if(event.key==='Enter')enviar()">
+        <button class="cs" onclick="enviar()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </div>
   </div>
 
@@ -400,29 +404,35 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
         <button class="aba" onclick="trocarAba('contato',this)">Contato</button>
       </div>
       <div class="abac on" id="aba-dados">
-        <div class="card" id="ca"><div style="font-family:var(--FT);font-size:15px;font-weight:800;margin-bottom:5px;">Desbloqueie tudo 🚀</div><div style="font-size:11px;color:#666;margin-bottom:11px;">Simulados ilimitados, modo erros e DetranBot completo.</div><button class="btn btnl" onclick="showPW()">Ver planos — a partir de R$ 9,90/mês</button></div>
+        <div class="card" id="ca">
+          <div style="font-family:var(--FT);font-size:15px;font-weight:800;margin-bottom:5px;">🔓 Desbloqueie tudo</div>
+          <div style="font-size:11px;color:#666;margin-bottom:6px;">✅ Simulados ilimitados</div>
+          <div style="font-size:11px;color:#666;margin-bottom:6px;">✅ Modo só erros</div>
+          <div style="font-size:11px;color:#666;margin-bottom:11px;">✅ DetranBot sem limites</div>
+          <button class="btn btnl" onclick="showPW()">Assinar — a partir de R$ 9,90/mês</button>
+        </div>
         <div class="card cardl" id="cp" style="display:none;"><div style="font-family:var(--FT);font-size:15px;font-weight:800;margin-bottom:4px;">🎉 Premium Ativo</div><div style="font-size:11px;color:#666;">Acesso ilimitado a tudo.</div></div>
         <div id="admin-btn-wrap" style="display:none;">
           <div class="card" style="background:#111;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="ir('admin')">
-            <div style="width:36px;height:36px;border-radius:10px;background:#333;display:flex;align-items:center;justify-content:center;flex-shrink:0;">⚙️</div>
+            <div style="width:36px;height:36px;border-radius:10px;background:#333;display:flex;align-items:center;justify-content:center;">⚙️</div>
             <div><div style="font-size:12px;font-weight:600;color:#FF6B00;">Painel Administrativo</div><div style="font-size:10px;color:#666;">Gerenciar usuários e planos</div></div>
           </div>
         </div>
-        <button class="btn btnc" onclick="logout()" style="color:var(--R);border-color:var(--RC);">🚪 Sair do app</button>
+        <button class="btn btnc" onclick="logout()" style="color:var(--R);">🚪 Sair do app</button>
       </div>
       <div class="abac" id="aba-desempenho">
         <div class="card">
-          <div style="font-size:12px;font-weight:600;margin-bottom:11px;">📊 Estatísticas gerais</div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:11px;">📊 Estatísticas</div>
           <div style="display:flex;flex-direction:column;gap:9px;">
             <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questões respondidas</span><span style="font-weight:600;" id="stot">0</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Taxa de acerto geral</span><span style="font-weight:600;color:var(--L);" id="stax">0%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Taxa de acerto</span><span style="font-weight:600;color:var(--L);" id="stax">0%</span></div>
             <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Simulados realizados</span><span style="font-weight:600;" id="ssim">0</span></div>
             <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questões no modo erros</span><span style="font-weight:600;color:var(--R);" id="serr">0</span></div>
           </div>
         </div>
         <div class="card">
-          <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Desempenho por assunto</div>
-          <div id="perf-assuntos"><div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver seu desempenho</div></div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Por assunto</div>
+          <div id="perf-assuntos-perfil"></div>
         </div>
       </div>
       <div class="abac" id="aba-contato">
@@ -457,16 +467,17 @@ body{font-family:var(--FC);background:#e0e0e0;color:var(--P);display:flex;justif
       </div>
     </div>
   </div>
-</div>
+</div><!-- fim app -->
+</div><!-- fim app-root -->
 
 <!-- PAYWALL -->
 <div class="pw" id="pw">
   <div class="pwc">
     <div style="font-family:var(--FT);font-size:19px;font-weight:800;text-align:center;">Desbloqueie tudo 🚀</div>
-    <div style="font-size:12px;color:var(--CT);text-align:center;">Continue estudando sem limites.</div>
-    <div class="plc dest"><div><div style="font-weight:600;font-size:13px;">Mensal</div><div style="font-size:10px;color:var(--CT);">Cancele quando quiser</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$14,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
-    <div class="plc"><div><div style="font-weight:600;font-size:13px;">Anual <span class="tag tgv" style="font-size:9px;">2 meses grátis</span></div><div style="font-size:10px;color:var(--CT);">R$ 118,80/ano</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$9,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
-    <button class="btn btnl" onclick="assinar()">Assinar agora</button>
+    <div style="font-size:12px;color:var(--CT);text-align:center;">Continue estudando sem limites e passe na prova!</div>
+    <div class="plc dest" onclick="assinar()"><div><div style="font-weight:600;font-size:13px;">Mensal</div><div style="font-size:10px;color:var(--CT);">Cancele quando quiser</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$14,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
+    <div class="plc" onclick="assinar()"><div><div style="font-weight:600;font-size:13px;">Anual <span class="tag tgv" style="font-size:9px;">2 meses grátis</span></div><div style="font-size:10px;color:var(--CT);">R$ 118,80/ano</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$9,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
+    <button class="btn btnl" onclick="assinar()">Assinar agora e garantir aprovação</button>
     <button style="background:none;border:none;font-size:12px;color:var(--CT);cursor:pointer;font-family:var(--FC);padding:3px;text-align:center;" onclick="hidePW()">Continuar com versão gratuita</button>
   </div>
 </div>
@@ -478,18 +489,16 @@ const ADMIN_EMAIL='cleytonmarques10@gmail.com';
 const{createClient}=supabase;
 const sb=createClient(SBU,SBK);
 
-// ESTADO
 let user=null,isPrem=false,isAdmin=false;
 let qhoje=0,qresp=0,acertos=0,streak=0,nsim=0;
-let erros_ids=[];
+let erros_ids=[],catStats={};
 let fila=[],qatual=null,idx=0,resp=false,hist=[];
-let modoAtual='treino'; // 'treino','simulado','erros'
+let modoAtual='treino';
 let simTimer=null,simSegundos=3000,simAcertos=0,simErros=0,simInicio=null;
-let catStats={};
 
-// PLACAS SVG
+// PLACAS
 const PL={
-'R-1':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,5 105,25 105,85 55,105 5,85 5,25" fill="#CC0000"/><text x="55" y="50" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="16" font-weight="900" fill="#fff">PARE</text></svg>',
+'R-1':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,5 105,25 105,85 55,105 5,85 5,25" fill="#CC0000"/><text x="55" y="52" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="17" font-weight="900" fill="#fff">PARE</text></svg>',
 'R-2':'<svg width="110" height="100" viewBox="0 0 110 100"><polygon points="55,90 5,8 105,8" fill="#fff" stroke="#CC0000" stroke-width="7" stroke-linejoin="round"/></svg>',
 'R-3':'<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#CC0000"/><rect x="18" y="48" width="74" height="14" rx="5" fill="#fff"/></svg>',
 'R-4a':'<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M65 30 Q35 55 65 80" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/><polyline points="57,22 65,30 57,38" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><line x1="18" y1="18" x2="92" y2="92" stroke="#CC0000" stroke-width="7"/></svg>',
@@ -510,73 +519,72 @@ const PL={
 'def':'<svg width="110" height="90" viewBox="0 0 110 90"><rect width="110" height="90" rx="10" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2"/><text x="55" y="52" text-anchor="middle" font-family="Arial" font-size="11" fill="#ccc">sem ilustração</text></svg>'
 };
 
-function getIl(q){
-  if(q.placa_codigo&&PL[q.placa_codigo])return PL[q.placa_codigo];
-  if(q.tipo_ilustracao==='semaforo'){const e=q.enunciado.toLowerCase();return e.includes('vermelho')?PL.sv:e.includes('amarelo')?PL.sa:PL.sg;}
-  if(q.tipo_ilustracao==='situacao'){const e=q.enunciado.toLowerCase();if(e.includes('cruzamento')||e.includes('interse'))return PL.crz;if(e.includes('faixa')||e.includes('pedestre'))return PL.fp;}
-  return PL.def;
-}
-
-// UTILS
+function getIl(q){if(q.placa_codigo&&PL[q.placa_codigo])return PL[q.placa_codigo];if(q.tipo_ilustracao==='semaforo'){const e=q.enunciado.toLowerCase();return e.includes('vermelho')?PL.sv:e.includes('amarelo')?PL.sa:PL.sg;}if(q.tipo_ilustracao==='situacao'){const e=q.enunciado.toLowerCase();if(e.includes('cruzamento')||e.includes('interse'))return PL.crz;if(e.includes('faixa')||e.includes('pedestre'))return PL.fp;}return PL.def;}
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function nomeAss(cat){return{sinalizacao:'Sinalização',legislacao:'Legislação',direcao_defensiva:'Direção Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente'}[cat]||cat;}
 function maskTel(inp){let v=inp.value.replace(/\D/g,'');if(v.length>11)v=v.substr(0,11);if(v.length>6)v=v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/^(\d{2})(\d{0,5})/,'($1) $2');else if(v.length>0)v=v.replace(/^(\d{0,2})/,'($1');inp.value=v;}
 function tog(id,btn){const i=document.getElementById(id);const m=i.type==='password';i.type=m?'text':'password';btn.innerHTML=m?'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10 10 0 0112 20c-7 0-11-8-11-8a18 18 0 015.06-5.94M9.9 4.24A9 9 0 0112 4c7 0 11 8 11 8a18 18 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" stroke="#FF6B00" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="1" x2="23" y2="23" stroke="#FF6B00" stroke-width="2" stroke-linecap="round"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg>';}
-function fmtTime(s){const m=Math.floor(s/60);return String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function nomeAssunto(cat){const m={sinalizacao:'Sinalização',legislacao:'Legislação',direcao_defensiva:'Direção Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente'};return m[cat]||cat;}
 
 // AUTH
 function trocarTab(t){document.getElementById('tab-e').classList.toggle('on',t==='e');document.getElementById('tab-c').classList.toggle('on',t==='c');document.getElementById('fe').style.display=t==='e'?'block':'none';document.getElementById('fc').style.display=t==='c'?'block':'none';}
+async function login(){const e=document.getElementById('le').value.trim(),s=document.getElementById('ls').value,el=document.getElementById('el');el.style.display='none';if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}await loadUser(data.user);openApp();}
+async function cad(){const n=document.getElementById('cn').value.trim(),t=document.getElementById('ct').value.trim(),e=document.getElementById('ce').value.trim(),s=document.getElementById('cs').value;const ec=document.getElementById('ec');ec.style.display='none';if(!n||!e||!s){ec.textContent='Preencha nome, e-mail e senha.';ec.style.display='block';return;}if(s.length<6){ec.textContent='Senha mínimo 6 caracteres.';ec.style.display='block';return;}if(t&&t.length<14){ec.textContent='Contato inválido. Use (00) 00000-0000';ec.style.display='block';return;}const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});if(error){ec.textContent='Erro ao criar conta.';ec.style.display='block';return;}if(data.user){await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}});await loadUser(data.user);openApp();}}
+async function logout(){await sb.auth.signOut();user=null;isPrem=false;isAdmin=false;qhoje=0;const app=document.getElementById('app');app.style.display='none';document.getElementById('tela-login').style.display='flex';}
+async function loadUser(u){user=u;isAdmin=u.email===ADMIN_EMAIL;const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();if(data){isPrem=data.plano==='premium'||isAdmin;qhoje=data.questoes_hoje||0;streak=data.streak||0;qresp=data.total_questoes||0;acertos=data.total_acertos||0;nsim=data.total_simulados||0;erros_ids=data.erros_ids||[];catStats=data.cat_stats||{};}}
+function openApp(){document.getElementById('tela-login').style.display='none';const app=document.getElementById('app');app.style.display='flex';atuHome();ir('home');initBot();}
 
-async function login(){
-  const e=document.getElementById('le').value.trim(),s=document.getElementById('ls').value,el=document.getElementById('el');
-  el.style.display='none';
-  if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
-  const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
-  if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}
-  await loadUser(data.user);openApp();
-}
-
-async function cad(){
-  const n=document.getElementById('cn').value.trim(),t=document.getElementById('ct').value.trim(),e=document.getElementById('ce').value.trim(),s=document.getElementById('cs').value;
-  const ec=document.getElementById('ec');ec.style.display='none';
-  if(!n||!e||!s){ec.textContent='Preencha nome, e-mail e senha.';ec.style.display='block';return;}
-  if(s.length<6){ec.textContent='Senha mínimo 6 caracteres.';ec.style.display='block';return;}
-  if(t&&t.length<14){ec.textContent='Contato inválido. Use (00) 00000-0000';ec.style.display='block';return;}
-  const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
-  if(error){ec.textContent='Erro ao criar conta. Tente outro e-mail.';ec.style.display='block';return;}
-  if(data.user){await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[]});await loadUser(data.user);openApp();}
-}
-
-async function logout(){await sb.auth.signOut();user=null;isPrem=false;isAdmin=false;qhoje=0;document.getElementById('app').style.display='none';document.getElementById('tela-login').style.display='flex';}
-
-async function loadUser(u){
-  user=u;isAdmin=u.email===ADMIN_EMAIL;
-  const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();
-  if(data){isPrem=data.plano==='premium'||isAdmin;qhoje=data.questoes_hoje||0;streak=data.streak||0;qresp=data.total_questoes||0;acertos=data.total_acertos||0;nsim=data.total_simulados||0;erros_ids=data.erros_ids||[];catStats=data.cat_stats||{};}
-}
-
-function openApp(){document.getElementById('tela-login').style.display='none';document.getElementById('app').style.display='block';atuHome();ir('home');initBot();}
-
-// HOME
+// HOME — PRESSÃO E RECOMENDAÇÃO
 function atuHome(){
   const n=user?.user_metadata?.nome||user?.email?.split('@')[0]||'Estudante';
   document.getElementById('hnome').textContent=n+'!';
   document.getElementById('hstr').textContent=streak;
   document.getElementById('hhoje').innerHTML=qhoje+'<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span>';
-  const p=qresp>0?Math.min(Math.round(acertos/qresp*100),100):0;
-  document.getElementById('hpront').textContent=p+'%';
-  document.getElementById('hbar').style.width=p+'%';
   if(isPrem)document.getElementById('hprem').style.display='inline-block';
-  let nv='Iniciante',dc='Faça seu primeiro simulado para ver seu nível!';
-  if(p>=90){nv='Aprovado!';dc='Excelente! Você está pronto para a prova.';}
-  else if(p>=70){nv='Quase lá!';dc='Ótimo progresso! Mais um pouco e estará pronto.';}
-  else if(p>=50){nv='Evoluindo!';dc='Continue praticando. Foco nos pontos fracos!';}
-  else if(p>0){nv='Iniciante';dc='A consistência é o segredo. Estude todo dia!';}
-  document.getElementById('hnivel').textContent=nv;
-  document.getElementById('hdica').textContent=dc;
+  const p=qresp>0?Math.min(Math.round(acertos/qresp*100),100):0;
+  const pc=document.getElementById('pressao-card');
+  const pt=document.getElementById('pressao-titulo');
+  const pm=document.getElementById('pressao-msg');
+  const pb=document.getElementById('pressao-bar');
+  document.getElementById('pressao-pct').textContent=p+'% de aproveitamento';
+  pb.style.width=p+'%';
+  if(p>=70){pc.className='pressao-card pressao-aprovado';pt.textContent='Você passaria na prova! 🎉';pm.textContent='Continue assim — seu desempenho está ótimo!';}
+  else if(p>=50){pc.className='pressao-card pressao-quase';pt.textContent='Você está quase lá! ⚡';pm.textContent=`Falta melhorar ${70-p}% para garantir a aprovação`;}
+  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil((0.7*qresp-acertos)));pt.textContent='Você ainda reprovaria hoje ⚠️';pm.textContent=`Faltam ${faltam} acertos para atingir 70% de aproveitamento`;}
+  else{pc.className='pressao-card pressao-reprovado';pt.textContent='Você está pronto para começar?';pm.textContent='Faça o simulado e descubra seu nível atual';}
+  // Erros
   const ne=erros_ids.length;
   document.getElementById('erros-count').textContent=ne>0?`${ne} questões para revisar`:'Revise o que você errou';
   document.getElementById('erros-count2').textContent=ne>0?`${ne} questões para revisar`:'Responda questões para ver seus erros';
+  // Recomendação inteligente
+  atuRecomendacao(p);
+  // Treino — mostrar % por assunto
+  atuPerfAssuntos();
   atuPerfil();
+}
+
+function atuRecomendacao(p){
+  const rt=document.getElementById('rec-titulo'),rd=document.getElementById('rec-desc'),rb=document.getElementById('rec-btn');
+  if(qresp===0){rt.textContent='Faça seu primeiro simulado';rd.textContent='Descubra seu nível atual e veja onde melhorar';rb.textContent='Iniciar simulado →';rb.onclick=()=>ir('simulado');}
+  else if(erros_ids.length>5){rt.textContent='Revise seus erros agora';rd.textContent=`Você tem ${erros_ids.length} questões marcadas para revisar`;rb.textContent='Revisar erros →';rb.onclick=iniciarModoErros;}
+  else{// Achar assunto mais fraco
+    let piorCat=null,piorPct=100;
+    Object.entries(catStats).forEach(([cat,s])=>{const p2=s.total>0?Math.round(s.acertos/s.total*100):0;if(p2<piorPct){piorPct=p2;piorCat=cat;}});
+    if(piorCat&&piorPct<70){rt.textContent=`Treine ${nomeAss(piorCat)}`;rd.textContent=`Baseado no seu desempenho — você acerta apenas ${piorPct}% neste assunto`;rb.textContent=`Treinar ${nomeAss(piorCat)} →`;rb.onclick=()=>iniciarTreino(piorCat);}
+    else{rt.textContent='Faça mais um simulado';rd.textContent='Mantenha o ritmo — consistência é o segredo da aprovação';rb.textContent='Iniciar simulado →';rb.onclick=()=>ir('simulado');}
+  }
+}
+
+function atuPerfAssuntos(){
+  const cats=['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente'];
+  cats.forEach(cat=>{
+    const el=document.getElementById('perf-'+cat);if(!el)return;
+    const s=catStats[cat];
+    if(!s){el.textContent='→';el.style.color='var(--CT)';return;}
+    const p=Math.round(s.acertos/s.total*100);
+    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
+    const nivel=p>=70?'Forte':p>=50?'Médio':'Fraco';
+    el.innerHTML=`<span style="color:${cor};font-weight:700;">${p}% ${nivel}</span>`;
+  });
 }
 
 function atuPerfil(){
@@ -591,84 +599,27 @@ function atuPerfil(){
   document.getElementById('serr').textContent=erros_ids.length;
   if(isPrem){document.getElementById('cp').style.display='block';document.getElementById('ca').style.display='none';document.getElementById('pplan').innerHTML='<span class="tag tgl">⭐ Premium</span>';}
   if(isAdmin){document.getElementById('admin-btn-wrap').style.display='block';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
-  // Desempenho por assunto
-  const el=document.getElementById('perf-assuntos');
-  if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver seu desempenho</div>';return;}
-  el.innerHTML=Object.entries(catStats).map(([cat,s])=>{
-    const pct=s.total>0?Math.round(s.acertos/s.total*100):0;
-    const cor=pct>=70?'#22C55E':pct>=50?'var(--L)':'#EF4444';
-    return `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAssunto(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${pct}%</span></div><div class="pbg"><div class="pfl" style="width:${pct}%;background:${cor};"></div></div></div>`;
-  }).join('');
+  const el=document.getElementById('perf-assuntos-perfil');
+  if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver</div>';return;}
+  el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');
 }
 
 function trocarAba(n,el){document.querySelectorAll('.aba').forEach(a=>a.classList.remove('on'));document.querySelectorAll('.abac').forEach(c=>c.classList.remove('on'));el.classList.add('on');document.getElementById('aba-'+n).classList.add('on');}
+async function enviarContato(){const a=document.getElementById('cass').value,m=document.getElementById('cmsg').value.trim();const cs=document.getElementById('csuc'),ce=document.getElementById('cerr2');cs.style.display='none';ce.style.display='none';if(!a||!m){ce.textContent='Preencha assunto e mensagem.';ce.style.display='block';return;}const{error}=await sb.from('contatos').insert({usuario_id:user?.id,email:user?.email,assunto:a,mensagem:m});if(error){ce.textContent='Erro ao enviar.';ce.style.display='block';return;}cs.textContent='✅ Mensagem enviada!';cs.style.display='block';document.getElementById('cass').value='';document.getElementById('cmsg').value='';}
 
-// CONTATO
-async function enviarContato(){
-  const a=document.getElementById('cass').value,m=document.getElementById('cmsg').value.trim();
-  const cs=document.getElementById('csuc'),ce=document.getElementById('cerr2');
-  cs.style.display='none';ce.style.display='none';
-  if(!a||!m){ce.textContent='Preencha assunto e mensagem.';ce.style.display='block';return;}
-  const{error}=await sb.from('contatos').insert({usuario_id:user?.id,email:user?.email,assunto:a,mensagem:m});
-  if(error){ce.textContent='Erro ao enviar.';ce.style.display='block';return;}
-  cs.textContent='✅ Mensagem enviada! Responderemos em breve.';cs.style.display='block';
-  document.getElementById('cass').value='';document.getElementById('cmsg').value='';
-}
-
-// QUESTÕES — TREINO
-async function iniciarTreino(cat){
-  if(!isPrem&&qhoje>=30){showPW();return;}
-  modoAtual='treino';
-  document.getElementById('qtimer').style.display='none';
-  ir('questao');
-  let query=sb.from('questoes').select('*').eq('ativo',true);
-  if(cat!=='todos')query=query.eq('categoria',cat);
-  const{data}=await query.limit(30);
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questão encontrada para este assunto.';document.getElementById('qilus').innerHTML=PL.def;return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-// MODO ERROS
-async function iniciarModoErros(){
-  if(!isPrem){showPW();return;}
-  if(erros_ids.length===0){alert('Você ainda não tem erros registrados! Responda questões primeiro.');return;}
-  modoAtual='erros';
-  document.getElementById('qtimer').style.display='none';
-  ir('questao');
-  const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Questões não encontradas.';document.getElementById('qilus').innerHTML=PL.def;return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-// SIMULADO
-async function iniciarSimulado(){
-  if(!isPrem){showPW();return;}
-  modoAtual='simulado';
-  ir('questao');
-  const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(30);
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Banco de questões sendo populado!';document.getElementById('qilus').innerHTML=PL.def;return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;
-  simSegundos=3000;simInicio=new Date();
-  const timerEl=document.getElementById('qtimer');
-  timerEl.style.display='block';timerEl.textContent='50:00';
-  if(simTimer)clearInterval(simTimer);
-  simTimer=setInterval(()=>{
-    simSegundos--;
-    timerEl.textContent=fmtTime(simSegundos);
-    if(simSegundos<=300)timerEl.classList.add('urgente');
-    if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}
-  },1000);
-  renderQ();
-}
-
+// QUESTÕES
+async function iniciarTreino(cat){if(!isPrem&&qhoje>=30){showPW();return;}modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');let q=sb.from('questoes').select('*').eq('ativo',true);if(cat!=='todos')q=q.eq('categoria',cat);const{data}=await q.limit(30);if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questão para este assunto ainda.';document.getElementById('qilus').innerHTML=PL.def;return;}fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();}
+async function iniciarModoErros(){if(!isPrem){showPW();return;}if(erros_ids.length===0){alert('Você não tem erros registrados ainda! Responda questões primeiro.');return;}modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);if(!data||data.length===0){alert('Questões não encontradas.');return;}fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();}
+async function iniciarSimulado(){if(!isPrem){showPW();return;}modoAtual='simulado';ir('questao');const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(60);if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}// Mistura assuntos inteligentemente
+const mistura=[];['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente'].forEach(cat=>{const qs=data.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5);mistura.push(...qs.slice(0,8));});const resto=data.filter(q=>!mistura.find(m=>m.id===q.id)).sort(()=>Math.random()-.5);fila=[...mistura,...resto].slice(0,30).sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;simSegundos=3000;simInicio=new Date();const te=document.getElementById('qtimer');te.style.display='block';te.textContent='50:00';te.className='timer';if(simTimer)clearInterval(simTimer);simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);renderQ();}
 function sairQuestao(){if(simTimer)clearInterval(simTimer);ir(modoAtual==='simulado'?'simulado':'treino');}
 
 function renderQ(){
-  if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else ir('treino');return;}
+  if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else{ir('treino');return;}return;}
   qatual=fila[idx];resp=false;
   const tot=fila.length;
   document.getElementById('qcont').textContent=`Questão ${idx+1}/${tot}`;
-  document.getElementById('qcat').textContent=nomeAssunto(qatual.categoria)||'geral';
+  document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
   document.getElementById('qprog').style.width=((idx+1)/tot*100)+'%';
   document.getElementById('qilus').innerHTML=getIl(qatual);
   document.getElementById('qenu').textContent=qatual.enunciado;
@@ -677,110 +628,80 @@ function renderQ(){
   document.getElementById('qcomt').textContent=qatual.comentario||'';
   document.getElementById('qart').textContent=qatual.artigo_ctb||'';
   const al=document.getElementById('qalts');al.innerHTML='';
-  const ls=['A','B','C','D'];
-  [qatual.alternativa_a,qatual.alternativa_b,qatual.alternativa_c,qatual.alternativa_d].forEach((op,i)=>{
-    const b=document.createElement('button');b.className='alt';
-    b.innerHTML=`<span class="al">${ls[i]}</span>${op}`;
-    b.onclick=()=>responder(b,ls[i]);al.appendChild(b);
-  });
+  ['A','B','C','D'].forEach((l,i)=>{const op=[qatual.alternativa_a,qatual.alternativa_b,qatual.alternativa_c,qatual.alternativa_d][i];const b=document.createElement('button');b.className='alt';b.innerHTML=`<span class="al">${l}</span>${op}`;b.onclick=()=>responder(b,l);al.appendChild(b);});
 }
 
 function responder(btn,l){
   if(resp)return;resp=true;
   const c=qatual.resposta_correta,ls=['A','B','C','D'];
   document.querySelectorAll('.alt').forEach(b=>b.disabled=true);
-  const acertou=l===c;
-  btn.classList.add(acertou?'ok':'no');
-  if(!acertou)document.querySelectorAll('.alt')[ls.indexOf(c)].classList.add('re');
+  const ok=l===c;
+  btn.classList.add(ok?'ok':'no');
+  if(!ok)document.querySelectorAll('.alt')[ls.indexOf(c)].classList.add('re');
   document.getElementById('qcom').style.display='block';
   document.getElementById('qnxt').style.display='block';
-  // Stats
   qresp++;qhoje++;
-  if(acertou){acertos++;simAcertos++;}else{simErros++;adicionarErro(qatual.id);}
-  // Cat stats
+  if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);}
+  else{simErros++;if(!erros_ids.includes(qatual.id))erros_ids.push(qatual.id);}
   const cat=qatual.categoria||'outros';
   if(!catStats[cat])catStats[cat]={acertos:0,total:0};
-  catStats[cat].total++;if(acertou)catStats[cat].acertos++;
+  catStats[cat].total++;if(ok)catStats[cat].acertos++;
   salvar();
 }
 
-function adicionarErro(id){if(!erros_ids.includes(id)){erros_ids.push(id);}}
-function removerErro(id){erros_ids=erros_ids.filter(x=>x!==id);}
+function proxQ(){if(!isPrem&&qhoje>=30&&modoAtual!=='simulado'){showPW();return;}idx++;renderQ();}
+async function salvar(){if(!user)return;await sb.from('usuarios').update({questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user.id).catch(()=>{});atuHome();}
 
-function proxQ(){
-  if(!isPrem&&qhoje>=30&&modoAtual!=='simulado'){showPW();return;}
-  // Se acertou no modo erros, remove da lista
-  if(modoAtual==='erros'&&qatual){
-    const c=qatual.resposta_correta;
-    const btns=document.querySelectorAll('.alt');
-    const ls=['A','B','C','D'];
-    // Verifica se o botão correto está marcado como ok
-    if(btns[ls.indexOf(c)]?.classList.contains('re')===false&&btns[ls.indexOf(c)]?.classList.contains('ok'))removerErro(qatual.id);
-  }
-  idx++;renderQ();
-}
-
-async function salvar(){
-  if(!user)return;
-  await sb.from('usuarios').update({questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user.id);
-  atuHome();
-}
-
-// FINALIZAR SIMULADO
 async function finalizarSimulado(){
   if(simTimer)clearInterval(simTimer);
-  const total=fila.length;
-  const pct=Math.round(simAcertos/total*100);
-  const passou=simAcertos>=21;
+  const total=fila.length,pct=Math.round(simAcertos/total*100),passou=simAcertos>=21;
   const tempoUsado=simInicio?Math.floor((new Date()-simInicio)/1000):0;
-  // Salvar histórico
   nsim++;
-  await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total:total,percentual:pct,passou:passou,tempo_segundos:tempoUsado}).catch(()=>{});
-  await sb.from('usuarios').update({total_simulados:nsim,questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user?.id).catch(()=>{});
-  // Mostrar resultado
+  await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total,percentual:pct,passou,tempo_segundos:tempoUsado}).catch(()=>{});
+  await sb.from('usuarios').update({total_simulados:nsim,questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids,cat_stats:catStats}).eq('id',user?.id).catch(()=>{});
   ir('resultado');
   document.getElementById('res-titulo').textContent=passou?'Aprovado! 🎉':'Reprovado 😔';
-  document.getElementById('res-sub').textContent=`${pct}% de aproveitamento`;
   document.getElementById('res-acertos').textContent=simAcertos;
   document.getElementById('res-total').textContent=`de ${total}`;
   document.getElementById('res-c').textContent=simAcertos;
   document.getElementById('res-e').textContent=simErros;
   document.getElementById('res-t').textContent=fmtTime(tempoUsado);
   document.getElementById('res-veredicto').textContent=passou?'Você passaria na prova!':'Você ainda não passaria';
-  document.getElementById('res-msg').textContent=passou?`Parabéns! Acertou ${simAcertos} de ${total} questões.`:`Precisa de ${21-simAcertos} acertos a mais. Continue treinando!`;
-  // Ring
+  document.getElementById('res-msg').textContent=passou?`Parabéns! ${pct}% de aproveitamento. Continue assim!`:`Você acertou ${simAcertos} de ${total}. Precisa de ${21-simAcertos} acertos a mais.`;
   const circ=Math.PI*2*50;
-  const offset=circ-(pct/100*circ);
-  document.getElementById('res-ring').style.strokeDashoffset=offset;
+  document.getElementById('res-ring').style.strokeDashoffset=circ-(pct/100*circ);
   document.getElementById('res-ring').style.stroke=passou?'#22C55E':'#EF4444';
-  // Cats
-  const catsEl=document.getElementById('res-cats');
-  catsEl.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Desempenho por assunto</div>';
-  Object.entries(catStats).forEach(([cat,s])=>{
-    const p=s.total>0?Math.round(s.acertos/s.total*100):0;
-    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
-    catsEl.innerHTML+=`<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAssunto(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;
-  });
-  // Histórico
+  // Cats no resultado
+  const ce=document.getElementById('res-cats');
+  ce.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Desempenho por assunto</div>';
+  Object.entries(catStats).forEach(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';ce.innerHTML+=`<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;});
+  // Próxima ação
+  const pa=document.getElementById('res-proxima-acao');
+  if(!passou&&erros_ids.length>0){pa.innerHTML=`<div class="card cardl"><div style="font-size:12px;font-weight:600;margin-bottom:4px;">⚡ Próximo passo recomendado</div><div style="font-size:11px;color:#666;margin-bottom:10px;">Você tem ${erros_ids.length} questões marcadas para revisar. Treine seus pontos fracos!</div><button class="btn btnl" onclick="iniciarModoErros()">Revisar meus erros agora →</button></div>`;
+  }else if(passou){pa.innerHTML=`<div class="card" style="background:linear-gradient(135deg,#15803d,#22c55e);border:none;padding:16px;text-align:center;"><div style="font-family:var(--FT);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;">🏆 Parabéns!</div><div style="font-size:11px;color:rgba(255,255,255,.9);">Você está pronto para fazer a prova do Detran. Continue praticando para manter o nível!</div></div>`;
+  }else{pa.innerHTML='';}
   atuHistorico();
 }
 
 async function atuHistorico(){
   if(!user)return;
-  const{data}=await sb.from('simulados').select('*').eq('usuario_id',user.id).order('created_at',{ascending:false}).limit(5);
+  const{data}=await sb.from('simulados').select('*').eq('usuario_id',user.id).order('created_at',{ascending:false}).limit(5).catch(()=>({data:null}));
   const el=document.getElementById('hist-simulados');
   if(!data||data.length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;padding:10px 0;">Nenhum simulado realizado ainda</div>';return;}
-  el.innerHTML=data.map(s=>`
-    <div class="hist-item" style="margin-bottom:8px;">
-      <div><div style="font-size:11px;font-weight:600;">${s.acertos}/30 questões</div><div style="font-size:10px;color:var(--CT);">${new Date(s.created_at).toLocaleDateString('pt-BR')}</div></div>
-      <span class="tag ${s.passou?'tgv':'tgr'}">${s.passou?'Aprovado':'Reprovado'}</span>
-    </div>`).join('');
+  el.innerHTML=data.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--CB);"><div><div style="font-size:11px;font-weight:600;">${s.acertos}/30 questões</div><div style="font-size:10px;color:var(--CT);">${new Date(s.created_at).toLocaleDateString('pt-BR')}</div></div><span class="tag ${s.passou?'tgv':'tgr'}">${s.passou?'Aprovado':'Reprovado'}</span></div>`).join('');
 }
 
-// CHAT BOT
-function initBot(){const ca=document.getElementById('chat-area');ca.innerHTML='';hist=[];addMsg('bot','Olá! Sou o <b>DetranBot</b> 🚗 Pode me perguntar qualquer coisa sobre a prova do Detran, leis de trânsito ou processo de habilitação!',['O que cai na prova?','Quantas questões tem?','Como funciona a CNH?','O que é infração gravíssima?']);}
+// CHAT
+function initBot(){
+  const ca=document.getElementById('chat-area');ca.innerHTML='';hist=[];
+  // Personalizar saudação baseada no desempenho
+  let chips=['O que cai na prova?','Quantas questões tem?','Como funciona a CNH?','O que é infração gravíssima?'];
+  let msg='Olá! Sou o <b>DetranBot</b> 🚗 Seu professor particular de CNH. Pode me perguntar qualquer coisa sobre a prova do Detran, leis de trânsito ou processo de habilitação!';
+  if(erros_ids.length>3){msg=`Olá! Vi que você tem <b>${erros_ids.length} questões marcadas como erro</b>. Quer que eu explique alguma delas ou tire dúvidas sobre os assuntos que está errando?`;chips=['Explique sobre placas','Dúvida sobre infrações','Como funciona CTB?','O que errei em sinalização?'];}
+  addMsg('bot',msg,chips);
+}
 function addMsg(tipo,txt,chips){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className=`msg ${tipo}`;const h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div class="bub">${txt}</div><div class="mt">${h}</div>`;if(chips?.length){const r=document.createElement('div');r.className='chips';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{document.getElementById('cinp').value=c;enviar();};r.appendChild(b);});d.appendChild(r);}ca.appendChild(d);ca.scrollTop=ca.scrollHeight;}
-function showTyp(){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg bot';d.id='typ';d.innerHTML='<div class="bub" style="display:flex;align-items:center;gap:4px;padding:10px 12px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';ca.appendChild(d);ca.scrollTop=ca.scrollHeight;}
+function showTyp(){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg bot';d.id='typ';d.innerHTML='<div class="bub" style="display:flex;align-items:center;gap:4px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';ca.appendChild(d);ca.scrollTop=ca.scrollHeight;}
 async function enviar(){const inp=document.getElementById('cinp'),txt=inp.value.trim();if(!txt)return;inp.value='';addMsg('user',txt);hist.push({role:'user',content:txt});showTyp();try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist})});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();document.getElementById('typ')?.remove();const rep=d.content?.[0]?.text||'Desculpe, tente novamente!';hist.push({role:'assistant',content:rep});addMsg('bot',rep);}catch(e){document.getElementById('typ')?.remove();addMsg('bot','⚠️ Erro de conexão. Tente novamente.');}}
 
 // PAYWALL
@@ -789,45 +710,14 @@ function hidePW(){document.getElementById('pw').style.display='none';}
 function assinar(){alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');hidePW();}
 
 // ADMIN
-async function carregarAdmin(){
-  const{data:users}=await sb.from('usuarios').select('*').order('created_at',{ascending:false});
-  if(!users)return;
-  const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
-  document.getElementById('admin-stats').innerHTML=[
-    {l:'Total',n:total,c:'#3b82f6'},{l:'Assinaturas',n:ativos,c:'#22C55E'},
-    {l:'Gratuitos',n:grat,c:'#888'},{l:'Simulados',n:0,c:'var(--L)'}
-  ].map(s=>`<div class="stat-card"><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');
-  const lista=document.getElementById('admin-lista');lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:8px;">Usuários cadastrados</div>';
-  users.forEach(u=>{const av=u.nome?u.nome.charAt(0).toUpperCase():'?';const tel=u.telefone?u.telefone.replace(/\D/g,''):'';const wlink=tel?`https://wa.me/55${tel}`:'';const div=document.createElement('div');div.className='u-item';div.innerHTML=`<div class="u-av">${av}</div><div class="u-info"><div class="u-nome">${u.nome||'Sem nome'}</div><div class="u-email">${u.email}</div><span class="tag ${u.plano==='premium'?'tgv':'tgl'}" style="font-size:9px;">${u.plano==='premium'?'Premium':'Gratuito'}</span></div><div>${wlink?`<button class="ubtn ubtn-w" onclick="window.open('${wlink}','_blank')">WhatsApp</button>`:''}</div>`;lista.appendChild(div);});
-}
-
-async function liberarCortesia(){
-  const email=document.getElementById('cort-email').value.trim();
-  const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');
-  ok.style.display='none';err.style.display='none';
-  if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}
-  const{error}=await sb.from('usuarios').update({plano:'premium'}).eq('email',email);
-  if(error){err.textContent='Usuário não encontrado.';err.style.display='block';return;}
-  ok.textContent='✅ Acesso premium liberado para '+email;ok.style.display='block';
-  document.getElementById('cort-email').value='';carregarAdmin();
-}
+async function carregarAdmin(){const{data:users}=await sb.from('usuarios').select('*').order('created_at',{ascending:false}).catch(()=>({data:[]}));if(!users)return;const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;document.getElementById('admin-stats').innerHTML=[{l:'Total de usuários',n:total,c:'#3b82f6'},{l:'Assinaturas ativas',n:ativos,c:'#22C55E'},{l:'Plano gratuito',n:grat,c:'#888'},{l:'Simulados',n:0,c:'var(--L)'}].map(s=>`<div class="stat-card"><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');const lista=document.getElementById('admin-lista');lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:8px;">Usuários</div>';users.forEach(u=>{const av=u.nome?u.nome.charAt(0).toUpperCase():'?';const tel=u.telefone?u.telefone.replace(/\D/g,''):'';const wlink=tel?`https://wa.me/55${tel}`:'';const div=document.createElement('div');div.className='u-item';div.innerHTML=`<div class="u-av">${av}</div><div class="u-info"><div class="u-nome">${u.nome||'Sem nome'}</div><div class="u-email">${u.email}</div><span class="tag ${u.plano==='premium'?'tgv':'tgl'}" style="font-size:9px;">${u.plano==='premium'?'Premium':'Gratuito'}</span></div><div>${wlink?`<button class="ubtn ubtn-w" onclick="window.open('${wlink}','_blank')">WhatsApp</button>`:''}</div>`;lista.appendChild(div);});}
+async function liberarCortesia(){const email=document.getElementById('cort-email').value.trim();const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');ok.style.display='none';err.style.display='none';if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}const{error}=await sb.from('usuarios').update({plano:'premium'}).eq('email',email);if(error){err.textContent='Usuário não encontrado.';err.style.display='block';return;}ok.textContent='✅ Acesso premium liberado para '+email;ok.style.display='block';document.getElementById('cort-email').value='';carregarAdmin();}
 
 // NAV
-function ir(n){
-  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));
-  document.getElementById('tela-'+n)?.classList.add('on');
-  document.getElementById('nav-'+n)?.classList.add('on');
-  if(n==='bot'&&hist.length===0)initBot();
-  if(n==='admin')carregarAdmin();
-  if(n==='simulado')atuHistorico();
-}
+function ir(n){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));document.getElementById('tela-'+n)?.classList.add('on');document.getElementById('nav-'+n)?.classList.add('on');if(n==='bot'&&hist.length===0)initBot();if(n==='admin')carregarAdmin();if(n==='simulado')atuHistorico();}
 
 // INIT
-async function init(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(session?.user){await loadUser(session.user);openApp();}
-}
+async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){await loadUser(session.user);openApp();}}
 init();
 </script>
 </body>
