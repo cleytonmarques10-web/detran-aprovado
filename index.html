@@ -159,17 +159,17 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   <div class="ls">Estude, simule e passe de primeira!</div>
   <div class="lc">
     <div class="ltabs">
-      <button class="ltab" id="tab-e" onclick="trocarTab('e')">Entrar</button>
-      <button class="ltab on" id="tab-c" onclick="trocarTab('c')">Criar conta</button>
+      <button class="ltab on" id="tab-e" onclick="trocarTab('e')">Entrar</button>
+      <button class="ltab" id="tab-c" onclick="trocarTab('c')">Criar conta</button>
     </div>
-    <div id="fe" style="display:none;">
+    <div id="fe">
       <div class="ig"><label class="il">E-mail</label><input type="email" id="le" class="ii iis" placeholder="seu@email.com"></div>
       <div class="ig"><label class="il">Senha</label><input type="password" id="ls" class="ii" placeholder="Mínimo 6 caracteres"><button class="eye" onclick="tog('ls',this)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg></button></div>
       <div style="text-align:right;margin-bottom:14px;"><span style="font-size:12px;color:var(--L);cursor:pointer;">Esqueci minha senha</span></div>
       <div class="em" id="el"></div>
       <button class="btn btnl" onclick="login()">Entrar</button>
     </div>
-    <div id="fc">
+    <div id="fc" style="display:none;">
       <div class="ig"><label class="il">Seu nome</label><input type="text" id="cn" class="ii iis" placeholder="Ex: João"></div>
       <div class="ig"><label class="il">Seu contato</label><input type="tel" id="ct" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
       <div class="ig"><label class="il">Seu e-mail</label><input type="email" id="ce" class="ii iis" placeholder="seu@email.com"></div>
