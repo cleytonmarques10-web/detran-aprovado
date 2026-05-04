@@ -610,14 +610,16 @@ function atuPerfil(){
   const n=user?.user_metadata?.nome||'Estudante',e=user?.email||'';
   document.getElementById('pnome').textContent=n;
   document.getElementById('pemail').textContent=e;
-  document.getElementById('psub').textContent=e;
+  const psub=document.getElementById('psub');if(psub)psub.textContent=e;
   document.getElementById('pavatar').textContent=n.charAt(0).toUpperCase();
   document.getElementById('stot').textContent=qresp;
   document.getElementById('stax').textContent=qresp>0?Math.round(acertos/qresp*100)+'%':'0%';
   document.getElementById('ssim').textContent=nsim;
   document.getElementById('serr').textContent=erros_ids.length;
   if(isPrem){document.getElementById('cp').style.display='block';document.getElementById('ca').style.display='none';document.getElementById('pplan').innerHTML='<span class="tag tgl">⭐ Premium</span>';}
-  if(isAdmin){document.getElementById('admin-btn-wrap').style.display='block';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
+  const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
+  const _admWrap=document.getElementById('admin-btn-wrap');
+  if(_isAdm&&_admWrap){_admWrap.style.display='block';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
   const el=document.getElementById('perf-assuntos-perfil');
   if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver</div>';return;}
   el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');
