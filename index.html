@@ -396,64 +396,95 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- PERFIL -->
   <div id="tela-perfil" class="tela">
-    <div class="cnt">
-      <div class="card" style="text-align:center;padding:18px;">
-        <div style="width:60px;height:60px;border-radius:50%;background:var(--LC);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;font-family:var(--FT);font-size:22px;font-weight:800;color:var(--L);" id="pavatar">?</div>
-        <div style="font-family:var(--FT);font-size:17px;font-weight:800;" id="pnome">Estudante</div>
+    <div class="cnt" style="padding-top:16px;">
+      <div style="text-align:center;padding:4px 0 8px;">
+        <div style="width:70px;height:70px;border-radius:50%;background:var(--LC);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:var(--FT);font-size:26px;font-weight:800;color:var(--L);border:3px solid var(--LB);" id="pavatar">?</div>
+        <div style="font-family:var(--FT);font-size:18px;font-weight:800;" id="pnome">Estudante</div>
         <div style="font-size:11px;color:var(--CT);" id="pemail"></div>
-        <div id="pplan" style="margin-top:7px;"></div>
+        <div id="pplan" style="margin-top:6px;"></div>
       </div>
-      <div class="abas">
-        <button class="aba on" onclick="trocarAba('dados',this)">Dados</button>
-        <button class="aba" onclick="trocarAba('desempenho',this)">Desempenho</button>
-        <button class="aba" onclick="trocarAba('contato',this)">Contato</button>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;">MEUS DADOS</div>
+      <div class="card" style="padding:16px;">
+        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu nome</label><input type="text" id="p-nome" class="ii iis" placeholder="Seu nome"></div>
+        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu e-mail</label><input type="text" id="p-email" class="ii iis" placeholder="seu@email.com" readonly style="opacity:.7;"></div>
+        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu WhatsApp</label><input type="tel" id="p-tel" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
+        <div class="ig" style="margin-bottom:14px;"><label class="il">Sua cidade</label><input type="text" id="p-cidade" class="ii iis" placeholder="Ex: Belo Horizonte - MG"></div>
+        <button class="btn btnl" onclick="salvarPerfil()">Salvar perfil ✓</button>
+        <div class="sm" id="perfil-ok" style="margin-top:8px;"></div>
       </div>
-      <div class="abac on" id="aba-dados">
-        <div class="card" id="ca">
-          <div style="font-family:var(--FT);font-size:15px;font-weight:800;margin-bottom:5px;">🔓 Desbloqueie tudo</div>
-          <div style="font-size:11px;color:#666;margin-bottom:6px;">✅ Simulados ilimitados</div>
-          <div style="font-size:11px;color:#666;margin-bottom:6px;">✅ Modo só erros</div>
-          <div style="font-size:11px;color:#666;margin-bottom:11px;">✅ DetranBot sem limites</div>
-          <button class="btn btnl" onclick="showPW()">Assinar — a partir de R$ 9,90/mês</button>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">MEU PLANO</div>
+      <div id="meu-plano-card"></div>
+      <div class="card" style="background:#111;border:none;padding:18px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:6px;">📋</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">Reprovar na prova do Detran</div>
+        <div style="font-size:12px;color:#aaa;">pode te custar <span style="color:var(--R);font-weight:700;">mais de R$500</span> em novas taxas</div>
+        <div style="font-size:11px;color:#666;margin-top:4px;">Use o app e passe de primeira!</div>
+      </div>
+      <div id="planos-section" style="display:flex;flex-direction:column;gap:10px;">
+        <div onclick="assinarPlano('mensal')" style="border:1.5px solid var(--CB);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff;">
+          <div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="font-size:16px;">📅</span><span style="font-size:13px;font-weight:600;">Plano Mensal</span></div><div style="font-size:11px;color:var(--CT);">Simulados + Modo Erros + Professor IA</div></div>
+          <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;">R$19,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div>
         </div>
-        <div class="card cardl" id="cp" style="display:none;"><div style="font-family:var(--FT);font-size:15px;font-weight:800;margin-bottom:4px;">🎉 Premium Ativo</div><div style="font-size:11px;color:#666;">Acesso ilimitado a tudo.</div></div>
-        <div id="admin-btn-wrap" style="display:none;">
-          <div class="card" style="background:#111;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="ir('admin')">
-            <div style="width:36px;height:36px;border-radius:10px;background:#333;display:flex;align-items:center;justify-content:center;">⚙️</div>
-            <div><div style="font-size:12px;font-weight:600;color:#FF6B00;">Painel Administrativo</div><div style="font-size:10px;color:#666;">Gerenciar usuários e planos</div></div>
+        <div style="position:relative;">
+          <div style="position:absolute;top:-10px;left:14px;background:var(--L);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;z-index:1;">MAIS POPULAR</div>
+          <div onclick="assinarPlano('trimestral')" style="border:2px solid var(--L);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:var(--LC);">
+            <div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="font-size:16px;">🏆</span><span style="font-size:13px;font-weight:600;">Plano Trimestral</span></div><div style="font-size:11px;color:var(--L);font-weight:600;">Economize 16%</div></div>
+            <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;color:var(--L);">R$49,90</div><div style="font-size:10px;color:var(--CT);">/3 meses</div></div>
           </div>
         </div>
-        <button class="btn btnc" onclick="logout()" style="color:var(--R);">🚪 Sair do app</button>
-      </div>
-      <div class="abac" id="aba-desempenho">
-        <div class="card">
-          <div style="font-size:12px;font-weight:600;margin-bottom:11px;">📊 Estatísticas</div>
-          <div style="display:flex;flex-direction:column;gap:9px;">
-            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questões respondidas</span><span style="font-weight:600;" id="stot">0</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Taxa de acerto</span><span style="font-weight:600;color:var(--L);" id="stax">0%</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Simulados realizados</span><span style="font-weight:600;" id="ssim">0</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questões no modo erros</span><span style="font-weight:600;color:var(--R);" id="serr">0</span></div>
-          </div>
+        <div onclick="assinarPlano('semestral')" style="border:1.5px solid var(--CB);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff;">
+          <div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span style="font-size:16px;">💎</span><span style="font-size:13px;font-weight:600;">Plano Semestral</span></div><div style="font-size:11px;color:var(--V);font-weight:600;">Economize 33%</div></div>
+          <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;">R$79,90</div><div style="font-size:10px;color:var(--CT);">/6 meses</div></div>
         </div>
-        <div class="card">
-          <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Por assunto</div>
-          <div id="perf-assuntos-perfil"></div>
-        </div>
+        <div style="text-align:center;font-size:11px;color:var(--CT);">✅ 7 dias grátis em todos os planos · Cancele quando quiser</div>
+        <div class="card cardl" style="text-align:center;"><div style="font-size:13px;">💡 Por menos de <span style="color:var(--L);font-weight:700;">R$0,66 por dia</span></div><div style="font-size:11px;color:#666;margin-top:4px;">você evita reprovar e gastar mais de R$500 em novas taxas</div></div>
       </div>
-      <div class="abac" id="aba-contato">
-        <div class="card">
-          <div style="font-size:12px;font-weight:600;margin-bottom:3px;">Fale conosco</div>
-          <div style="font-size:11px;color:var(--CT);margin-bottom:11px;">Dúvidas, sugestões ou problemas?</div>
-          <div class="ig"><label class="il">Assunto</label><select id="cass" class="ii iis"><option value="">Selecione...</option><option value="duvida">Dúvida sobre questão</option><option value="sugestao">Sugestão</option><option value="problema">Problema técnico</option><option value="assinatura">Assinatura</option><option value="outro">Outro</option></select></div>
-          <div class="ig"><label class="il">Mensagem</label><textarea id="cmsg" class="ii iis" placeholder="Descreva sua dúvida..." rows="4" style="resize:none;"></textarea></div>
-          <div class="sm" id="csuc"></div>
-          <div class="em" id="cerr2"></div>
-          <button class="btn btnl" onclick="enviarContato()">Enviar mensagem</button>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">MEU DESEMPENHO</div>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questões respondidas</span><span style="font-weight:600;" id="stot">0</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Taxa de acerto</span><span style="font-weight:600;color:var(--L);" id="stax">0%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Simulados realizados</span><span style="font-weight:600;" id="ssim">0</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Erros registrados</span><span style="font-weight:600;color:var(--R);" id="serr">0</span></div>
         </div>
       </div>
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;">📚 Por assunto</div>
+        <div id="perf-assuntos-perfil"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">APP NO CELULAR</div>
+      <div class="card" style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--LC);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📱</div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Instalar na tela do celular</div><div style="font-size:11px;color:var(--CT);">Abre rápido como um app de verdade</div></div>
+        <button onclick="mostrarInstalar()" style="background:var(--P);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--FC);white-space:nowrap;">Ver como</button>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">SUPORTE</div>
+      <div class="card" style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">💬</div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Falar com o suporte</div><div style="font-size:11px;color:var(--CT);">Tire suas dúvidas pelo WhatsApp</div></div>
+      </div>
+      <button class="btn" style="background:#25D366;color:#fff;" onclick="window.open('https://wa.me/5533988363278?text=Olá! Tenho uma dúvida sobre o Detran Aprovado','_blank')">📱 Abrir WhatsApp</button>
+      <div style="text-align:center;font-size:11px;color:var(--CT);margin-top:-6px;">Atendimento: seg a sex, 8h às 18h</div>
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;">✉️ Enviar mensagem</div>
+        <div class="ig"><label class="il">Assunto</label><select id="cass" class="ii iis"><option value="">Selecione...</option><option value="duvida">Dúvida sobre questão</option><option value="sugestao">Sugestão</option><option value="problema">Problema técnico</option><option value="assinatura">Assinatura</option><option value="outro">Outro</option></select></div>
+        <div class="ig"><label class="il">Mensagem</label><textarea id="cmsg" class="ii iis" placeholder="Descreva sua dúvida..." rows="3" style="resize:none;"></textarea></div>
+        <div class="sm" id="csuc"></div>
+        <div class="em" id="cerr2"></div>
+        <button class="btn btnl" onclick="enviarContato()">Enviar mensagem</button>
+      </div>
+      <div id="admin-btn-wrap" style="display:none;flex-direction:column;gap:8px;">
+        <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;">ADMINISTRADOR</div>
+        <div class="card" style="background:#111;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px;" onclick="ir('admin')">
+          <div style="width:40px;height:40px;border-radius:12px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🛡️</div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--L);">Painel Administrativo</div><div style="font-size:11px;color:#666;">Gerenciar usuários e planos</div></div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">CONTA</div>
+      <button class="btn btnc" onclick="logout()" style="color:var(--R);border-color:var(--RC);">🚪 Sair do app</button>
+      <div style="height:8px;"></div>
     </div>
   </div>
-
   <!-- ADMIN -->
   <div id="tela-admin" class="tela">
     <div class="hdr" style="display:flex;align-items:center;gap:10px;">
@@ -468,7 +499,9 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
       </div>
       <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;">
         <button class="admin-filtro on" id="f-todos" onclick="setFiltro('todos')">Todos</button>
-        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">⭐ Ativos</button>
+        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">✅ Ativos</button>
+        <button class="admin-filtro" id="f-atrasados" onclick="setFiltro('atrasados')">⏳ Atrasados</button>
+        <button class="admin-filtro" id="f-cancelados" onclick="setFiltro('cancelados')">❌ Cancelados</button>
         <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">🆓 Gratuitos</button>
         <button class="admin-filtro" id="f-contato" onclick="setFiltro('contato')">📞 5+ dias</button>
       </div>
@@ -619,10 +652,15 @@ function atuPerfil(){
   if(isPrem){document.getElementById('cp').style.display='block';document.getElementById('ca').style.display='none';document.getElementById('pplan').innerHTML='<span class="tag tgl">⭐ Premium</span>';}
   const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
   const _admWrap=document.getElementById('admin-btn-wrap');
-  if(_isAdm&&_admWrap){_admWrap.style.display='block';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
+  if(_isAdm&&_admWrap){_admWrap.style.display='flex';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
   const el=document.getElementById('perf-assuntos-perfil');
   if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questões para ver</div>';return;}
   el.innerHTML=Object.entries(catStats).map(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';return`<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">${nomeAss(cat)}</span><span style="font-size:11px;font-weight:600;color:${cor};">${p}%</span></div><div class="pbg"><div class="pfl" style="width:${p}%;background:${cor};"></div></div></div>`;}).join('');
+  // Preencher campos de dados
+  const pn=document.getElementById('p-nome');if(pn&&!pn.value)pn.value=user?.user_metadata?.nome||'';
+  const pe=document.getElementById('p-email');if(pe)pe.value=user?.email||'';
+  const pt=document.getElementById('p-tel');if(pt&&!pt.value)pt.value=user?.user_metadata?.telefone||'';
+  atuMeuPlano();
 }
 
 function trocarAba(n,el){document.querySelectorAll('.aba').forEach(a=>a.classList.remove('on'));document.querySelectorAll('.abac').forEach(c=>c.classList.remove('on'));el.classList.add('on');document.getElementById('aba-'+n).classList.add('on');}
@@ -739,13 +777,17 @@ async function carregarAdmin(){
   const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
   const hoje=new Date();
   const semContato=users.filter(u=>{if(!u.telefone)return false;if(!u.created_at)return false;const diff=(hoje-new Date(u.created_at))/(1000*60*60*24);return diff>=5;}).length;
+  const cancelados=users.filter(u=>u.plano==='cancelado').length;
+  const atrasados=users.filter(u=>u.plano==='atrasado').length;
   document.getElementById('admin-subtitulo').textContent=`${total} usuários · ${ativos} ativos`;
   document.getElementById('admin-stats').innerHTML=[
     {l:'Total de usuários',n:total,c:'#3b82f6',i:'👥'},
     {l:'Assinaturas ativas',n:ativos,c:'#22C55E',i:'✅'},
-    {l:'Pagamento atrasado',n:0,c:'#f59e0b',i:'⏳'},
-    {l:'Plano gratuito',n:grat,c:'#888',i:'🆓'}
-  ].map(s=>`<div class="stat-card"><div style="font-size:18px;">${s.i}</div><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');
+    {l:'Pagamento atrasado',n:atrasados,c:'#f59e0b',i:'⏳'},
+    {l:'Canceladas',n:cancelados,c:'#EF4444',i:'❌'},
+    {l:'Plano gratuito',n:grat,c:'#888',i:'🆓'},
+    {l:'Sem contato 5d+',n:semContato,c:'#a855f7',i:'📞'}
+  ].map(s=>`<div class="stat-card" style="cursor:pointer;" onclick="setFiltro('todos')"><div style="font-size:18px;">${s.i}</div><div style="font-size:10px;color:var(--CT);">${s.l}</div><div class="stat-num" style="color:${s.c};">${s.n}</div></div>`).join('');
   filtrarAdmin();
 }
 function setFiltro(f){
@@ -762,6 +804,8 @@ function filtrarAdmin(){
     const matchBusca=!busca||u.nome?.toLowerCase().includes(busca)||u.email?.toLowerCase().includes(busca);
     if(!matchBusca)return false;
     if(filtroAtual==='premium')return u.plano==='premium';
+    if(filtroAtual==='atrasados')return u.plano==='atrasado';
+    if(filtroAtual==='cancelados')return u.plano==='cancelado';
     if(filtroAtual==='gratuitos')return u.plano==='gratuito';
     if(filtroAtual==='contato'){const diff=u.created_at?(hoje-new Date(u.created_at))/(1000*60*60*24):0;return diff>=5&&u.telefone;}
     return true;
@@ -841,6 +885,45 @@ function ir(n){
 }
 
 // INIT
+function assinarPlano(plano){
+  const urls={mensal:'https://kiwify.com.br/detran-mensal',trimestral:'https://kiwify.com.br/detran-trimestral',semestral:'https://kiwify.com.br/detran-semestral'};
+  alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');
+  // window.open(urls[plano],'_blank');
+}
+
+async function salvarPerfil(){
+  const nome=document.getElementById('p-nome')?.value.trim();
+  const tel=document.getElementById('p-tel')?.value.trim();
+  const cidade=document.getElementById('p-cidade')?.value.trim();
+  const ok=document.getElementById('perfil-ok');
+  if(!nome){if(ok){ok.textContent='Digite seu nome.';ok.style.display='block';ok.style.background='var(--RC)';ok.style.color='var(--R)';}return;}
+  if(!user)return;
+  await sb.from('usuarios').update({nome,telefone:tel,cidade}).eq('id',user.id);
+  user.user_metadata=user.user_metadata||{};user.user_metadata.nome=nome;
+  if(ok){ok.textContent='✅ Perfil salvo com sucesso!';ok.style.display='block';ok.style.background='var(--VC)';ok.style.color='#15803d';}
+  atuHome();setTimeout(()=>{if(ok)ok.style.display='none';},3000);
+}
+
+function mostrarInstalar(){
+  const ua=navigator.userAgent.toLowerCase();
+  const isIos=ua.includes('iphone')||ua.includes('ipad');
+  if(isIos){alert('Para instalar no iPhone:\n\n1. Toque no ícone de compartilhar (quadrado com seta)\n2. Role para baixo e toque em "Adicionar à Tela de Início"\n3. Toque em "Adicionar"\n\nPronto! O app aparecerá na sua tela inicial.');}
+  else{alert('Para instalar no Android:\n\n1. Toque nos 3 pontinhos no canto superior direito\n2. Toque em "Adicionar à tela inicial"\n3. Toque em "Adicionar"\n\nPronto! O app aparecerá na sua tela inicial.');}
+}
+
+function atuMeuPlano(){
+  const el=document.getElementById('meu-plano-card');
+  const ps=document.getElementById('planos-section');
+  if(!el)return;
+  if(isPrem){
+    el.innerHTML=`<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado ✅</div></div></div>`;
+    if(ps)ps.style.display='none';
+  } else {
+    el.innerHTML=`<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questões por dia</div></div></div>`;
+    if(ps)ps.style.display='flex';
+  }
+}
+
 async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){await loadUser(session.user);openApp();}}
 init();
 </script>
