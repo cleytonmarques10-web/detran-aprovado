@@ -651,6 +651,7 @@ function atuPerfil(){
   document.getElementById('serr').textContent=erros_ids.length;
   if(isPrem){document.getElementById('cp').style.display='block';document.getElementById('ca').style.display='none';document.getElementById('pplan').innerHTML='<span class="tag tgl">⭐ Premium</span>';}
   const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
+  if(_isAdm){isAdmin=true;isPrem=true;}
   const _admWrap=document.getElementById('admin-btn-wrap');
   if(_isAdm&&_admWrap){_admWrap.style.display='flex';document.getElementById('pplan').innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">⚙️ Admin</span>';}
   const el=document.getElementById('perf-assuntos-perfil');
@@ -879,7 +880,7 @@ function ir(n){
     admin:{sub:'Painel de controle',tit:'Admin — Usuários'}
   };
   if(hdrs[n]){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
-  if(n==='bot'&&hist.length===0)initBot();
+  if(n==='bot'&&hist.length===0)initBot();if(n==='perfil')atuPerfil();
   if(n==='admin')carregarAdmin();
   if(n==='simulado')atuHistorico();
 }
