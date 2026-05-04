@@ -114,7 +114,17 @@
     .ubtn{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:var(--fc);}
     .ubtn-w{background:#25D366;color:#fff;}
     .ubtn-e{background:var(--vmc);color:var(--vm);}
-    @media(min-width:480px){.nt,.cr{max-width:480px;left:50%;transform:translateX(-50%)}.pwc{border-radius:22px;margin:20px;}.lw{background:var(--cinza)}.lc{padding:28px;border:1.5px solid var(--cb);}}
+    .app-wrap{max-width:480px;margin:0 auto;position:relative;}
+    #app{max-width:480px;margin:0 auto;}
+    #tela-login{max-width:480px;margin:0 auto;}
+    @media(min-width:480px){
+      .nt{max-width:480px;left:50%;transform:translateX(-50%);}
+      .cr{max-width:480px;left:50%;transform:translateX(-50%);}
+      .pwc{border-radius:22px;margin:20px;}
+      .lw{background:var(--cinza);}
+      .lc{padding:28px;border:1.5px solid var(--cb);}
+      body{background:#e8e8e8;}
+    }
   </style>
 </head>
 <body>
@@ -371,8 +381,8 @@ const PL={
 'R-19':'<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><text x="50" y="58" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="28" font-weight="900" fill="#111">60</text></svg>',
 'R-3':'<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#CC0000"/><rect x="20" y="44" width="60" height="12" rx="6" fill="#fff"/></svg>',
 'R-7':'<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#CC0000" stroke-width="8"/><circle cx="30" cy="50" r="10" fill="#111"/><circle cx="70" cy="50" r="10" fill="#111"/><line x1="18" y1="18" x2="82" y2="82" stroke="#CC0000" stroke-width="7"/></svg>',
-'A-1a':'<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M62 32 Q35 50 62 68" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
-'A-1b':'<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M38 32 Q65 50 38 68" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
+'A-1a':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,8 102,55 55,102 8,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M68 38 Q42 55 68 72" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/><polyline points="61,31 68,38 61,45" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+'A-1b':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,8 102,55 55,102 8,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M42 38 Q68 55 42 72" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/><polyline points="49,31 42,38 49,45" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 'A-5':'<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><line x1="50" y1="24" x2="50" y2="76" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="24" y1="50" x2="76" y2="50" stroke="#111" stroke-width="5" stroke-linecap="round"/></svg>',
 'A-11':'<svg width="70" height="120" viewBox="0 0 70 120"><rect x="10" y="5" width="50" height="110" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#CC0000"/><circle cx="35" cy="60" r="13" fill="#FFAA00"/><circle cx="35" cy="90" r="13" fill="#22C55E"/></svg>',
 'A-15':'<svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="8" fill="#FFDD00" transform="rotate(45 50 50)"/><path d="M24 60 Q37 34 50 54 Q63 74 76 50" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
