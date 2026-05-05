@@ -527,9 +527,9 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   <div class="pwc">
     <div style="font-family:var(--FT);font-size:19px;font-weight:800;text-align:center;">Desbloqueie tudo 🚀</div>
     <div style="font-size:12px;color:var(--CT);text-align:center;">Continue estudando sem limites e passe na prova!</div>
-    <div class="plc dest" onclick="assinar()"><div><div style="font-weight:600;font-size:13px;">Mensal</div><div style="font-size:10px;color:var(--CT);">Cancele quando quiser</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$14,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
-    <div class="plc" onclick="assinar()"><div><div style="font-weight:600;font-size:13px;">Anual <span class="tag tgv" style="font-size:9px;">2 meses grátis</span></div><div style="font-size:10px;color:var(--CT);">R$ 118,80/ano</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$9,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
-    <button class="btn btnl" onclick="assinar()">Assinar agora e garantir aprovação</button>
+    <div class="plc dest" onclick="window.open('https://pay.kiwify.com.br/xY8BNrG','_blank');hidePW()"><div><div style="font-weight:600;font-size:13px;">Mensal</div><div style="font-size:10px;color:var(--CT);">Cancele quando quiser</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$19,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
+    <div class="plc" onclick="window.open('https://pay.kiwify.com.br/JdZ4969','_blank');hidePW()"><div><div style="font-weight:600;font-size:13px;">Anual <span class="tag tgv" style="font-size:9px;">2 meses grátis</span></div><div style="font-size:10px;color:var(--CT);">R$ 118,80/ano</div></div><div style="text-align:right;"><div style="font-family:var(--FT);font-size:21px;font-weight:800;color:var(--L);">R$9,90</div><div style="font-size:10px;color:var(--CT);">/mês</div></div></div>
+    <button class="btn btnl" onclick="window.open('https://pay.kiwify.com.br/JdZ4969','_blank');hidePW()">Assinar agora e garantir aprovação</button>
     <button style="background:none;border:none;font-size:12px;color:var(--CT);cursor:pointer;font-family:var(--FC);padding:3px;text-align:center;" onclick="hidePW()">Continuar com versão gratuita</button>
   </div>
 </div>
@@ -769,7 +769,7 @@ async function enviar(){const inp=document.getElementById('cinp'),txt=inp.value.
 // PAYWALL
 function showPW(){document.getElementById('pw').style.display='flex';}
 function hidePW(){document.getElementById('pw').style.display='none';}
-function assinar(){alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');hidePW();}
+function assinar(){hidePW();window.open('https://pay.kiwify.com.br/JdZ4969','_blank');}
 
 // ADMIN
 let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
