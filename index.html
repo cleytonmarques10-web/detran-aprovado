@@ -889,9 +889,12 @@ function ir(n){
 
 // INIT
 function assinarPlano(plano){
-  const urls={mensal:'https://kiwify.com.br/detran-mensal',trimestral:'https://kiwify.com.br/detran-trimestral',semestral:'https://kiwify.com.br/detran-semestral'};
-  alert('Redirecionando para o checkout...\n(Conecte sua Kiwify aqui)');
-  // window.open(urls[plano],'_blank');
+  const urls={
+    mensal:'https://pay.kiwify.com.br/xY8BNrG',
+    trimestral:'https://pay.kiwify.com.br/JdZ4969',
+    semestral:'https://pay.kiwify.com.br/jHVTVCR'
+  };
+  window.open(urls[plano],'_blank');
 }
 
 async function salvarPerfil(){
