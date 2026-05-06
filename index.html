@@ -90,7 +90,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .eye{position:absolute;right:12px;bottom:12px;background:none;border:none;cursor:pointer;}
 .em{font-size:11px;color:var(--R);display:none;padding:8px;background:var(--RC);border-radius:8px;text-align:center;margin-bottom:8px;}
 .sm{font-size:11px;color:#15803d;display:none;padding:8px;background:var(--VC);border-radius:8px;text-align:center;margin-bottom:8px;}
-.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:160px;padding:16px;border:1.5px solid var(--CB);overflow:hidden;}
+.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:160px;padding:16px;border:1.5px solid var(--CB);overflow:hidden;}.ilus img{max-width:100%;max-height:180px;object-fit:contain;display:block;}
 .com{background:var(--LC);border-left:3px solid var(--L);border-radius:11px;padding:11px 13px;display:none;}
 .coml{font-size:10px;font-weight:700;color:var(--L);margin-bottom:3px;}
 .comt{font-size:11px;color:#555;line-height:1.6;}
@@ -505,7 +505,36 @@ const PL={
 'A-30':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><ellipse cx="55" cy="55" rx="22" ry="15" fill="none" stroke="#111" stroke-width="4"/><circle cx="38" cy="48" r="5" fill="#111"/><line x1="77" y1="48" x2="90" y2="42" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="77" y1="52" x2="92" y2="55" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="68" x2="35" y2="80" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="55" y1="70" x2="55" y2="82" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="70" y1="68" x2="75" y2="80" stroke="#111" stroke-width="3" stroke-linecap="round"/></svg>'
 };
 
-function getIl(q){if(q.placa_codigo&&PL[q.placa_codigo])return PL[q.placa_codigo];if(q.tipo_ilustracao==='semaforo'){const e=q.enunciado.toLowerCase();return e.includes('vermelho')?PL.sv:e.includes('amarelo')?PL.sa:PL.sg;}if(q.tipo_ilustracao==='situacao'){const e=q.enunciado.toLowerCase();if(e.includes('cruzamento')||e.includes('interse'))return PL.crz;if(e.includes('faixa')||e.includes('pedestre'))return PL.fp;}return PL.def;}
+const SUPABASE_STORAGE='https://uxezhlswfjcfoltorhjt.supabase.co/storage/v1/object/public/placas/';
+
+function getIl(q){
+  // 1. URL real do Supabase Storage
+  if(q.url_imagem){
+    const img=document.createElement('img');
+    img.src=q.url_imagem;
+    img.style.cssText='max-width:220px;max-height:180px;object-fit:contain;';
+    img.onerror=function(){this.parentElement.innerHTML=getIlSVG(q.placa_codigo,q.tipo_ilustracao,q.enunciado);};
+    const wrap=document.createElement('div');wrap.appendChild(img);return wrap.innerHTML;
+  }
+  // 2. Codigo da placa -> URL do Storage
+  if(q.placa_codigo){
+    const url=SUPABASE_STORAGE+encodeURIComponent(q.placa_codigo)+'.svg';
+    const img=document.createElement('img');
+    img.src=url;
+    img.style.cssText='max-width:220px;max-height:180px;object-fit:contain;';
+    img.onerror=function(){this.parentElement.innerHTML=getIlSVG(q.placa_codigo,q.tipo_ilustracao,q.enunciado);};
+    const wrap=document.createElement('div');wrap.appendChild(img);return wrap.innerHTML;
+  }
+  // 3. Fallback SVG embutido
+  return getIlSVG(q.placa_codigo,q.tipo_ilustracao,q.enunciado);
+}
+
+function getIlSVG(codigo,tipo,enunciado){
+  if(codigo&&PL[codigo])return PL[codigo];
+  if(tipo==='semaforo'){const e=(enunciado||'').toLowerCase();return e.includes('vermelho')?PL.sv:e.includes('amarelo')?PL.sa:PL.sg;}
+  if(tipo==='situacao'){const e=(enunciado||'').toLowerCase();if(e.includes('cruzamento')||e.includes('interse'))return PL.crz;if(e.includes('faixa')||e.includes('pedestre'))return PL.fp;}
+  return PL.def;
+}
 function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function nomeAss(c){return{sinalizacao:'Sinalizacao',legislacao:'Legislacao',direcao_defensiva:'Direcao Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente'}[c]||c;}
 function maskTel(i){let v=i.value.replace(/\D/g,'');if(v.length>11)v=v.substr(0,11);if(v.length>6)v=v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/^(\d{2})(\d{0,5})/,'($1) $2');else if(v.length>0)v=v.replace(/^(\d{0,2})/,'($1');i.value=v;}
