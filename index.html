@@ -11,7 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:#d0d0d0;}
 body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
-.app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;display:flex;flex-direction:column;}
+.app-root{width:100%;max-width:480px;background:var(--C);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .top-bar{position:sticky;top:0;z-index:100;flex-shrink:0;background:var(--C);}
 .global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
 .global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
@@ -23,6 +23,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .ni.on span{color:var(--L);font-weight:600;}
 .tela{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 .tela.on{display:flex;}
+#tela-bot{overflow:hidden;}
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
@@ -53,8 +54,8 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .al{width:28px;height:28px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0;}
 .alt.ok .al,.alt.re .al{background:var(--V);color:#fff;}
 .alt.no .al{background:var(--R);color:#fff;}
-.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
-.ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;}
+.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;height:0;}
+.ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;min-height:0;scroll-behavior:smooth;}
 .msg{display:flex;flex-direction:column;gap:3px;max-width:85%;}
 .msg.bot{align-self:flex-start;}
 .msg.user{align-self:flex-end;}
@@ -66,7 +67,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .chip{padding:4px 10px;border-radius:20px;font-size:10px;background:var(--LC);border:1px solid var(--LB);color:var(--L);cursor:pointer;font-family:var(--FC);}
 .chip:hover{background:var(--L);color:#fff;}
-.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;}
+.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;position:sticky;bottom:0;z-index:10;}
 .ci{flex:1;background:var(--C);border:1px solid var(--CB);border-radius:20px;padding:9px 13px;font-size:12px;color:var(--P);font-family:var(--FC);outline:none;}
 .ci:focus{border-color:var(--L);}
 .cs{width:36px;height:36px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -157,7 +158,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none;flex-direction:column;flex:1;">
+<div id="app" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
   <div class="top-bar">
     <div class="global-hdr" id="global-hdr">
       <div><div style="font-size:10px;color:rgba(255,255,255,.75);" id="ghdr-sub">Ola,</div><h1 id="ghdr-titulo">Detran Aprovado</h1></div>
