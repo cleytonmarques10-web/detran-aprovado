@@ -192,7 +192,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
     <div class="cnt">
       <div id="pressao-card" class="pressao-card pressao-reprovado">
         <div style="font-family:var(--FT);font-size:18px;font-weight:800;margin-bottom:4px;" id="pressao-titulo">Voce ainda reprovaria hoje</div>
-        <div style="font-size:12px;opacity:.9;margin-bottom:12px;" id="pressao-msg">Faltam 21 acertos para passar</div>
+        <div style="font-size:12px;opacity:.9;margin-bottom:12px;" id="pressao-msg">Faltam 20 acertos para passar</div>
         <div style="background:rgba(255,255,255,.25);border-radius:99px;height:8px;margin-bottom:6px;">
           <div id="pressao-bar" style="background:#fff;border-radius:99px;height:8px;width:0%;transition:width .5s;"></div>
         </div>
@@ -242,7 +242,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
     <div class="hdr">
       <div><span id="qcont" class="tag tgb" style="font-size:11px;font-weight:700;">Questao 1/30</span><div style="margin-top:4px;"><span id="qcat" class="tag tgb" style="font-size:9px;">sinalizacao</span></div></div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span id="qtimer" class="timer" style="display:none;">50:00</span>
+        <span id="qtimer" class="timer" style="display:none;">60:00</span>
         <button onclick="sairQuestao()" style="background:rgba(255,255,255,.2);border:none;border-radius:9px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--FC);">Sair</button>
       </div>
     </div>
@@ -262,9 +262,9 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
       <div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:none;padding:20px;text-align:center;">
         <div style="font-size:36px;margin-bottom:8px;">⚡</div>
         <div style="font-family:var(--FT);font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Voce esta pronto?</div>
-        <div style="font-size:11px;color:#aaa;margin-bottom:4px;">30 questoes · 50 minutos · Sem ajuda</div>
-        <div style="font-size:12px;color:var(--L);font-weight:600;margin-bottom:6px;">Precisa de 21 acertos para passar</div>
-        <div style="font-size:11px;color:#f87171;margin-bottom:18px;">63% dos candidatos reprovam na 1a tentativa</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:4px;">30 questoes · 60 minutos · Sem ajuda</div>
+        <div style="font-size:12px;color:var(--L);font-weight:600;margin-bottom:6px;">Precisa de 20 acertos para passar</div>
+        <div style="font-size:11px;color:#f87171;margin-bottom:18px;">63% dos candidatos reprovam na 1a tentativa — nao seja mais um!</div>
         <button class="btn btnl" onclick="iniciarSimulado()">Iniciar simulado agora →</button>
       </div>
       <div class="card"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">Historico de simulados</div><div id="hist-simulados"><div style="font-size:11px;color:var(--CT);text-align:center;padding:10px 0;">Nenhum simulado realizado ainda</div></div></div>
@@ -482,7 +482,7 @@ let qhoje=0,qresp=0,acertos=0,streak=0,nsim=0;
 let erros_ids=[],catStats={};
 let fila=[],qatual=null,idx=0,resp=false,hist=[];
 let modoAtual='treino';
-let simTimer=null,simSegundos=3000,simAcertos=0,simErros=0,simInicio=null;
+let simTimer=null,simSegundos=3600,simAcertos=0,simErros=0,simInicio=null;
 
 const PL={
 'R-1':'<svg width="110" height="110" viewBox="0 0 110 110"><polygon points="55,5 105,25 105,85 55,105 5,85 5,25" fill="#CC0000"/><text x="55" y="52" text-anchor="middle" font-family="Arial Black" font-size="17" font-weight="900" fill="#fff">PARE</text></svg>',
@@ -566,7 +566,7 @@ function atuHome(){
   pb.style.width=p+'%';
   if(p>=70){pc.className='pressao-card pressao-aprovado';pt.textContent='Voce passaria na prova!';pm.textContent='Continue assim — seu desempenho esta otimo!';}
   else if(p>=50){pc.className='pressao-card pressao-quase';pt.textContent='Voce esta quase la!';pm.textContent='Falta melhorar '+(70-p)+'% para garantir a aprovacao';}
-  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil(0.7*qresp-acertos));pt.textContent='Voce ainda reprovaria hoje';pm.textContent='Faltam '+faltam+' acertos para atingir 70%';}
+  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil(0.7*qresp-acertos));pt.textContent='Voce ainda reprovaria hoje';pm.textContent='Faltam '+faltam+' acertos para atingir 70% (20 acertos em 30)';}
   else{pc.className='pressao-card pressao-reprovado';pt.textContent='Voce esta pronto para comecar?';pm.textContent='Faca o simulado e descubra seu nivel';}
   const ne=erros_ids.length;
   const ec=document.getElementById('erros-count');if(ec)ec.textContent=ne>0?ne+' questoes para revisar':'Revise o que voce errou';
@@ -654,7 +654,7 @@ async function salvarPerfil(){
 
 async function iniciarTreino(cat){if(!isPrem&&qhoje>=30){showPW();return;}modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');let q=sb.from('questoes').select('*').eq('ativo',true);if(cat!=='todos')q=q.eq('categoria',cat);const{data}=await q.limit(30);if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();}
 async function iniciarModoErros(){if(!isPrem){showPW();return;}if(erros_ids.length===0){alert('Voce nao tem erros registrados ainda!');return;}modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);if(!data||data.length===0){alert('Questoes nao encontradas.');return;}fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();}
-async function iniciarSimulado(){if(!isPrem){showPW();return;}modoAtual='simulado';ir('questao');const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(60);if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}const mistura=[];['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente'].forEach(cat=>{const qs=data.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5);mistura.push(...qs.slice(0,8));});const resto=data.filter(q=>!mistura.find(m=>m.id===q.id)).sort(()=>Math.random()-.5);fila=[...mistura,...resto].slice(0,30).sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;simSegundos=3000;simInicio=new Date();const te=document.getElementById('qtimer');te.style.display='block';te.textContent='50:00';te.className='timer';if(simTimer)clearInterval(simTimer);simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);renderQ();}
+async function iniciarSimulado(){if(!isPrem){showPW();return;}modoAtual='simulado';ir('questao');const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(60);if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}const mistura=[];['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente'].forEach(cat=>{const qs=data.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5);mistura.push(...qs.slice(0,8));});const resto=data.filter(q=>!mistura.find(m=>m.id===q.id)).sort(()=>Math.random()-.5);fila=[...mistura,...resto].slice(0,30).sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;simSegundos=3600;simInicio=new Date();const te=document.getElementById('qtimer');te.style.display='block';te.textContent='60:00';te.className='timer';if(simTimer)clearInterval(simTimer);simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);renderQ();}
 function sairQuestao(){if(simTimer)clearInterval(simTimer);ir(modoAtual==='simulado'?'simulado':'treino');}
 
 function renderQ(){
@@ -701,7 +701,7 @@ async function salvar(){if(!user)return;await sb.from('usuarios').update({questo
 
 async function finalizarSimulado(){
   if(simTimer)clearInterval(simTimer);
-  const total=fila.length,pct=Math.round(simAcertos/total*100),passou=simAcertos>=21;
+  const total=fila.length,pct=Math.round(simAcertos/total*100),passou=simAcertos>=20;
   const tempoUsado=simInicio?Math.floor((new Date()-simInicio)/1000):0;
   nsim++;
   await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total,percentual:pct,passou,tempo_segundos:tempoUsado});
@@ -713,7 +713,7 @@ async function finalizarSimulado(){
   document.getElementById('res-e').textContent=simErros;
   document.getElementById('res-t').textContent=fmtTime(tempoUsado);
   document.getElementById('res-veredicto').textContent=passou?'Voce passaria na prova!':'Voce ainda nao passaria';
-  document.getElementById('res-msg').textContent=passou?'Parabens! '+pct+'% de aproveitamento!':'Voce acertou '+simAcertos+' de '+total+'. Precisa de mais '+(21-simAcertos)+' acertos.';
+  document.getElementById('res-msg').textContent=passou?'Parabens! '+pct+'% de aproveitamento! Voce passaria na prova!':'Voce acertou '+simAcertos+' de '+total+'. Precisa de mais '+(20-simAcertos)+' acertos para passar.';
   const circ=Math.PI*2*50;
   document.getElementById('res-ring').style.strokeDashoffset=circ-(pct/100*circ);
   document.getElementById('res-ring').style.stroke=passou?'#22C55E':'#EF4444';
