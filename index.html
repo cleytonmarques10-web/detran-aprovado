@@ -11,7 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:#d0d0d0;}
 body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
-.app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;height:100%;display:flex;flex-direction:column;}
+.app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;display:flex;flex-direction:column;}
 .top-bar{position:sticky;top:0;z-index:100;flex-shrink:0;background:var(--C);}
 .global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
 .global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
@@ -130,7 +130,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 <div class="app-root">
 
 <!-- LOGIN -->
-<div id="tela-login" class="lw" style="display:flex;flex-direction:column;align-items:center;">
+<div id="tela-login" class="lw" style="display:flex;flex-direction:column;align-items:center;min-height:100vh;">
   <div class="ll"><svg width="40" height="40" viewBox="0 0 42 42" fill="none"><path d="M7 33L21 9l14 24Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><line x1="13" y1="27" x2="29" y2="27" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="21" cy="21" r="4" fill="#fff"/></svg></div>
   <div class="lt">Detran Aprovado</div>
   <div class="ls">Estude, simule e passe de primeira!</div>
@@ -1000,7 +1000,20 @@ async function enviarComAudio(b64){
   }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro ao processar audio.');}
 }
 
-async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){await loadUser(session.user);openApp();}}
+async function init(){
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(session?.user){await loadUser(session.user);openApp();}
+    else{
+      // Show login screen explicitly
+      document.getElementById('tela-login').style.display='flex';
+    }
+  }catch(e){
+    console.error('Init error:',e);
+    // Show login even on error
+    document.getElementById('tela-login').style.display='flex';
+  }
+}
 init();
 </script>
 </body>
