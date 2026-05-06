@@ -21,8 +21,10 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .ni span{font-size:9px;color:var(--CT);}
 .ni.on svg{opacity:1;}
 .ni.on span{color:var(--L);font-weight:600;}
-.tela{display:none;flex-direction:column;flex:1;min-height:0;}
+.tela{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .tela.on{display:flex;}
+#tela-bot.on{display:flex;flex-direction:column;overflow:hidden;}
+#tela-bot #chat-area{flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;}
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
@@ -157,7 +159,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+<div id="app" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;height:0;">
   <div class="top-bar">
     <div class="global-hdr" id="global-hdr">
       <div><div style="font-size:10px;color:rgba(255,255,255,.75);" id="ghdr-sub">Ola,</div><h1 id="ghdr-titulo">Detran Aprovado</h1></div>
@@ -785,7 +787,7 @@ async function enviar(){
   hist.push({role:'user',content:content});
   showTyp();
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist,system:'Voce e o DetranBot, especialista absoluto em legislacao de transito brasileira e provas do Detran. REGRAS IMPORTANTES: 1) Responda SEMPRE de forma DIRETA e OBJETIVA, maximo 3-4 paragrafos curtos. 2) Use linguagem simples, informal e amigavel. 3) Para questoes de multipla escolha, diga IMEDIATAMENTE qual e a resposta correta e por que. 4) Cite o artigo do CTB quando relevante. 5) Nunca invente informacoes. 6) Formate com negrito usando **texto** para destacar palavras importantes. 7) Quando o usuario enviar uma imagem de questao ou placa, analise com precisao. CONHECIMENTOS: CTB completo, todas as placas (R, A, I), infracoes e penalidades, processo de habilitacao, direcao defensiva, primeiros socorros no transito, meio ambiente.'})});
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist})});
     document.getElementById('typ')?.remove();
     if(!r.ok){addMsg('bot','Erro ao conectar. Verifique sua internet e tente novamente.');return;}
     const d=await r.json();
