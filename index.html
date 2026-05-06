@@ -296,7 +296,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   </div>
 
   <!-- BOT -->
-  <div id="tela-bot" class="tela" style="position:relative;display:none;flex-direction:column;">
+  <div id="tela-bot" class="tela">
     <div class="hdr" style="flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;flex:1;">
         <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
@@ -630,9 +630,12 @@ function atuMeuPlano(){
   const el=document.getElementById('meu-plano-card');
   const ps=document.getElementById('planos-section');
   if(!el)return;
-  if(isPrem){
+  if(isPrem&&!isAdmin){
     el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado</div></div></div>';
     if(ps)ps.style.display='none';
+  }else if(isAdmin){
+    el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Admin — Acesso completo</div></div></div>';
+    if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
   }else{
     el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes por dia</div></div></div>';
     if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
@@ -857,7 +860,7 @@ function ir(n){
   const tit=document.getElementById('ghdr-titulo');
   const hdrs={home:{sub:'Ola,',tit:(user?.user_metadata?.nome||'Estudante')+'!'},treino:{sub:'Detran Aprovado',tit:'Treino'},simulado:{sub:'Detran Aprovado',tit:'Simulado'},resultado:{sub:'Detran Aprovado',tit:'Resultado'},bot:{sub:'Detran Aprovado',tit:'Prof. Detran'},perfil:{sub:'Detran Aprovado',tit:'Meu Perfil'},admin:{sub:'Painel',tit:'Administrador'}};
   if(hdrs[n]&&sub&&tit){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
-  if(n==='bot'&&hist.length===0)initBot();
+  if(n==='bot')initBot();
   if(n==='perfil')atuPerfil();
   if(n==='admin')carregarAdmin();
   if(n==='simulado')atuHistorico();
