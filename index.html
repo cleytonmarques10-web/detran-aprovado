@@ -299,9 +299,12 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 
   <!-- BOT -->
   <div id="tela-bot" class="tela">
+    <!-- Header fixo -->
     <div class="hdr" style="flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;flex:1;">
-        <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
         <div><h1 style="font-size:14px;">Prof. Detran</h1><div class="sub">Seu professor de CNH</div></div>
       </div>
       <div style="display:flex;gap:6px;">
@@ -309,39 +312,38 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
         <button onclick="verHistorico()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;font-family:var(--FC);">Historico</button>
       </div>
     </div>
+    <!-- Banner historico -->
     <div id="hist-banner" style="display:none;background:#FFF3EA;border-bottom:1px solid #FFD4B0;padding:8px 14px;font-size:11px;color:var(--L);font-weight:600;flex-shrink:0;align-items:center;justify-content:space-between;">
       <span id="hist-info">Conversas salvas por 7 dias</span>
-      <button onclick="fecharHistBanner()" style="background:none;border:none;color:var(--L);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;">×</button>
+      <button onclick="fecharHistBanner()" style="background:none;border:none;color:var(--L);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;">x</button>
     </div>
-    <!-- AREA DO CHAT - scrollavel -->
-    <div id="chat-area" style="flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch;"></div>
-    <!-- PREVIEW DE IMAGEM -->
-    <div id="img-preview" style="display:none;padding:8px 13px;background:#fff;border-top:1px solid var(--CB);flex-shrink:0;">
-      <div style="position:relative;display:inline-block;">
-        <img id="img-preview-src" style="max-height:70px;border-radius:8px;border:1.5px solid var(--CB);" />
-        <button onclick="cancelarFoto()" style="position:absolute;top:-6px;right:-6px;background:var(--R);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;">×</button>
+    <!-- Area mensagens - scrollavel -->
+    <div id="chat-area" style="flex:1;overflow-y:auto;padding:13px 13px 80px 13px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;"></div>
+    <!-- Barra de input - sempre no fundo -->
+    <div id="chat-input-bar" style="flex-shrink:0;background:#fff;border-top:1.5px solid var(--CB);padding:10px 12px;display:flex;flex-direction:column;gap:6px;">
+      <div id="img-preview" style="display:none;align-items:center;gap:8px;">
+        <div style="position:relative;display:inline-block;">
+          <img id="img-preview-src" style="max-height:60px;border-radius:8px;border:1.5px solid var(--CB);" />
+          <button onclick="cancelarFoto()" style="position:absolute;top:-6px;right:-6px;background:var(--R);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;">x</button>
+        </div>
+        <span style="font-size:11px;color:var(--CT);">Imagem pronta</span>
       </div>
-      <span style="font-size:11px;color:var(--CT);margin-left:8px;">Imagem pronta para enviar</span>
-    </div>
-    <!-- BARRA DE INPUT - sempre visivel -->
-    <div style="background:#fff;border-top:1px solid var(--CB);padding:10px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;">
-      <div id="audio-status" style="display:none;font-size:11px;color:var(--R);font-weight:600;text-align:center;padding:4px;">Ouvindo... fale sua pergunta</div>
+      <div id="audio-status" style="display:none;font-size:11px;color:var(--R);font-weight:600;text-align:center;padding:2px 0;">Ouvindo... fale sua pergunta</div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <button onclick="abrirFoto()" title="Foto" style="width:38px;height:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <button onclick="abrirFoto()" style="width:38px;height:38px;min-width:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="15" rx="2" stroke="#888" stroke-width="2"/><circle cx="12" cy="13" r="3" stroke="#888" stroke-width="2"/><path d="M8 5l1-2h6l1 2" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
-        <button id="btn-audio" onclick="toggleAudio()" title="Audio" style="width:38px;height:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <button id="btn-audio" onclick="toggleAudio()" style="width:38px;height:38px;min-width:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="#888" stroke-width="2"/><path d="M5 10a7 7 0 0014 0" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
-        <input type="text" id="cinp" style="flex:1;background:var(--C);border:1.5px solid var(--CB);border-radius:22px;padding:10px 16px;font-size:14px;color:var(--P);font-family:var(--FC);outline:none;min-width:0;" placeholder="Pergunte sobre CNH..." onkeydown="if(event.key==='Enter')enviar()" onfocus="this.style.borderColor='var(--L)'" onblur="this.style.borderColor='var(--CB)'">
-        <button onclick="enviar()" style="width:42px;height:42px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <input type="text" id="cinp" style="flex:1;min-width:0;background:#F5F5F5;border:1.5px solid #E0E0E0;border-radius:22px;padding:11px 16px;font-size:14px;color:#111;font-family:var(--FC);outline:none;" placeholder="Pergunte sobre CNH..." onkeydown="if(event.key==='Enter')enviar()" onfocus="this.style.borderColor='var(--L)';scrollChatBottom();" onblur="this.style.borderColor='#E0E0E0'">
+        <button onclick="enviar()" style="width:42px;height:42px;min-width:42px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
     </div>
     <input type="file" id="foto-input" accept="image/*" capture="environment" style="display:none;" onchange="processarFoto(this)">
   </div>
-
   <!-- PERFIL -->
   <div id="tela-perfil" class="tela">
     <div class="cnt" style="padding-top:16px;">
@@ -699,6 +701,15 @@ function responder(btn,l){
   if(!catStats[cat])catStats[cat]={acertos:0,total:0};
   catStats[cat].total++;if(ok)catStats[cat].acertos++;
   salvar();
+  // Aviso quando chegar nas ultimas questoes gratuitas
+  if(!isPrem&&qhoje===28){
+    const nxt=document.getElementById('qnxt');
+    if(nxt)nxt.textContent='Proxima questao (restam 2 gratis) →';
+  }
+  if(!isPrem&&qhoje===29){
+    const nxt=document.getElementById('qnxt');
+    if(nxt)nxt.textContent='Ultima questao gratuita hoje →';
+  }
 }
 
 function proxQ(){if(!isPrem&&qhoje>=30&&modoAtual!=='simulado'){showPW();return;}idx++;renderQ();}
@@ -762,8 +773,8 @@ function initBot(){
   addMsg('bot',msg,chips);
 }
 function fmtMsg(t){return t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}
-function addMsg(tipo,txt,chips){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg '+tipo;const h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});const ftxt=tipo==='bot'?fmtMsg(txt):txt;d.innerHTML='<div class="bub">'+ftxt+'</div><div class="mt">'+h+'</div>';if(chips&&chips.length){const r=document.createElement('div');r.className='chips';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{document.getElementById('cinp').value=c;enviar();};r.appendChild(b);});d.appendChild(r);}ca.appendChild(d);ca.scrollTop=ca.scrollHeight;}
-function showTyp(){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg bot';d.id='typ';d.innerHTML='<div class="bub" style="display:flex;align-items:center;gap:4px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';ca.appendChild(d);ca.scrollTop=ca.scrollHeight;}
+function addMsg(tipo,txt,chips){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg '+tipo;const h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});const ftxt=tipo==='bot'?fmtMsg(txt):txt;d.innerHTML='<div class="bub">'+ftxt+'</div><div class="mt">'+h+'</div>';if(chips&&chips.length){const r=document.createElement('div');r.className='chips';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{document.getElementById('cinp').value=c;enviar();};r.appendChild(b);});d.appendChild(r);}ca.appendChild(d);setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},50);}
+function showTyp(){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg bot';d.id='typ';d.innerHTML='<div class="bub" style="display:flex;align-items:center;gap:4px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';ca.appendChild(d);setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},50);}
 async function enviar(){
   const inp=document.getElementById('cinp'),txt=inp.value.trim();
   if(!txt&&!imgBase64)return;
@@ -1003,6 +1014,11 @@ async function enviarComAudio(b64){
     hist.push({role:'assistant',content:rep});addMsg('bot',rep);
     salvarChatLocal();
   }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro ao processar audio.');}
+}
+
+function scrollChatBottom(){
+  const ca=document.getElementById('chat-area');
+  if(ca)setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},100);
 }
 
 async function init(){
