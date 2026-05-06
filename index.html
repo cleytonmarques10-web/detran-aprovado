@@ -11,7 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:#d0d0d0;}
 body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
-.app-root{width:100%;max-width:480px;background:var(--C);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.app-root{width:100%;max-width:480px;background:var(--C);min-height:100vh;height:100%;display:flex;flex-direction:column;}
 .top-bar{position:sticky;top:0;z-index:100;flex-shrink:0;background:var(--C);}
 .global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
 .global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
@@ -21,9 +21,8 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .ni span{font-size:9px;color:var(--CT);}
 .ni.on svg{opacity:1;}
 .ni.on span{color:var(--L);font-weight:600;}
-.tela{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+.tela{display:none;flex-direction:column;flex:1;min-height:0;}
 .tela.on{display:flex;}
-#tela-bot{overflow:hidden;}
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
@@ -54,8 +53,8 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .al{width:28px;height:28px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0;}
 .alt.ok .al,.alt.re .al{background:var(--V);color:#fff;}
 .alt.no .al{background:var(--R);color:#fff;}
-.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;height:0;}
-.ca{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;min-height:0;scroll-behavior:smooth;}
+
+
 .msg{display:flex;flex-direction:column;gap:3px;max-width:85%;}
 .msg.bot{align-self:flex-start;}
 .msg.user{align-self:flex-end;}
@@ -67,7 +66,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .chip{padding:4px 10px;border-radius:20px;font-size:10px;background:var(--LC);border:1px solid var(--LB);color:var(--L);cursor:pointer;font-family:var(--FC);}
 .chip:hover{background:var(--L);color:#fff;}
-.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;position:sticky;bottom:0;z-index:10;}
+.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;}
 .ci{flex:1;background:var(--C);border:1px solid var(--CB);border-radius:20px;padding:9px 13px;font-size:12px;color:var(--P);font-family:var(--FC);outline:none;}
 .ci:focus{border-color:var(--L);}
 .cs{width:36px;height:36px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -297,39 +296,45 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   </div>
 
   <!-- BOT -->
-  <div id="tela-bot" class="tela">
+  <div id="tela-bot" class="tela" style="position:relative;display:none;flex-direction:column;">
     <div class="hdr" style="flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;flex:1;">
         <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div><h1 style="font-size:14px;">Prof. Detran</h1><div class="sub">Seu professor de CNH</div></div>
       </div>
       <div style="display:flex;gap:6px;">
-        <button onclick="limparChat()" title="Limpar conversa" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 8px;cursor:pointer;color:#fff;font-size:10px;font-weight:600;font-family:var(--FC);">Limpar</button>
-        <button onclick="verHistorico()" title="Historico" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 8px;cursor:pointer;color:#fff;font-size:10px;font-weight:600;font-family:var(--FC);">Historico</button>
+        <button onclick="limparChat()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;font-family:var(--FC);">Limpar</button>
+        <button onclick="verHistorico()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;font-family:var(--FC);">Historico</button>
       </div>
     </div>
-    <div id="hist-banner" style="display:none;background:#FFF3EA;border-bottom:1px solid #FFD4B0;padding:8px 14px;font-size:11px;color:var(--L);font-weight:600;flex-shrink:0;display:none;align-items:center;justify-content:space-between;">
+    <div id="hist-banner" style="display:none;background:#FFF3EA;border-bottom:1px solid #FFD4B0;padding:8px 14px;font-size:11px;color:var(--L);font-weight:600;flex-shrink:0;align-items:center;justify-content:space-between;">
       <span id="hist-info">Conversas salvas por 7 dias</span>
-      <button onclick="fecharHistBanner()" style="background:none;border:none;color:var(--L);cursor:pointer;font-size:14px;line-height:1;">x</button>
+      <button onclick="fecharHistBanner()" style="background:none;border:none;color:var(--L);cursor:pointer;font-size:16px;line-height:1;padding:0 4px;">×</button>
     </div>
-    <div class="chat-wrap">
-      <div class="ca" id="chat-area"></div>
-      <div class="cr" style="flex-direction:column;gap:8px;padding:10px 13px;">
-        <div id="img-preview" style="display:none;position:relative;">
-          <img id="img-preview-src" style="max-height:80px;border-radius:8px;border:1.5px solid var(--CB);" />
-          <button onclick="cancelarFoto()" style="position:absolute;top:-6px;right:-6px;background:var(--R);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;">x</button>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button onclick="abrirFoto()" title="Enviar foto" style="width:36px;height:36px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="15" rx="2" stroke="#888" stroke-width="2"/><circle cx="12" cy="13" r="3" stroke="#888" stroke-width="2"/><path d="M8 5l1-2h6l1 2" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <button id="btn-audio" onclick="toggleAudio()" title="Enviar audio" style="width:36px;height:36px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="#888" stroke-width="2"/><path d="M5 10a7 7 0 0014 0" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-          <input type="text" class="ci" id="cinp" placeholder="Pergunte sobre CNH, placas, infracoes..." onkeydown="if(event.key==='Enter')enviar()">
-          <button class="cs" onclick="enviar()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </div>
-        <div id="audio-status" style="display:none;font-size:11px;color:var(--R);font-weight:600;text-align:center;animation:pulse 1s infinite;">Gravando... toque novamente para enviar</div>
+    <!-- AREA DO CHAT - scrollavel -->
+    <div id="chat-area" style="flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch;"></div>
+    <!-- PREVIEW DE IMAGEM -->
+    <div id="img-preview" style="display:none;padding:8px 13px;background:#fff;border-top:1px solid var(--CB);flex-shrink:0;">
+      <div style="position:relative;display:inline-block;">
+        <img id="img-preview-src" style="max-height:70px;border-radius:8px;border:1.5px solid var(--CB);" />
+        <button onclick="cancelarFoto()" style="position:absolute;top:-6px;right:-6px;background:var(--R);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;">×</button>
+      </div>
+      <span style="font-size:11px;color:var(--CT);margin-left:8px;">Imagem pronta para enviar</span>
+    </div>
+    <!-- BARRA DE INPUT - sempre visivel -->
+    <div style="background:#fff;border-top:1px solid var(--CB);padding:10px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;">
+      <div id="audio-status" style="display:none;font-size:11px;color:var(--R);font-weight:600;text-align:center;padding:4px;">Ouvindo... fale sua pergunta</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="abrirFoto()" title="Foto" style="width:38px;height:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="15" rx="2" stroke="#888" stroke-width="2"/><circle cx="12" cy="13" r="3" stroke="#888" stroke-width="2"/><path d="M8 5l1-2h6l1 2" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button id="btn-audio" onclick="toggleAudio()" title="Audio" style="width:38px;height:38px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="#888" stroke-width="2"/><path d="M5 10a7 7 0 0014 0" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <input type="text" id="cinp" style="flex:1;background:var(--C);border:1.5px solid var(--CB);border-radius:22px;padding:10px 16px;font-size:14px;color:var(--P);font-family:var(--FC);outline:none;min-width:0;" placeholder="Pergunte sobre CNH..." onkeydown="if(event.key==='Enter')enviar()" onfocus="this.style.borderColor='var(--L)'" onblur="this.style.borderColor='var(--CB)'">
+        <button onclick="enviar()" style="width:42px;height:42px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
     <input type="file" id="foto-input" accept="image/*" capture="environment" style="display:none;" onchange="processarFoto(this)">
@@ -766,7 +771,9 @@ async function enviar(){
       {type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgBase64}},
       {type:'text',text:txt||'O que voce vê nessa imagem? Analise considerando questoes do Detran.'}
     ];
-    addMsg('user',displayTxt+(txt?' — '+txt:''));
+    // Show image preview in chat
+    const imgEl='<img src="data:image/jpeg;base64,'+imgBase64+'" style="max-width:200px;border-radius:10px;display:block;margin-bottom:4px;">'+(txt?'<br>'+txt:'');
+    addMsg('user',imgEl);
     cancelarFoto();
   }else{
     content=txt;
@@ -775,7 +782,7 @@ async function enviar(){
   hist.push({role:'user',content:content});
   showTyp();
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist})});
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist,system:'Voce e o DetranBot, especialista absoluto em legislacao de transito brasileira e provas do Detran. REGRAS IMPORTANTES: 1) Responda SEMPRE de forma DIRETA e OBJETIVA, maximo 3-4 paragrafos curtos. 2) Use linguagem simples, informal e amigavel. 3) Para questoes de multipla escolha, diga IMEDIATAMENTE qual e a resposta correta e por que. 4) Cite o artigo do CTB quando relevante. 5) Nunca invente informacoes. 6) Formate com negrito usando **texto** para destacar palavras importantes. 7) Quando o usuario enviar uma imagem de questao ou placa, analise com precisao. CONHECIMENTOS: CTB completo, todas as placas (R, A, I), infracoes e penalidades, processo de habilitacao, direcao defensiva, primeiros socorros no transito, meio ambiente.'})});
     document.getElementById('typ')?.remove();
     if(!r.ok){addMsg('bot','Erro ao conectar. Verifique sua internet e tente novamente.');return;}
     const d=await r.json();
@@ -924,39 +931,58 @@ function processarFoto(input){
   input.value='';
 }
 
+let recognition=null;
 async function toggleAudio(){
+  // Use Web Speech API for real transcription
+  const SpeechRecog=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecog){alert('Seu navegador nao suporta reconhecimento de voz. Use o Chrome para esta funcao.');return;}
+  
   if(isRecording){
     isRecording=false;
-    if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
+    if(recognition)recognition.stop();
     document.getElementById('btn-audio').style.background='var(--C)';
     document.getElementById('btn-audio').style.borderColor='var(--CB)';
     document.getElementById('audio-status').style.display='none';
-    document.getElementById('btn-audio').querySelector('svg rect,svg path,svg line').style&&null;
     return;
   }
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    audioChunks=[];
-    mediaRecorder=new MediaRecorder(stream);
-    mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
-    mediaRecorder.onstop=async()=>{
-      stream.getTracks().forEach(t=>t.stop());
-      const blob=new Blob(audioChunks,{type:'audio/webm'});
-      const reader=new FileReader();
-      reader.onload=async e=>{
-        const b64=e.target.result.split(',')[1];
-        await enviarComAudio(b64);
-      };
-      reader.readAsDataURL(blob);
-    };
-    mediaRecorder.start();
+  
+  recognition=new SpeechRecog();
+  recognition.lang='pt-BR';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  
+  recognition.onstart=()=>{
     isRecording=true;
     document.getElementById('btn-audio').style.background='var(--R)';
     document.getElementById('btn-audio').style.borderColor='var(--R)';
     document.getElementById('audio-status').style.display='block';
-  }catch(e){
-    alert('Nao foi possivel acessar o microfone. Verifique as permissoes do seu navegador.');
-  }
+    document.getElementById('audio-status').textContent='Ouvindo... fale sua pergunta';
+  };
+  
+  recognition.onresult=e=>{
+    const transcript=e.results[0][0].transcript;
+    document.getElementById('cinp').value=transcript;
+    document.getElementById('audio-status').textContent='Transcricao: "'+transcript+'"';
+    setTimeout(()=>enviar(),800);
+  };
+  
+  recognition.onerror=e=>{
+    isRecording=false;
+    document.getElementById('btn-audio').style.background='var(--C)';
+    document.getElementById('btn-audio').style.borderColor='var(--CB)';
+    document.getElementById('audio-status').style.display='none';
+    if(e.error==='not-allowed')alert('Permissao de microfone negada. Permita o acesso nas configuracoes do navegador.');
+    else alert('Erro no reconhecimento de voz: '+e.error);
+  };
+  
+  recognition.onend=()=>{
+    isRecording=false;
+    document.getElementById('btn-audio').style.background='var(--C)';
+    document.getElementById('btn-audio').style.borderColor='var(--CB)';
+    setTimeout(()=>{document.getElementById('audio-status').style.display='none';},2000);
+  };
+  
+  recognition.start();
 }
 
 async function enviarComAudio(b64){
