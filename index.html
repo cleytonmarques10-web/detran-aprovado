@@ -1060,7 +1060,7 @@ async function salvarPerfil(){
 async function iniciarTreino(cat){
   if(!isPrem&&qhoje>=30){showPW();return;}
   modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');
-  let q=sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').eq('ativo',true);
+  let q=sb.from('questoes').select('*').eq('ativo',true);
   if(cat!=='todos')q=q.eq('categoria',cat);
   const{data}=await q.limit(30);
   if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}
@@ -1071,7 +1071,7 @@ async function iniciarModoErros(){
   if(!isPrem){showPW();return;}
   if(erros_ids.length===0){alert('Voce nao tem erros registrados ainda!');return;}
   modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');
-  const{data}=await sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').in('id',erros_ids.slice(0,30)).eq('ativo',true);
+  const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);
   if(!data||data.length===0){alert('Questoes nao encontradas.');return;}
   fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
 }
@@ -1079,7 +1079,7 @@ async function iniciarModoErros(){
 async function iniciarSimulado(){
   if(!isPrem){showPW();return;}
   modoAtual='simulado';ir('questao');
-  const{data}=await sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').eq('ativo',true).limit(60);
+  const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(60);
   if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}
   const mistura=[];
   ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
