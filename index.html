@@ -517,52 +517,49 @@ const SEMAFOROS={
 };
 
 function getIl(q){
-  // Detectar semaforo pelo enunciado
   const enu=(q.enunciado||'').toLowerCase();
-  if(q.tipo_ilustracao==='semaforo'||enu.includes('semáforo')||enu.includes('semaforo')){
+  
+  // Semaforo pelo enunciado
+  if(q.tipo_ilustracao==='semaforo'||enu.includes('semaforo')){
     if(enu.includes('vermelho')||enu.includes('vermelha'))return SEMAFOROS.semaforo_vermelho;
     if(enu.includes('amarelo')||enu.includes('amarela'))return SEMAFOROS.semaforo_amarelo;
     if(enu.includes('verde'))return SEMAFOROS.semaforo_verde;
-    // Semaforo sem cor especificada - mostrar os tres
     return SEMAFOROS.semaforo_vermelho;
   }
 
-  // Se tem url_imagem direto do banco - usar ela
+  // Mapa: codigo no banco -> nome do arquivo SVG no Storage
+  const MAPA_SVG={
+    'A-11':'A-11a','A-5':'A-5a','A-11a':'A-11a','A-5a':'A-5a',
+    'R-4a':'R-4a','R-4b':'R-4b','R-5a':'R-5a','R-5b':'R-5b',
+    'R-6a':'R-6a','R-8a':'R-8a','A-1a':'A-1a','A-1b':'A-1b',
+    'A-2a':'A-2a','A-2b':'A-2b','A-26a':'A-26a','A-30a':'A-30a',
+    'R-19_60':'R-19_60','R-19_40':'R-19_40','R-19_80':'R-19_80',
+    'R-19_30':'R-19_30','R-19_100':'R-19_100','R-19_110':'R-19_110',
+    'R-26_30':'R-26_30','R-26_40':'R-26_40','R-26_60':'R-26_60'
+  };
+
+  // Usar url_imagem do banco se disponivel
   if(q.url_imagem&&q.url_imagem.startsWith('http')){
-    const wrapper=document.createElement('div');
-    const img=document.createElement('img');
-    img.src=q.url_imagem;
-    img.style.cssText='max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;';
-    img.onerror=function(){
-      wrapper.innerHTML=q.placa_codigo&&PL[q.placa_codigo]?PL[q.placa_codigo]:PL.def;
-    };
-    wrapper.appendChild(img);
-    return wrapper.outerHTML;
+    return '<img src="'+q.url_imagem+'" style="max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;" onError="this.remove()">';
   }
 
-  // Se tem placa_codigo - buscar no Storage
+  // Usar placa_codigo para montar URL
   if(q.placa_codigo&&q.placa_codigo.trim()){
-    const url=SUPABASE_STORAGE+encodeURIComponent(q.placa_codigo.trim())+'.svg';
-    const wrapper=document.createElement('div');
-    const img=document.createElement('img');
-    img.src=url;
-    img.style.cssText='max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;';
-    img.onerror=function(){
-      wrapper.innerHTML=PL[q.placa_codigo]||PL.def;
-    };
-    wrapper.appendChild(img);
-    return wrapper.outerHTML;
+    const cod=q.placa_codigo.trim();
+    const arquivo=MAPA_SVG[cod]||cod;
+    const url=SUPABASE_STORAGE+arquivo+'.svg';
+    return '<img src="'+url+'" style="max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;" onError="this.remove()">';
   }
 
-  // Fallback SVG embutido por tipo de ilustracao
+  // Situacao especial
   if(q.tipo_ilustracao==='situacao'){
     if(enu.includes('cruzamento')||enu.includes('interse'))return PL.crz;
     if(enu.includes('faixa')||enu.includes('pedestre'))return PL.fp;
   }
 
-  // Sem imagem - nao mostrar nada
   return '';
 }
+
 
 
 function responder(btn,l){
