@@ -92,7 +92,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .eye{position:absolute;right:12px;bottom:12px;background:none;border:none;cursor:pointer;}
 .em{font-size:11px;color:var(--R);display:none;padding:8px;background:var(--RC);border-radius:8px;text-align:center;margin-bottom:8px;}
 .sm{font-size:11px;color:#15803d;display:none;padding:8px;background:var(--VC);border-radius:8px;text-align:center;margin-bottom:8px;}
-.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;min-height:160px;padding:16px;border:1.5px solid var(--CB);overflow:hidden;}.ilus img{max-width:100%;max-height:180px;object-fit:contain;display:block;}
+.ilus{background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:16px;border:1.5px solid var(--CB);overflow:hidden;min-height:0;}.ilus:empty{display:none;}.ilus img{max-width:100%;max-height:180px;object-fit:contain;display:block;margin:0 auto;}
 .com{background:var(--LC);border-left:3px solid var(--L);border-radius:11px;padding:11px 13px;display:none;}
 .coml{font-size:10px;font-weight:700;color:var(--L);margin-bottom:3px;}
 .comt{font-size:11px;color:#555;line-height:1.6;}
@@ -509,7 +509,7 @@ const PL={
 
 const SUPABASE_STORAGE='https://uxezhlswfjcfoltorhjt.supabase.co/storage/v1/object/public/placas/';
 
-// Mapa de semaforos por contexto
+// Semaforos por cor
 const SEMAFOROS={
   semaforo_vermelho:'<svg width="90" height="160" viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#CC0000"/><circle cx="35" cy="65" r="13" fill="#333"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
   semaforo_amarelo:'<svg width="90" height="160" viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#333"/><circle cx="35" cy="65" r="13" fill="#FFAA00"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
@@ -517,49 +517,53 @@ const SEMAFOROS={
 };
 
 function getIl(q){
-  // 1. Semaforo por contexto (mais preciso)
-  if(q.imagem_contexto&&SEMAFOROS[q.imagem_contexto])return SEMAFOROS[q.imagem_contexto];
-  
-  // 2. URL real do Supabase Storage
-  if(q.url_imagem){
-    const d=document.createElement('div');
+  // Detectar semaforo pelo enunciado
+  const enu=(q.enunciado||'').toLowerCase();
+  if(q.tipo_ilustracao==='semaforo'||enu.includes('semáforo')||enu.includes('semaforo')){
+    if(enu.includes('vermelho')||enu.includes('vermelha'))return SEMAFOROS.semaforo_vermelho;
+    if(enu.includes('amarelo')||enu.includes('amarela'))return SEMAFOROS.semaforo_amarelo;
+    if(enu.includes('verde'))return SEMAFOROS.semaforo_verde;
+    // Semaforo sem cor especificada - mostrar os tres
+    return SEMAFOROS.semaforo_vermelho;
+  }
+
+  // Se tem url_imagem direto do banco - usar ela
+  if(q.url_imagem&&q.url_imagem.startsWith('http')){
+    const wrapper=document.createElement('div');
     const img=document.createElement('img');
-    img.src=q.url_imagem;img.style.cssText='max-width:200px;max-height:170px;object-fit:contain;';
-    img.onerror=function(){d.innerHTML=PL.def;};
-    d.appendChild(img);return d.outerHTML;
+    img.src=q.url_imagem;
+    img.style.cssText='max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;';
+    img.onerror=function(){
+      wrapper.innerHTML=q.placa_codigo&&PL[q.placa_codigo]?PL[q.placa_codigo]:PL.def;
+    };
+    wrapper.appendChild(img);
+    return wrapper.outerHTML;
   }
-  
-  // 3. Codigo da placa -> URL do Storage
-  if(q.placa_codigo){
-    const url=SUPABASE_STORAGE+encodeURIComponent(q.placa_codigo)+'.svg';
-    const d2=document.createElement('div');
-    const img2=document.createElement('img');
-    img2.src=url;img2.style.cssText='max-width:200px;max-height:170px;object-fit:contain;';
-    const cod=q.placa_codigo,tip=q.tipo_ilustracao||'',enu=q.enunciado||'';
-    img2.onerror=function(){d2.innerHTML=getIlSVG(cod,tip,enu);};
-    d2.appendChild(img2);return d2.outerHTML;
+
+  // Se tem placa_codigo - buscar no Storage
+  if(q.placa_codigo&&q.placa_codigo.trim()){
+    const url=SUPABASE_STORAGE+encodeURIComponent(q.placa_codigo.trim())+'.svg';
+    const wrapper=document.createElement('div');
+    const img=document.createElement('img');
+    img.src=url;
+    img.style.cssText='max-width:200px;max-height:170px;object-fit:contain;display:block;margin:0 auto;';
+    img.onerror=function(){
+      wrapper.innerHTML=PL[q.placa_codigo]||PL.def;
+    };
+    wrapper.appendChild(img);
+    return wrapper.outerHTML;
   }
-  
-  // 4. Fallback: SVG embutido por tipo
-  return getIlSVG(q.placa_codigo,q.tipo_ilustracao,q.enunciado);
+
+  // Fallback SVG embutido por tipo de ilustracao
+  if(q.tipo_ilustracao==='situacao'){
+    if(enu.includes('cruzamento')||enu.includes('interse'))return PL.crz;
+    if(enu.includes('faixa')||enu.includes('pedestre'))return PL.fp;
+  }
+
+  // Sem imagem - nao mostrar nada
+  return '';
 }
 
-function getIlSVG(codigo,tipo,enunciado){
-  if(codigo&&PL[codigo])return PL[codigo];
-  if(tipo==='semaforo'){
-    const e=(enunciado||'').toLowerCase();
-    if(e.includes('vermelho'))return SEMAFOROS.semaforo_vermelho;
-    if(e.includes('amarelo'))return SEMAFOROS.semaforo_amarelo;
-    if(e.includes('verde'))return SEMAFOROS.semaforo_verde;
-    return PL.sv;
-  }
-  if(tipo==='situacao'){
-    const e=(enunciado||'').toLowerCase();
-    if(e.includes('cruzamento')||e.includes('interse'))return PL.crz;
-    if(e.includes('faixa')||e.includes('pedestre'))return PL.fp;
-  }
-  return PL.def;
-}
 
 function responder(btn,l){
   if(resp)return;resp=true;
