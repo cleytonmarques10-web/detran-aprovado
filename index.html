@@ -23,6 +23,8 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .ni.on span{color:var(--L);font-weight:600;}
 .tela{display:none;flex-direction:column;flex:1;min-height:0;}
 .tela.on{display:flex;}
+#tela-bot.on{flex-direction:column;overflow:hidden;}
+#tela-bot.on #chat-area{flex:1;min-height:0;overflow-y:auto;}
 .hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
@@ -296,7 +298,7 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
   </div>
 
   <!-- BOT -->
-  <div id="tela-bot" class="tela" style="display:none;flex-direction:column;height:calc(100vh - 110px);max-height:calc(100vh - 110px);">
+  <div id="tela-bot" class="tela">
     <div style="background:var(--L);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:9px;">
         <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
@@ -747,11 +749,7 @@ function ir(n){
   const tit=document.getElementById('ghdr-titulo');
   const hdrs={home:{sub:'Ola,',tit:(user?.user_metadata?.nome||'Estudante')+'!'},treino:{sub:'Detran Aprovado',tit:'Treino'},simulado:{sub:'Detran Aprovado',tit:'Simulado'},resultado:{sub:'Detran Aprovado',tit:'Resultado'},bot:{sub:'Detran Aprovado',tit:'Prof. Detran'},perfil:{sub:'Detran Aprovado',tit:'Meu Perfil'},admin:{sub:'Painel',tit:'Administrador'}};
   if(hdrs[n]&&sub&&tit){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
-  if(n==='bot'){
-    const botEl=document.getElementById('tela-bot');
-    if(botEl)botEl.style.display='flex';
-    initBot();
-  }
+  if(n==='bot')initBot();
   if(n==='perfil')atuPerfil();
   if(n==='admin')carregarAdmin();
   if(n==='simulado')atuHistorico();
