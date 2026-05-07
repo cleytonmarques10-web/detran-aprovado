@@ -899,6 +899,248 @@ function scrollChatBottom(){
   if(ca)setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},100);
 }
 
+
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function nomeAss(cat){return{sinalizacao:'Sinalizacao',legislacao:'Legislacao',direcao_defensiva:'Direcao Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente',cto:'Sinalizacao',socorros:'Primeiros Socorros'}[cat]||cat;}
+function maskTel(i){let v=i.value.replace(/\D/g,'');if(v.length>11)v=v.substr(0,11);if(v.length>6)v=v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/^(\d{2})(\d{0,5})/,'($1) $2');else if(v.length>0)v=v.replace(/^(\d{0,2})/,'($1');i.value=v;}
+function tog(id,btn){const i=document.getElementById(id);const m=i.type==='password';i.type=m?'text':'password';}
+
+function trocarTab(t){
+  document.getElementById('tab-e').classList.toggle('on',t==='e');
+  document.getElementById('tab-c').classList.toggle('on',t==='c');
+  document.getElementById('fe').style.display=t==='e'?'block':'none';
+  document.getElementById('fc').style.display=t==='c'?'block':'none';
+}
+
+async function login(){
+  const e=document.getElementById('le').value.trim(),s=document.getElementById('ls').value;
+  const el=document.getElementById('el');el.style.display='none';
+  if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
+  const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
+  if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}
+  await loadUser(data.user);openApp();
+}
+
+async function cad(){
+  const n=document.getElementById('cn').value.trim(),t=document.getElementById('ct').value.trim();
+  const e=document.getElementById('ce').value.trim(),s=document.getElementById('cs').value;
+  const ec=document.getElementById('ec');ec.style.display='none';
+  if(!n||!e||!s){ec.textContent='Preencha todos os campos.';ec.style.display='block';return;}
+  if(s.length<6){ec.textContent='Senha minimo 6 caracteres.';ec.style.display='block';return;}
+  const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
+  if(error){ec.textContent='Erro ao criar conta.';ec.style.display='block';return;}
+  if(data.user){
+    await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}});
+    await loadUser(data.user);openApp();
+  }
+}
+
+async function logout(){
+  await sb.auth.signOut();user=null;isPrem=false;isAdmin=false;qhoje=0;
+  document.getElementById('app').style.display='none';
+  document.getElementById('tela-login').style.display='flex';
+}
+
+async function loadUser(u){
+  user=u;isAdmin=u.email===ADMIN_EMAIL;
+  const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();
+  if(data){
+    isPrem=data.plano==='premium'||isAdmin;
+    qhoje=data.questoes_hoje||0;streak=data.streak||0;
+    qresp=data.total_questoes||0;acertos=data.total_acertos||0;
+    nsim=data.total_simulados||0;erros_ids=data.erros_ids||[];catStats=data.cat_stats||{};
+  }
+}
+
+function openApp(){
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('app').style.display='flex';
+  atuHome();ir('home');initBot();
+}
+
+function atuHome(){
+  const n=user?.user_metadata?.nome||user?.email?.split('@')[0]||'Estudante';
+  const ghdr=document.getElementById('ghdr-titulo');if(ghdr)ghdr.textContent=n+'!';
+  const gs=document.getElementById('ghdr-sub');if(gs)gs.textContent='Ola,';
+  document.getElementById('hstr').textContent=streak;
+  document.getElementById('hhoje').innerHTML=qhoje+'<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span>';
+  if(isPrem){const h=document.getElementById('hprem');if(h)h.style.display='inline-block';}
+  const p=qresp>0?Math.min(Math.round(acertos/qresp*100),100):0;
+  const pc=document.getElementById('pressao-card');
+  const pt=document.getElementById('pressao-titulo');
+  const pm=document.getElementById('pressao-msg');
+  const pb=document.getElementById('pressao-bar');
+  if(!pc||!pt||!pm||!pb)return;
+  document.getElementById('pressao-pct').textContent=p+'% de aproveitamento';
+  pb.style.width=p+'%';
+  if(p>=70){pc.className='pressao-card pressao-aprovado';pt.textContent='Voce passaria na prova!';pm.textContent='Continue assim!';}
+  else if(p>=50){pc.className='pressao-card pressao-quase';pt.textContent='Voce esta quase la!';pm.textContent='Falta melhorar '+(70-p)+'% para aprovacao';}
+  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil(0.7*qresp-acertos));pt.textContent='Voce ainda reprovaria hoje';pm.textContent='Faltam '+faltam+' acertos para 70%';}
+  else{pc.className='pressao-card pressao-reprovado';pt.textContent='Voce esta pronto para comecar?';pm.textContent='Faca o simulado e descubra seu nivel';}
+  const ne=erros_ids.length;
+  const ec=document.getElementById('erros-count');if(ec)ec.textContent=ne>0?ne+' questoes para revisar':'Revise o que voce errou';
+  const ec2=document.getElementById('erros-count2');if(ec2)ec2.textContent=ne>0?ne+' questoes para revisar':'Responda questoes para ver seus erros';
+  atuRecomendacao(p);atuPerfAssuntos();atuPerfil();
+}
+
+function atuRecomendacao(p){
+  const rt=document.getElementById('rec-titulo'),rd=document.getElementById('rec-desc'),rb=document.getElementById('rec-btn');
+  if(!rt||!rd||!rb)return;
+  if(qresp===0){rt.textContent='Faca seu primeiro simulado';rd.textContent='Descubra seu nivel atual';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
+  else if(erros_ids.length>5){rt.textContent='Revise seus erros agora';rd.textContent='Voce tem '+erros_ids.length+' questoes para revisar';rb.textContent='Revisar erros';rb.onclick=iniciarModoErros;}
+  else{
+    let piorCat=null,piorPct=100;
+    Object.entries(catStats).forEach(([cat,s])=>{const p2=s.total>0?Math.round(s.acertos/s.total*100):0;if(p2<piorPct){piorPct=p2;piorCat=cat;}});
+    if(piorCat&&piorPct<70){rt.textContent='Treine '+nomeAss(piorCat);rd.textContent='Voce acerta apenas '+piorPct+'% neste assunto';rb.textContent='Treinar agora';rb.onclick=()=>iniciarTreino(piorCat);}
+    else{rt.textContent='Faca mais um simulado';rd.textContent='Consistencia e o segredo da aprovacao';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
+  }
+}
+
+function atuPerfAssuntos(){
+  ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
+    const el=document.getElementById('perf-'+cat);if(!el)return;
+    const s=catStats[cat];if(!s){el.textContent='→';el.style.color='var(--CT)';return;}
+    const p=Math.round(s.acertos/s.total*100);
+    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
+    el.innerHTML='<span style="color:'+cor+';font-weight:700;">'+p+'%</span>';
+  });
+}
+
+function atuPerfil(){
+  const n=user?.user_metadata?.nome||'Estudante',e=user?.email||'';
+  const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
+  if(_isAdm){isAdmin=true;isPrem=true;}
+  _s('pnome',n);_s('pemail',e);_s('pavatar',n.charAt(0).toUpperCase());
+  _s('stot',qresp);_s('stax',qresp>0?Math.round(acertos/qresp*100)+'%':'0%');
+  _s('ssim',nsim);_s('serr',erros_ids.length);
+  const aw=document.getElementById('admin-btn-wrap');if(aw)aw.style.display=_isAdm?'flex':'none';
+  const pp=document.getElementById('pplan');
+  if(pp){if(_isAdm)pp.innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">Admin</span>';
+  else if(isPrem)pp.innerHTML='<span class="tag tgl">Premium</span>';
+  else pp.innerHTML='<span class="tag tgc">Gratuito</span>';}
+  const pn=document.getElementById('p-nome');if(pn&&!pn.value)pn.value=user?.user_metadata?.nome||'';
+  const pe=document.getElementById('p-email');if(pe)pe.value=user?.email||'';
+  const pt=document.getElementById('p-tel');if(pt&&!pt.value)pt.value=user?.user_metadata?.telefone||'';
+  atuMeuPlano();
+  const el=document.getElementById('perf-assuntos-perfil');
+  if(!el)return;
+  if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questoes para ver</div>';return;}
+  el.innerHTML=Object.entries(catStats).map(([cat,s])=>{
+    const p=s.total>0?Math.round(s.acertos/s.total*100):0;
+    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
+    return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">'+nomeAss(cat)+'</span><span style="font-size:11px;font-weight:600;color:'+cor+';">'+p+'%</span></div><div class="pbg"><div class="pfl" style="width:'+p+'%;background:'+cor+';"></div></div></div>';
+  }).join('');
+}
+
+function atuMeuPlano(){
+  const el=document.getElementById('meu-plano-card');
+  const ps=document.getElementById('planos-section');
+  if(!el)return;
+  if(isPrem&&!isAdmin){
+    el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado</div></div></div>';
+    if(ps)ps.style.display='none';
+  }else{
+    el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes por dia</div></div></div>';
+    if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
+  }
+}
+
+async function salvarPerfil(){
+  const nome=document.getElementById('p-nome')?.value.trim();
+  const tel=document.getElementById('p-tel')?.value.trim();
+  const cidade=document.getElementById('p-cidade')?.value.trim();
+  const ok=document.getElementById('perfil-ok');
+  if(!nome){if(ok){ok.textContent='Digite seu nome.';ok.style.display='block';}return;}
+  if(!user)return;
+  await sb.from('usuarios').update({nome,telefone:tel,cidade}).eq('id',user.id);
+  user.user_metadata=user.user_metadata||{};user.user_metadata.nome=nome;
+  if(ok){ok.textContent='Perfil salvo!';ok.style.display='block';ok.style.background='var(--VC)';ok.style.color='#15803d';}
+  atuHome();setTimeout(()=>{if(ok)ok.style.display='none';},3000);
+}
+
+async function iniciarTreino(cat){
+  if(!isPrem&&qhoje>=30){showPW();return;}
+  modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');
+  let q=sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').eq('ativo',true);
+  if(cat!=='todos')q=q.eq('categoria',cat);
+  const{data}=await q.limit(30);
+  if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}
+  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
+}
+
+async function iniciarModoErros(){
+  if(!isPrem){showPW();return;}
+  if(erros_ids.length===0){alert('Voce nao tem erros registrados ainda!');return;}
+  modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');
+  const{data}=await sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').in('id',erros_ids.slice(0,30)).eq('ativo',true);
+  if(!data||data.length===0){alert('Questoes nao encontradas.');return;}
+  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
+}
+
+async function iniciarSimulado(){
+  if(!isPrem){showPW();return;}
+  modoAtual='simulado';ir('questao');
+  const{data}=await sb.from('questoes').select('id,enunciado,categoria,placa_codigo,tipo_ilustracao,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,comentario,artigo_ctb,nivel,url_imagem,imagem_contexto').eq('ativo',true).limit(60);
+  if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}
+  const mistura=[];
+  ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
+    const qs=data.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5);
+    mistura.push(...qs.slice(0,6));
+  });
+  const idsUsados=new Set();const filaUnica=[];
+  [...mistura,...data].forEach(q=>{if(!idsUsados.has(q.id)){idsUsados.add(q.id);filaUnica.push(q);}});
+  fila=filaUnica.slice(0,30).sort(()=>Math.random()-.5);
+  idx=0;simAcertos=0;simErros=0;simSegundos=3600;simInicio=new Date();
+  const te=document.getElementById('qtimer');te.style.display='block';te.textContent='60:00';te.className='timer';
+  if(simTimer)clearInterval(simTimer);
+  simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);
+  renderQ();
+}
+
+function sairQuestao(){if(simTimer)clearInterval(simTimer);ir(modoAtual==='simulado'?'simulado':'treino');}
+
+function renderQ(){
+  if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else{ir('treino');return;}return;}
+  qatual=fila[idx];resp=false;
+  document.getElementById('qcont').textContent='Questao '+(idx+1)+'/'+fila.length;
+  document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
+  document.getElementById('qprog').style.width=((idx+1)/fila.length*100)+'%';
+  document.getElementById('qilus').innerHTML=getIl(qatual);
+  document.getElementById('qenu').textContent=qatual.enunciado;
+  document.getElementById('qcom').style.display='none';
+  document.getElementById('qnxt').style.display='none';
+  document.getElementById('qcomt').textContent=qatual.comentario||'';
+  document.getElementById('qart').textContent=qatual.artigo_ctb||'';
+  const nxt=document.getElementById('qnxt');
+  if(!isPrem&&qhoje===28)nxt.textContent='Proxima (restam 2 gratis)';
+  else if(!isPrem&&qhoje===29)nxt.textContent='Ultima questao gratuita hoje';
+  else nxt.textContent='Proxima questao →';
+  const al=document.getElementById('qalts');al.innerHTML='';
+  ['A','B','C','D'].forEach((l,i)=>{
+    const op=[qatual.alternativa_a,qatual.alternativa_b,qatual.alternativa_c,qatual.alternativa_d][i];
+    const b=document.createElement('button');b.className='alt';
+    b.innerHTML='<span class="al">'+l+'</span>'+op;
+    b.onclick=()=>responder(b,l);al.appendChild(b);
+  });
+}
+
+async function enviarContato(){
+  const a=document.getElementById('cass').value,m=document.getElementById('cmsg').value.trim();
+  const cs=document.getElementById('csuc'),ce=document.getElementById('cerr2');
+  cs.style.display='none';ce.style.display='none';
+  if(!a||!m){ce.textContent='Preencha assunto e mensagem.';ce.style.display='block';return;}
+  await sb.from('contatos').insert({usuario_id:user?.id,email:user?.email,assunto:a,mensagem:m});
+  cs.textContent='Mensagem enviada!';cs.style.display='block';
+  document.getElementById('cass').value='';document.getElementById('cmsg').value='';
+}
+
+function mostrarInstalar(){
+  const ua=navigator.userAgent.toLowerCase();
+  if(ua.includes('iphone')||ua.includes('ipad')){alert('Para instalar no iPhone:\n1. Toque no icone de compartilhar\n2. Toque em Adicionar a Tela de Inicio\n3. Toque em Adicionar');}
+  else{alert('Para instalar no Android:\n1. Toque nos 3 pontinhos\n2. Toque em Adicionar a tela inicial\n3. Toque em Adicionar');}
+}
+
 async function init(){
   try{
     const{data:{session}}=await sb.auth.getSession();
