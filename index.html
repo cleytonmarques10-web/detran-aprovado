@@ -1106,7 +1106,10 @@ function renderQ(){
   document.getElementById('qcont').textContent='Questao '+(idx+1)+'/'+fila.length;
   document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
   document.getElementById('qprog').style.width=((idx+1)/fila.length*100)+'%';
-  document.getElementById('qilus').innerHTML=getIl(qatual);
+  const ilHtml=getIl(qatual);
+  const ilEl=document.getElementById('qilus');
+  ilEl.innerHTML=ilHtml;
+  ilEl.style.display=ilHtml?'flex':'none';
   document.getElementById('qenu').textContent=qatual.enunciado;
   document.getElementById('qcom').style.display='none';
   document.getElementById('qnxt').style.display='none';
