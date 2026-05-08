@@ -358,6 +358,14 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 .feedback-no{background:#FFF7ED;color:#C2410C;border-left:3px solid #F97316;}
 .motivacao-msg{font-size:12px;color:var(--L);font-weight:600;text-align:center;padding:6px 0 2px;animation:fadeUp 0.4s ease both;}
 /* ======================================================= */
+
+/* ===================== GAMIFICACAO ===================== */
+.gami-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(255,255,255,0.15);border-radius:12px;margin-top:6px;flex-wrap:wrap;}
+.gami-item{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#fff;}
+.pts-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#FF6B00,#FF9500);color:#fff;font-size:22px;font-weight:900;padding:16px 28px;border-radius:20px;z-index:9999;box-shadow:0 8px 30px rgba(255,107,0,0.4);pointer-events:none;animation:ptsAnim 1s ease forwards;}
+@keyframes ptsAnim{0%{transform:translate(-50%,-60%) scale(0.5);opacity:0;}30%{transform:translate(-50%,-50%) scale(1.1);opacity:1;}70%{transform:translate(-50%,-50%) scale(1);opacity:1;}100%{transform:translate(-50%,-40%) scale(0.9);opacity:0;}}
+.nivel-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#fff;}
+/* ======================================================== */
 </style>
 </head>
 <body>
@@ -711,6 +719,7 @@ let erros_ids=[],catStats={};
 let fila=[],qatual=null,idx=0,resp=false,hist=[];
 let modoAtual='treino';
 let simTimer=null,simSegundos=3600,simAcertos=0,simErros=0,simInicio=null;
+let pontosSessao=0,ptsTotal=0;
 
 const PL={
 'R-1':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,25 105,85 55,105 5,85 5,25" fill="#CC0000"/><text x="55" y="52" text-anchor="middle" font-family="Arial Black" font-size="17" font-weight="900" fill="#fff">PARE</text></svg>',
@@ -819,7 +828,14 @@ function responder(btn,l){
   const mot=document.createElement('div');mot.textContent=motTxt;mot.className='motivacao-msg';
   comEl.appendChild(mot);
   qresp++;qhoje++;
-  if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);}
+  if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);
+    // Pontos
+    const ptsGanhos=10;pontosSessao+=ptsGanhos;
+    ptsTotal=parseInt(localStorage.getItem('pts_total')||'0')+ptsGanhos;
+    localStorage.setItem('pts_total',ptsTotal);
+    mostrarPtsPopup(ptsGanhos);
+    setTimeout(atuGamiBar,200);
+  }
   else{simErros++;if(!erros_ids.includes(qatual.id))erros_ids.push(qatual.id);}
   const cat=qatual.categoria||'outros';
   if(!catStats[cat])catStats[cat]={acertos:0,total:0};
@@ -1201,7 +1217,7 @@ async function loadUser(u){
 function openApp(){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='flex';
-  atuHome();ir('home');initBot();
+  atuStreak();atuHome();ir('home');initBot();setTimeout(atuGamiBar,500);
 }
 
 function atuHome(){
@@ -1395,6 +1411,50 @@ function mostrarInstalar(){
   else{alert('Para instalar no Android:\n1. Toque nos 3 pontinhos\n2. Toque em Adicionar a tela inicial\n3. Toque em Adicionar');}
 }
 
+
+// ===================== GAMIFICACAO =====================
+function calcNivel(pts){
+  if(pts<100)return{n:1,nome:'Iniciante 🌱',prox:100};
+  if(pts<300)return{n:2,nome:'Aprendiz 📚',prox:300};
+  if(pts<600)return{n:3,nome:'Estudante ⚡',prox:600};
+  if(pts<1000)return{n:4,nome:'Dedicado 🎯',prox:1000};
+  if(pts<2000)return{n:5,nome:'Avancado 🏆',prox:2000};
+  return{n:6,nome:'Expert 🌟',prox:9999};
+}
+
+function atuGamiBar(){
+  const bar=document.getElementById('gami-bar');
+  if(!bar)return;
+  ptsTotal=parseInt(localStorage.getItem('pts_total')||'0');
+  const stk=parseInt(localStorage.getItem('streak')||'1');
+  const nv=calcNivel(ptsTotal);
+  bar.innerHTML=
+    '<div class="gami-item">⭐ '+ptsTotal+' pts</div>'+
+    '<div class="gami-item">🔥 '+stk+' dia(s)</div>'+
+    '<div class="nivel-badge">'+nv.nome+'</div>';
+}
+
+function mostrarPtsPopup(pts){
+  const old=document.getElementById('pts-popup');if(old)old.remove();
+  const d=document.createElement('div');
+  d.id='pts-popup';d.className='pts-popup';
+  d.textContent='+'+pts+' pts! ⭐';
+  document.body.appendChild(d);
+  setTimeout(()=>{if(d.parentNode)d.remove();},1000);
+}
+
+function atuStreak(){
+  const hoje=new Date().toDateString();
+  const ultimo=localStorage.getItem('ultimo_acesso');
+  let stk=parseInt(localStorage.getItem('streak')||'0');
+  if(ultimo===hoje)return;
+  const ontem=new Date();ontem.setDate(ontem.getDate()-1);
+  if(ultimo===ontem.toDateString())stk++;
+  else stk=1;
+  localStorage.setItem('streak',stk);
+  localStorage.setItem('ultimo_acesso',hoje);
+}
+// =======================================================
 async function init(){
   try{
     const{data:{session}}=await sb.auth.getSession();
