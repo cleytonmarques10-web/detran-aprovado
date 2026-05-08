@@ -133,6 +133,194 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;ov
 .pressao-reprovado{background:linear-gradient(135deg,#b91c1c,#ef4444);color:#fff;}
 .pressao-quase{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;}
 .pressao-aprovado{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;}
+
+/* ===================== PREMIUM VISUAL ===================== */
+
+/* Cards modernos */
+.card {
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:active { transform: scale(0.99); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+
+/* Botões principais */
+.btn, button[onclick] {
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+.btn:active, button[onclick]:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* Botão primário laranja */
+.btn-p {
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(255,107,0,0.3) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px;
+}
+.btn-p:active {
+  box-shadow: 0 2px 6px rgba(255,107,0,0.2) !important;
+  transform: scale(0.98);
+}
+
+/* Alternativas das questoes */
+.alt {
+  border-radius: 14px !important;
+  border: 1.5px solid #EBEBEB !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+.alt:not(:disabled):active {
+  transform: scale(0.99);
+  border-color: var(--L) !important;
+  box-shadow: 0 2px 8px rgba(255,107,0,0.15);
+}
+.alt.ok { 
+  border-color: #22C55E !important; 
+  background: #F0FDF4 !important;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.15) !important;
+}
+.alt.no { 
+  border-color: #EF4444 !important; 
+  background: #FEF2F2 !important;
+}
+.alt.re { 
+  border-color: #22C55E !important; 
+  background: #F0FDF4 !important;
+}
+
+/* Container da imagem */
+.ilus {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
+  border: 1px solid #F0F0F0 !important;
+}
+
+/* Enunciado da questao */
+#qenu {
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  color: #1a1a1a !important;
+  font-weight: 500;
+}
+
+/* Cards de assunto no treino */
+.ass-card {
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.ass-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+}
+
+/* Icones dos cards */
+.ass-icon {
+  border-radius: 12px !important;
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 20px !important;
+}
+
+/* Header do app */
+.global-hdr {
+  box-shadow: 0 2px 8px rgba(255,107,0,0.2);
+}
+
+/* Navbar */
+.nav {
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08) !important;
+  border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+/* Inputs */
+input[type=text], input[type=email], input[type=password], textarea, select {
+  border-radius: 12px !important;
+  border: 1.5px solid #E8E8E8 !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 14px !important;
+}
+input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, textarea:focus {
+  border-color: var(--L) !important;
+  box-shadow: 0 0 0 3px rgba(255,107,0,0.1) !important;
+  outline: none !important;
+}
+
+/* Perfil avatar */
+#pavatar-box {
+  box-shadow: 0 4px 16px rgba(255,107,0,0.25) !important;
+}
+
+/* Tags de plano */
+.tag {
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+/* Comentario da questao */
+.com {
+  border-radius: 14px !important;
+  border-left: 4px solid var(--L) !important;
+  padding: 14px 16px !important;
+  box-shadow: 0 2px 8px rgba(255,107,0,0.08) !important;
+}
+
+/* Progress bar */
+.pbg {
+  border-radius: 8px !important;
+  height: 7px !important;
+  background: #F0F0F0 !important;
+}
+.pfl {
+  border-radius: 8px !important;
+  height: 7px !important;
+}
+
+/* Botoes de acao do admin */
+.adm-card {
+  border-radius: 16px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07) !important;
+}
+
+/* Quick suggestions no chat */
+.sugg {
+  border-radius: 20px !important;
+  transition: background 0.15s, transform 0.15s;
+}
+.sugg:active {
+  transform: scale(0.97);
+}
+
+/* Mensagens do chat */
+.msg {
+  border-radius: 16px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  line-height: 1.5 !important;
+}
+
+/* Espacamento geral */
+.cnt {
+  gap: 12px !important;
+}
+
+/* Secao labels */
+.sec-label {
+  font-size: 11px !important;
+  letter-spacing: 0.8px !important;
+  font-weight: 700 !important;
+  color: #999 !important;
+  text-transform: uppercase;
+}
+/* ========================================================= */
 </style>
 </head>
 <body>
