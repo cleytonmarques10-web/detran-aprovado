@@ -541,7 +541,7 @@ function getIl(q){
 
   // Usar url_imagem do banco se disponivel
   if(q.url_imagem&&q.url_imagem.startsWith('http')){
-    return '<img src="'+q.url_imagem+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.alt=''">';
+    return '<img src="'+q.url_imagem+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.style.opacity=0">';
   }
 
   // Usar placa_codigo para montar URL
@@ -549,7 +549,7 @@ function getIl(q){
     const cod=q.placa_codigo.trim();
     const arquivo=MAPA_SVG[cod]||cod;
     const url=SUPABASE_STORAGE+arquivo+'.svg';
-    return '<img src="'+url+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.alt=''">';
+    return '<img src="'+url+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.style.opacity=0">';
   }
 
   // Situacao especial
