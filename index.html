@@ -92,8 +92,8 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;}
 .eye{position:absolute;right:12px;bottom:12px;background:none;border:none;cursor:pointer;}
 .em{font-size:11px;color:var(--R);display:none;padding:8px;background:var(--RC);border-radius:8px;text-align:center;margin-bottom:8px;}
 .sm{font-size:11px;color:#15803d;display:none;padding:8px;background:var(--VC);border-radius:8px;text-align:center;margin-bottom:8px;}
-.ilus{width:100%;height:220px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;border:1.5px solid var(--CB);overflow:hidden;box-sizing:border-box;}
-.ilus img,.ilus svg{max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;}
+.ilus{width:100%;height:220px;min-height:220px;max-height:220px;display:flex;align-items:center;justify-content:center;background:#ffffff;border-radius:12px;border:1.5px solid var(--CB);overflow:hidden;flex-shrink:0;}
+.ilus img,.ilus svg{max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;}
 .com{background:var(--LC);border-left:3px solid var(--L);border-radius:11px;padding:11px 13px;display:none;}
 .coml{font-size:10px;font-weight:700;color:var(--L);margin-bottom:3px;}
 .comt{font-size:11px;color:#555;line-height:1.6;}
@@ -541,7 +541,7 @@ function getIl(q){
 
   // Usar url_imagem do banco se disponivel
   if(q.url_imagem&&q.url_imagem.startsWith('http')){
-    return '<img src="'+q.url_imagem+'" style="width:auto;height:180px;max-width:260px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.opacity=0">';
+    return '<img src="'+q.url_imagem+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.alt=''">';
   }
 
   // Usar placa_codigo para montar URL
@@ -549,7 +549,7 @@ function getIl(q){
     const cod=q.placa_codigo.trim();
     const arquivo=MAPA_SVG[cod]||cod;
     const url=SUPABASE_STORAGE+arquivo+'.svg';
-    return '<img src="'+url+'" style="width:auto;height:180px;max-width:260px;object-fit:contain;display:block;margin:0 auto;" onerror="this.style.opacity=0">';
+    return '<img src="'+url+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.alt=''">';
   }
 
   // Situacao especial
