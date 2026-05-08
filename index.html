@@ -321,6 +321,36 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
   text-transform: uppercase;
 }
 /* ========================================================= */
+
+/* ===================== ANIMACOES ===================== */
+@keyframes acerto {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes erro {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-6px); }
+  40%  { transform: translateX(6px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  0%   { transform: scale(0.95); opacity: 0; }
+  60%  { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.alt { transition: all 0.2s ease; }
+.alt.ok  { animation: acerto 0.35s ease; }
+.alt.no  { animation: erro 0.4s ease; }
+.fade-up { animation: fadeUp 0.35s ease both; }
+.pop-in  { animation: popIn 0.3s ease both; }
+/* ==================================================== */
 </style>
 </head>
 <body>
@@ -444,7 +474,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       </div>
     </div>
     <div style="padding:7px 15px;background:var(--L);flex-shrink:0;"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
-    <div class="cnt">
+    <div class="cnt" id="qcard">
       <div class="ilus" id="qilus"></div>
       <div class="card" id="qenu" style="font-size:12px;color:#222;line-height:1.7;"></div>
       <div id="qalts" style="display:flex;flex-direction:column;gap:8px;"></div>
@@ -1320,6 +1350,11 @@ function renderQ(){
     b.innerHTML='<span class="al">'+l+'</span>'+op;
     b.onclick=()=>responder(b,l);al.appendChild(b);
   });
+  // Animacao de entrada na questao
+  const qcard=document.getElementById('qcard');
+  if(qcard){qcard.classList.remove('fade-up');void qcard.offsetWidth;qcard.classList.add('fade-up');}
+  const ilus=document.getElementById('qilus');
+  if(ilus&&ilus.innerHTML){ilus.classList.remove('pop-in');void ilus.offsetWidth;ilus.classList.add('pop-in');}
 }
 
 async function enviarContato(){
