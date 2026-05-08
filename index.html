@@ -564,6 +564,9 @@ function getIl(q){
 
 function responder(btn,l){
   if(resp)return;resp=true;
+  // Salvar imagem atual para nao sumir
+  const ilusEl=document.getElementById('qilus');
+  const ilusHTML=ilusEl.innerHTML;
   const c=qatual.resposta_correta,ls=['A','B','C','D'];
   document.querySelectorAll('.alt').forEach(b=>b.disabled=true);
   const ok=l===c;
@@ -571,6 +574,8 @@ function responder(btn,l){
   if(!ok)document.querySelectorAll('.alt')[ls.indexOf(c)].classList.add('re');
   document.getElementById('qcom').style.display='block';
   document.getElementById('qnxt').style.display='block';
+  // Restaurar imagem se sumiu
+  setTimeout(()=>{if(ilusEl.innerHTML==='')ilusEl.innerHTML=ilusHTML;},50);
   qresp++;qhoje++;
   if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);}
   else{simErros++;if(!erros_ids.includes(qatual.id))erros_ids.push(qatual.id);}
