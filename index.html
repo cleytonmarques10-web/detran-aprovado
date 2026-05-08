@@ -351,6 +351,13 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 .fade-up { animation: fadeUp 0.35s ease both; }
 .pop-in  { animation: popIn 0.3s ease both; }
 /* ==================================================== */
+
+/* ===================== UX FEEDBACK ===================== */
+.feedback-msg{font-size:13px;font-weight:700;margin-bottom:8px;padding:8px 12px;border-radius:10px;animation:fadeUp 0.3s ease both;}
+.feedback-ok{background:#F0FDF4;color:#15803d;border-left:3px solid #22C55E;}
+.feedback-no{background:#FFF7ED;color:#C2410C;border-left:3px solid #F97316;}
+.motivacao-msg{font-size:12px;color:var(--L);font-weight:600;text-align:center;padding:6px 0 2px;animation:fadeUp 0.4s ease both;}
+/* ======================================================= */
 </style>
 </head>
 <body>
@@ -796,6 +803,21 @@ function responder(btn,l){
   if(!ok)document.querySelectorAll('.alt')[ls.indexOf(cResp)].classList.add('re');
   document.getElementById('qcom').style.display='block';
   document.getElementById('qnxt').style.display='block';
+  const MSGS_OK=['🔥 Boa! Voce esta evoluindo!','🚀 Mandou bem!','👏 Excelente! Continue assim!','✅ Correto! Voce esta preparado!','💪 Isso ai! Mais uma acertada!'];
+  const MSGS_NO=['⚠️ Essa cai muito na prova, revise!','👀 Fique atento nessa questao','📌 Importante revisar esse tema','💡 Errou agora, mas nao erra na prova!','🎯 Anote esse conteudo para revisar'];
+  const MSGS_MOT=['So mais uma 👇','Voce esta indo muito bem!','Continue, voce esta no caminho certo!','Cada questao te deixa mais preparado!'];
+  const MSGS_MOT_NO=['Respira e foca na proxima 💪','Errar faz parte do aprendizado!','Nao desanima, continue!'];
+  const comEl=document.getElementById('qcom');
+  const oldFb=comEl.querySelector('.feedback-msg');if(oldFb)oldFb.remove();
+  const oldMot=comEl.querySelector('.motivacao-msg');if(oldMot)oldMot.remove();
+  const fb=document.createElement('div');
+  fb.textContent=(ok?MSGS_OK:MSGS_NO)[Math.floor(Math.random()*(ok?MSGS_OK:MSGS_NO).length)];
+  fb.className='feedback-msg '+(ok?'feedback-ok':'feedback-no');
+  comEl.insertBefore(fb,comEl.firstChild);
+  const restam=fila.length-(idx+1);
+  let motTxt=restam<=3&&restam>0?'🏁 Faltam apenas '+restam+' questao(oes)!':restam===0?'🎉 Ultima questao!':(ok?MSGS_MOT:MSGS_MOT_NO)[Math.floor(Math.random()*(ok?MSGS_MOT:MSGS_MOT_NO).length)];
+  const mot=document.createElement('div');mot.textContent=motTxt;mot.className='motivacao-msg';
+  comEl.appendChild(mot);
   qresp++;qhoje++;
   if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);}
   else{simErros++;if(!erros_ids.includes(qatual.id))erros_ids.push(qatual.id);}
