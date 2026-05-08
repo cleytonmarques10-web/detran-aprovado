@@ -960,7 +960,7 @@ function assinarPlano(plano){
 
 let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
 async function carregarAdmin(){
-  const{data:users,error}=await sb.from('usuarios').select('*').order('created_at',{ascending:false});
+  const{data:users,error}=await sb.from('usuarios').select('*').order('id',{ascending:false});
   if(error||!users)return;
   todosUsers=users;
   const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
@@ -1182,6 +1182,16 @@ async function login(){
   const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
   if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}
   await loadUser(data.user);openApp();
+}
+
+async function recuperarSenha(){
+  const e=document.getElementById('le').value.trim();
+  const el=document.getElementById('el');el.style.display='none';
+  if(!e){el.textContent='Digite seu e-mail para recuperar a senha.';el.style.color='var(--R)';el.style.display='block';return;}
+  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br'});
+  if(error){el.textContent='Erro ao enviar e-mail. Verifique o endereço.';el.style.color='var(--R)';el.style.display='block';return;}
+  el.textContent='✅ E-mail de recuperação enviado! Verifique sua caixa de entrada.';
+  el.style.color='#15803d';el.style.background='#F0FDF4';el.style.display='block';
 }
 
 async function cad(){
