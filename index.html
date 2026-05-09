@@ -378,6 +378,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       <div class="ig"><label class="il">Senha</label><input type="password" id="ls" class="ii" placeholder="Minimo 6 caracteres"><button class="eye" onclick="tog('ls',this)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg></button></div>
       <div class="em" id="el"></div>
       <button class="btn btnl" onclick="login()">Entrar</button>
+      <button onclick="recuperarSenha()" style="background:none;border:none;color:var(--L);font-size:13px;font-weight:600;cursor:pointer;padding:10px;width:100%;font-family:var(--FC);">Esqueci minha senha</button>
     </div>
     <div id="fc" style="display:none;">
       <div class="ig"><label class="il">Seu nome</label><input type="text" id="cn" class="ii iis" placeholder="Ex: Joao"></div>
@@ -1183,7 +1184,10 @@ async function login(){
   const el=document.getElementById('el');el.style.display='none';
   if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
   const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
-  if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}
+  if(error){
+    const msgs={'Invalid login credentials':'E-mail ou senha incorretos.','Email not confirmed':'Confirme seu e-mail antes de entrar.','Too many requests':'Muitas tentativas. Aguarde alguns minutos.'};
+    el.textContent=msgs[error.message]||msgs[error.code]||'E-mail ou senha incorretos.';el.style.display='block';return;
+  }
   await loadUser(data.user);openApp();
 }
 
@@ -1194,11 +1198,25 @@ async function cad(){
   if(!n||!e||!s){ec.textContent='Preencha todos os campos.';ec.style.display='block';return;}
   if(s.length<6){ec.textContent='Senha minimo 6 caracteres.';ec.style.display='block';return;}
   const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
-  if(error){ec.textContent='Erro ao criar conta.';ec.style.display='block';return;}
+  if(error){
+    const msgs={'User already registered':'Este e-mail ja esta cadastrado. Faca login.','Email already in use':'Este e-mail ja esta cadastrado.','Password should be at least 6 characters':'A senha precisa ter pelo menos 6 caracteres.','Invalid email':'E-mail invalido. Verifique e tente novamente.','Signup requires a valid password':'A senha precisa ter pelo menos 6 caracteres.','email rate limit exceeded':'Muitas tentativas. Aguarde alguns minutos e tente novamente.','over_email_send_rate_limit':'Muitas tentativas. Aguarde alguns minutos.'};
+    const msg=msgs[error.message]||msgs[error.code]||('Erro: '+error.message);
+    ec.textContent=msg;ec.style.display='block';return;
+  }
   if(data.user){
     await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}});
     await loadUser(data.user);openApp();
   }
+}
+
+async function recuperarSenha(){
+  const e=document.getElementById('le').value.trim();
+  const el=document.getElementById('el');
+  if(!e){el.textContent='Digite seu e-mail para recuperar a senha.';el.style.color='var(--R)';el.style.display='block';return;}
+  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br'});
+  el.style.display='block';
+  if(error){el.textContent='Erro ao enviar. Verifique o e-mail.';el.style.color='var(--R)';}
+  else{el.textContent='✅ Se o e-mail existir, voce receberá instruções para redefinir a senha.';el.style.color='#15803d';el.style.background='#F0FDF4';}
 }
 
 async function logout(){
