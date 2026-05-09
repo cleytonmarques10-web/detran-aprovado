@@ -648,32 +648,56 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
   <div id="tela-admin" class="tela">
     <div class="hdr" style="display:flex;align-items:center;gap:10px;">
       <button onclick="ir('perfil')" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px;cursor:pointer;display:flex;align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <div><h1 style="font-size:15px;">Admin</h1><div class="sub" id="admin-subtitulo">Carregando...</div></div>
+      <div><h1 style="font-size:15px;">Painel Admin</h1><div class="sub" id="admin-subtitulo">Carregando...</div></div>
     </div>
     <div class="cnt">
-      <div class="g4" id="admin-stats"></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="admin-busca" class="ii iis" placeholder="Buscar por nome ou e-mail..." style="flex:1;padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
+
+      <!-- CARDS DE RESUMO -->
+      <div id="admin-stats" class="g4"></div>
+
+      <!-- MENSAGEM EM MASSA POR GRUPO -->
+      <div class="card" style="padding:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--CT);margin-bottom:8px;">MENSAGEM EM MASSA</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button onclick="waMassa('premium','⭐ Obrigado por ser Premium! Qualquer duvida estamos aqui.')" style="background:#25D366;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Todos os Premium</button>
+          <button onclick="waMassa('atrasado','⚠️ Seu acesso ao Detran Aprovado esta atrasado. Renove agora: detranaprovado.com.br')" style="background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Atrasados</button>
+          <button onclick="waMassa('cancelado','Sentimos sua falta no Detran Aprovado! Volte e passe na prova: detranaprovado.com.br')" style="background:#EF4444;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Cancelados</button>
+          <button onclick="waMassa('gratuito','🎯 Voce ainda esta no plano gratuito. Assine o Premium e treine sem limites: detranaprovado.com.br')" style="background:#888;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Gratuitos</button>
+        </div>
       </div>
-      <div style="display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;-webkit-overflow-scrolling:touch;flex-shrink:0;min-width:0;">
+
+      <!-- BUSCA E FILTROS -->
+      <input type="text" id="admin-busca" class="ii iis" placeholder="🔍 Buscar por nome ou e-mail..." style="padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
+      <div style="display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;-webkit-overflow-scrolling:touch;flex-shrink:0;">
         <button class="admin-filtro on" id="f-todos" onclick="setFiltro('todos')">Todos</button>
-        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">Ativos</button>
-        <button class="admin-filtro" id="f-atrasados" onclick="setFiltro('atrasados')">Atrasados</button>
-        <button class="admin-filtro" id="f-cancelados" onclick="setFiltro('cancelados')">Cancelados</button>
-        <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">Gratuitos</button>
+        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">⭐ Ativos</button>
+        <button class="admin-filtro" id="f-atrasados" onclick="setFiltro('atrasados')">⚠️ Atrasados</button>
+        <button class="admin-filtro" id="f-cancelados" onclick="setFiltro('cancelados')">❌ Cancelados</button>
+        <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">🆓 Gratuitos</button>
       </div>
-      <div id="admin-sel-wrap" style="display:none;"><button class="btn btnl" onclick="enviarWaMassa()">Enviar WhatsApp (<span id="sel-count">0</span>)</button></div>
+
+      <!-- LISTA DE USUARIOS -->
       <div id="admin-lista"></div>
-      <div class="card" style="border:2px dashed var(--LB);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Liberar acesso cortesia</div>
-        <div class="ig"><label class="il">E-mail do usuario</label><input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com"></div>
+
+      <!-- LIBERAR CORTESIA -->
+      <div class="card" style="border:2px dashed var(--LB);padding:14px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🎁 Liberar Acesso Cortesia</div>
+        <div class="ig" style="margin-bottom:8px;"><label class="il">E-mail do usuario</label><input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com"></div>
+        <div class="ig" style="margin-bottom:8px;">
+          <label class="il">Plano</label>
+          <select id="cort-plano" class="ii iis" style="padding:10px;">
+            <option value="premium">⭐ Premium</option>
+            <option value="gratuito">🆓 Gratuito</option>
+            <option value="cancelado">❌ Cancelado</option>
+          </select>
+        </div>
         <button class="btn btnl" onclick="liberarCortesia()">Liberar acesso</button>
         <div class="sm" id="cort-ok" style="margin-top:8px;"></div>
         <div class="em" id="cort-err" style="margin-top:8px;"></div>
       </div>
+
     </div>
   </div>
-</div>
 </div>
 
 <!-- PAYWALL -->
@@ -1033,7 +1057,18 @@ function renderLista(users){
   });
 }
 function enviarWaMassa(){const users=todosUsers.filter(u=>selectedUsers.has(u.id)&&u.telefone);if(users.length===0){alert('Selecione usuarios com telefone.');return;}const msg=prompt('Mensagem:','Ola! Aqui e o Detran Aprovado...');if(!msg)return;users.forEach((u,i)=>{setTimeout(()=>{const tel=u.telefone.replace(/\D/g,'');window.open('https://wa.me/55'+tel+'?text='+encodeURIComponent(msg),'_blank');},i*500);});}
-async function liberarCortesia(){const email=document.getElementById('cort-email').value.trim();const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');ok.style.display='none';err.style.display='none';if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}const{error}=await sb.from('usuarios').update({plano:'premium'}).eq('email',email);if(error){err.textContent='Usuario nao encontrado.';err.style.display='block';return;}ok.textContent='Acesso premium liberado para '+email;ok.style.display='block';document.getElementById('cort-email').value='';carregarAdmin();}
+async function liberarCortesia(){
+  const email=document.getElementById('cort-email').value.trim();
+  const plano=document.getElementById('cort-plano')?.value||'premium';
+  const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');
+  ok.style.display='none';err.style.display='none';
+  if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}
+  const{error}=await sb.from('usuarios').update({plano:plano}).eq('email',email);
+  if(error){err.textContent='Usuario nao encontrado. Verifique o e-mail.';err.style.display='block';return;}
+  ok.textContent='✅ Plano "'+plano+'" liberado para '+email+'!';ok.style.display='block';
+  document.getElementById('cort-email').value='';
+  carregarAdmin();
+}
 
 function ir(n){
   document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));
