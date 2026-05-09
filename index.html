@@ -652,22 +652,41 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
     </div>
     <div class="cnt">
 
-      <!-- CARDS DE RESUMO -->
-      <div id="admin-stats" class="g4"></div>
-
-      <!-- MENSAGEM EM MASSA POR GRUPO -->
-      <div class="card" style="padding:12px;">
-        <div style="font-size:11px;font-weight:700;color:var(--CT);margin-bottom:8px;">MENSAGEM EM MASSA</div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <button onclick="waMassa('premium','⭐ Obrigado por ser Premium! Qualquer duvida estamos aqui.')" style="background:#25D366;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Todos os Premium</button>
-          <button onclick="waMassa('atrasado','⚠️ Seu acesso ao Detran Aprovado esta atrasado. Renove agora: detranaprovado.com.br')" style="background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Atrasados</button>
-          <button onclick="waMassa('cancelado','Sentimos sua falta no Detran Aprovado! Volte e passe na prova: detranaprovado.com.br')" style="background:#EF4444;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Cancelados</button>
-          <button onclick="waMassa('gratuito','🎯 Voce ainda esta no plano gratuito. Assine o Premium e treine sem limites: detranaprovado.com.br')" style="background:#888;color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left;">💬 WhatsApp — Gratuitos</button>
+      <!-- CARDS RESUMO - igual ao Lobo Mecanico -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="card" style="text-align:center;padding:16px;">
+          <div style="font-size:28px;margin-bottom:4px;">👥</div>
+          <div style="font-size:11px;color:var(--CT);margin-bottom:4px;">Total de usuarios</div>
+          <div style="font-family:var(--FT);font-size:28px;font-weight:900;" id="adm-total">0</div>
+        </div>
+        <div class="card" style="text-align:center;padding:16px;">
+          <div style="font-size:28px;margin-bottom:4px;">✅</div>
+          <div style="font-size:11px;color:var(--CT);margin-bottom:4px;">Assinaturas ativas</div>
+          <div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#22C55E;" id="adm-ativos">0</div>
+        </div>
+        <div class="card" style="text-align:center;padding:16px;">
+          <div style="font-size:28px;margin-bottom:4px;">⏳</div>
+          <div style="font-size:11px;color:var(--CT);margin-bottom:4px;">Pagamento atrasado</div>
+          <div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#f59e0b;" id="adm-atrasados">0</div>
+        </div>
+        <div class="card" style="text-align:center;padding:16px;">
+          <div style="font-size:28px;margin-bottom:4px;">❌</div>
+          <div style="font-size:11px;color:var(--CT);margin-bottom:4px;">Canceladas</div>
+          <div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#EF4444;" id="adm-cancelados">0</div>
         </div>
       </div>
+      <div class="card" style="text-align:center;padding:16px;">
+        <div style="font-size:28px;margin-bottom:4px;">🆓</div>
+        <div style="font-size:11px;color:var(--CT);margin-bottom:4px;">Plano gratuito</div>
+        <div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#888;" id="adm-gratuitos">0</div>
+      </div>
 
-      <!-- BUSCA E FILTROS -->
-      <input type="text" id="admin-busca" class="ii iis" placeholder="🔍 Buscar por nome ou e-mail..." style="padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
+      <!-- BUSCA -->
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="admin-busca" class="ii iis" placeholder="🔍 Buscar por nome ou e-mail..." style="flex:1;padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
+      </div>
+
+      <!-- FILTROS -->
       <div style="display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;-webkit-overflow-scrolling:touch;flex-shrink:0;">
         <button class="admin-filtro on" id="f-todos" onclick="setFiltro('todos')">Todos</button>
         <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">⭐ Ativos</button>
@@ -676,22 +695,50 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
         <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">🆓 Gratuitos</button>
       </div>
 
-      <!-- LISTA DE USUARIOS -->
+      <!-- BOTAO WHATSAPP SELECIONADOS -->
+      <div id="adm-sel-bar" style="display:none;">
+        <button onclick="waSelecionados()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:12px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">💬 Enviar WhatsApp para selecionados (<span id="adm-sel-count">0</span>)</button>
+      </div>
+
+      <!-- LISTA -->
       <div id="admin-lista"></div>
 
+      <!-- MENSAGEM EM MASSA -->
+      <div class="card" style="padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--CT);margin-bottom:10px;letter-spacing:.5px;">MENSAGEM EM MASSA</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button onclick="waMassa('premium','Ola [nome]! Obrigado por ser Premium no Detran Aprovado! Qualquer duvida estamos aqui.')" style="background:#22C55E;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Todos os Ativos</button>
+          <button onclick="waMassa('atrasado','Ola [nome]! Seu acesso ao Detran Aprovado esta atrasado. Renove agora: app.detranaprovado.com.br')" style="background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Atrasados</button>
+          <button onclick="waMassa('cancelado','Ola [nome]! Sentimos sua falta no Detran Aprovado. Volte e passe na prova: app.detranaprovado.com.br')" style="background:#EF4444;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Cancelados</button>
+          <button onclick="waMassa('gratuito','Ola [nome]! Voce esta no plano gratuito. Assine o Premium e treine sem limites: app.detranaprovado.com.br')" style="background:#888;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Gratuitos</button>
+        </div>
+      </div>
+
       <!-- LIBERAR CORTESIA -->
-      <div class="card" style="border:2px dashed var(--LB);padding:14px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🎁 Liberar Acesso Cortesia</div>
-        <div class="ig" style="margin-bottom:8px;"><label class="il">E-mail do usuario</label><input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com"></div>
-        <div class="ig" style="margin-bottom:8px;">
+      <div class="card" style="border:2px solid var(--LB);padding:16px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🎁 Liberar acesso cortesia</div>
+        <div class="ig" style="margin-bottom:10px;">
+          <label class="il">E-mail do usuario</label>
+          <input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com">
+        </div>
+        <div class="ig" style="margin-bottom:10px;">
           <label class="il">Plano</label>
-          <select id="cort-plano" class="ii iis" style="padding:10px;">
+          <select id="cort-plano" class="ii iis" style="padding:11px 13px;font-size:13px;">
             <option value="premium">⭐ Premium</option>
             <option value="gratuito">🆓 Gratuito</option>
+            <option value="atrasado">⚠️ Atrasado</option>
             <option value="cancelado">❌ Cancelado</option>
           </select>
         </div>
-        <button class="btn btnl" onclick="liberarCortesia()">Liberar acesso</button>
+        <div class="ig" style="margin-bottom:10px;">
+          <label class="il">Dias de acesso</label>
+          <input type="number" id="cort-dias" class="ii iis" placeholder="Ex: 30" value="30" min="1" max="365">
+        </div>
+        <div class="ig" style="margin-bottom:14px;">
+          <label class="il">Motivo (opcional)</label>
+          <input type="text" id="cort-motivo" class="ii iis" placeholder="Ex: teste, parceiro, influencer">
+        </div>
+        <button class="btn btnl" style="font-size:14px;padding:14px;" onclick="liberarCortesia()">Liberar acesso ✓</button>
         <div class="sm" id="cort-ok" style="margin-top:8px;"></div>
         <div class="em" id="cort-err" style="margin-top:8px;"></div>
       </div>
@@ -984,6 +1031,7 @@ function assinarPlano(plano){
 }
 
 let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
+let admSelecionados=new Set();
 async function carregarAdmin(){
   const{data:users,error}=await sb.from('usuarios').select('*').order('id',{ascending:false});
   if(error){
@@ -997,15 +1045,18 @@ async function carregarAdmin(){
     return;
   }
   todosUsers=users;
-  const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
-  const cancelados=users.filter(u=>u.plano==='cancelado').length;
+  const total=users.length;
+  const ativos=users.filter(u=>u.plano==='premium').length;
   const atrasados=users.filter(u=>u.plano==='atrasado').length;
+  const cancelados=users.filter(u=>u.plano==='cancelado').length;
+  const grat=users.filter(u=>u.plano==='gratuito'||!u.plano).length;
   document.getElementById('admin-subtitulo').textContent=total+' usuarios · '+ativos+' ativos';
-  document.getElementById('admin-stats').innerHTML=[
-    {l:'Total',n:total,c:'#3b82f6'},{l:'Ativos',n:ativos,c:'#22C55E'},
-    {l:'Atrasados',n:atrasados,c:'#f59e0b'},{l:'Cancelados',n:cancelados,c:'#EF4444'},
-    {l:'Gratuitos',n:grat,c:'#888'},{l:'Total',n:total,c:'#888'}
-  ].slice(0,4).map(s=>'<div class="stat-card"><div style="font-size:10px;color:var(--CT);">'+s.l+'</div><div class="stat-num" style="color:'+s.c+';">'+s.n+'</div></div>').join('');
+  document.getElementById('adm-total').textContent=total;
+  document.getElementById('adm-ativos').textContent=ativos;
+  document.getElementById('adm-atrasados').textContent=atrasados;
+  document.getElementById('adm-cancelados').textContent=cancelados;
+  document.getElementById('adm-gratuitos').textContent=grat;
+  admSelecionados=new Set();
   filtrarAdmin();
 }
 function setFiltro(f){filtroAtual=f;document.querySelectorAll('.admin-filtro').forEach(b=>b.classList.remove('on'));const fb=document.getElementById('f-'+f);if(fb)fb.classList.add('on');filtrarAdmin();}
@@ -1024,498 +1075,68 @@ function filtrarAdmin(){
 }
 function renderLista(users){
   const lista=document.getElementById('admin-lista');
-  lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:8px;color:#555;">'+users.length+' usuario(s)</div>';
+  lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:10px;color:#555;">'+users.length+' usuario(s)</div>';
   if(users.length===0){lista.innerHTML+='<div class="card" style="text-align:center;font-size:12px;color:var(--CT);padding:20px;">Nenhum usuario encontrado</div>';return;}
   users.forEach(u=>{
-    const av=u.nome?u.nome.charAt(0).toUpperCase():'?';
+    const av=(u.nome||'?').charAt(0).toUpperCase();
     const tel=u.telefone?u.telefone.replace(/\D/g,''):'';
-    const wlink=tel?'https://wa.me/55'+tel:'';
+    const wlink=tel?'https://wa.me/55'+tel+'?text='+encodeURIComponent('Ola '+( u.nome||'')+', aqui e o Detran Aprovado!'):'';
+    const emailLink='mailto:'+u.email+'?subject=Detran+Aprovado';
     const dias=u.created_at?Math.floor((new Date()-new Date(u.created_at))/(1000*60*60*24)):0;
-    const div=document.createElement('div');div.className='u-item';
-    const statusCor={premium:'#22C55E',gratuito:'#888',cancelado:'#EF4444',atrasado:'#f59e0b'}[u.plano||'gratuito']||'#888';
-    const statusIcon={premium:'⭐',gratuito:'🆓',cancelado:'❌',atrasado:'⚠️'}[u.plano||'gratuito']||'🆓';
+    const plano=u.plano||'gratuito';
+    const statusCor={premium:'#22C55E',gratuito:'#888',cancelado:'#EF4444',atrasado:'#f59e0b'}[plano]||'#888';
+    const statusIcon={premium:'⭐ Premium · Ativo',gratuito:'🆓 Gratuito',cancelado:'❌ Cancelado',atrasado:'⚠️ Atrasado'}[plano]||'🆓 Gratuito';
     const questoes=u.total_questoes||0;
-    const acertosU=u.total_acertos||0;
-    const taxa=questoes>0?Math.round(acertosU/questoes*100):0;
-    const simulados=u.total_simulados||0;
+    const taxa=questoes>0?Math.round((u.total_acertos||0)/questoes*100):0;
+    const isSel=admSelecionados.has(u.id);
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.cssText='padding:12px;margin-bottom:8px;border-left:4px solid '+statusCor+';position:relative;';
     div.innerHTML=
-      '<div class="u-av" style="background:'+statusCor+'22;color:'+statusCor+';">'+av+'</div>'+
-      '<div class="u-info" style="flex:1;">'+
-        '<div class="u-nome">'+(u.nome||'Sem nome')+'</div>'+
-        '<div class="u-email" style="font-size:10px;">'+u.email+'</div>'+
-        '<div style="margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'+
-          '<span class="tag" style="font-size:9px;background:'+statusCor+'22;color:'+statusCor+';">'+statusIcon+' '+(u.plano||'gratuito')+'</span>'+
-          '<span style="font-size:9px;color:var(--CT);">📅 '+dias+'d atrás</span>'+
-          '<span style="font-size:9px;color:var(--CT);">📝 '+questoes+' questões</span>'+
-          '<span style="font-size:9px;color:var(--CT);">🎯 '+taxa+'% acertos</span>'+
-          (simulados>0?'<span style="font-size:9px;color:var(--CT);">📊 '+simulados+' simulados</span>':'')+
-          (u.cidade?'<span style="font-size:9px;color:var(--CT);">📍 '+u.cidade+'</span>':'')+
+      '<div style="display:flex;align-items:flex-start;gap:10px;">'+
+        '<div onclick="toggleSel(''+u.id+'')" style="width:38px;height:38px;border-radius:50%;background:'+(isSel?statusCor:statusCor+'22')+';color:'+(isSel?'#fff':statusCor)+';display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;cursor:pointer;border:2px solid '+statusCor+';">'+av+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-weight:700;font-size:13px;margin-bottom:1px;">'+(u.nome||'Sem nome')+'</div>'+
+          '<div style="font-size:10px;color:#888;margin-bottom:3px;">'+u.email+'</div>'+
+          '<div style="font-size:10px;color:'+statusCor+';font-weight:700;margin-bottom:3px;">✅ '+statusIcon+'</div>'+
+          '<div style="font-size:10px;color:#888;margin-bottom:3px;">📅 '+new Date(u.created_at||Date.now()).toLocaleDateString('pt-BR')+' · '+dias+' dias</div>'+
+          (tel?'<div style="font-size:10px;color:#888;margin-bottom:6px;">📱 '+u.telefone+'</div>':'')+
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
+            (wlink?'<a href="'+wlink+'" target="_blank" style="background:#25D366;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;text-decoration:none;">💬 WhatsApp</a>':'')+
+            '<a href="'+emailLink+'" style="background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;text-decoration:none;">✉️ Email</a>'+
+            '<button onclick="alterarPlano(''+u.id+'',''+u.email+'',''+plano+'')" style="background:var(--LC);color:var(--L);border:1.5px solid var(--LB);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">✏️ Plano</button>'+
+            '<button onclick="excluirUsuario(''+u.id+'',''+u.email+'')" style="background:#FEE2E2;color:#EF4444;border:1.5px solid #FECACA;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">🗑️ Excluir</button>'+
+          '</div>'+
         '</div>'+
-      '</div>'+
-      (wlink?'<a class="ubtn ubtn-w" href="'+wlink+'" target="_blank" style="text-decoration:none;">WhatsApp</a>':'');
+      '</div>';
     lista.appendChild(div);
   });
 }
-function enviarWaMassa(){const users=todosUsers.filter(u=>selectedUsers.has(u.id)&&u.telefone);if(users.length===0){alert('Selecione usuarios com telefone.');return;}const msg=prompt('Mensagem:','Ola! Aqui e o Detran Aprovado...');if(!msg)return;users.forEach((u,i)=>{setTimeout(()=>{const tel=u.telefone.replace(/\D/g,'');window.open('https://wa.me/55'+tel+'?text='+encodeURIComponent(msg),'_blank');},i*500);});}
-async function liberarCortesia(){
-  const email=document.getElementById('cort-email').value.trim();
-  const plano=document.getElementById('cort-plano')?.value||'premium';
-  const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');
-  ok.style.display='none';err.style.display='none';
-  if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}
-  const{error}=await sb.from('usuarios').update({plano:plano}).eq('email',email);
-  if(error){err.textContent='Usuario nao encontrado. Verifique o e-mail.';err.style.display='block';return;}
-  ok.textContent='✅ Plano "'+plano+'" liberado para '+email+'!';ok.style.display='block';
-  document.getElementById('cort-email').value='';
+
+function toggleSel(id){
+  if(admSelecionados.has(id))admSelecionados.delete(id);
+  else admSelecionados.add(id);
+  const bar=document.getElementById('adm-sel-bar');
+  const cnt=document.getElementById('adm-sel-count');
+  if(admSelecionados.size>0){bar.style.display='block';cnt.textContent=admSelecionados.size;}
+  else bar.style.display='none';
+  filtrarAdmin();
+}
+
+function waSelecionados(){
+  const sels=todosUsers.filter(u=>admSelecionados.has(u.id)&&u.telefone);
+  if(sels.length===0){alert('Nenhum usuario selecionado com telefone.');return;}
+  const msg=prompt('Mensagem para '+sels.length+' usuarios:','Ola [nome]! Aqui e o Detran Aprovado.');
+  if(!msg)return;
+  sels.forEach((u,i)=>{setTimeout(()=>{const tel=u.telefone.replace(/\D/g,'');window.open('https://wa.me/55'+tel+'?text='+encodeURIComponent(msg.replace('[nome]',u.nome||'')),'_blank');},i*800);});
+}
+
+async function excluirUsuario(id,email){
+  if(!confirm('Excluir usuario '+email+'?\nEsta acao nao pode ser desfeita.'))return;
+  const{error}=await sb.from('usuarios').delete().eq('id',id);
+  if(error){alert('Erro ao excluir: '+error.message);return;}
+  alert('Usuario excluido com sucesso!');
   carregarAdmin();
 }
 
-function ir(n){
-  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));
-  const tela=document.getElementById('tela-'+n);if(tela)tela.classList.add('on');
-  const nav=document.getElementById('nav-'+n);if(nav)nav.classList.add('on');
-  const sub=document.getElementById('ghdr-sub');
-  const tit=document.getElementById('ghdr-titulo');
-  const hdrs={home:{sub:'Ola,',tit:(user?.user_metadata?.nome||'Estudante')+'!'},treino:{sub:'Detran Aprovado',tit:'Treino'},simulado:{sub:'Detran Aprovado',tit:'Simulado'},resultado:{sub:'Detran Aprovado',tit:'Resultado'},bot:{sub:'Detran Aprovado',tit:'Prof. Detran'},perfil:{sub:'Detran Aprovado',tit:'Meu Perfil'},admin:{sub:'Painel',tit:'Administrador'}};
-  if(hdrs[n]&&sub&&tit){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
-  if(n==='bot')initBot();
-  if(n==='perfil')atuPerfil();
-  if(n==='admin')carregarAdmin();
-  if(n==='simulado')atuHistorico();
-}
 
-
-// ===== CHAT AVANCADO =====
-let imgBase64=null,mediaRecorder=null,isRecording=false,audioChunks=[];
-const CHAT_KEY='detran_chat_hist_'+((user?.id)||'anon');
-
-function salvarChatLocal(){
-  try{const dados={msgs:hist,ts:Date.now()};localStorage.setItem('detran_chat',JSON.stringify(dados));}catch(e){}
-}
-
-function carregarChatLocal(){
-  try{
-    const raw=localStorage.getItem('detran_chat');
-    if(!raw)return false;
-    const dados=JSON.parse(raw);
-    const sete=7*24*60*60*1000;
-    if(Date.now()-dados.ts>sete){localStorage.removeItem('detran_chat');return false;}
-    return dados;
-  }catch(e){return false;}
-}
-
-function limparChat(){
-  if(!confirm('Limpar toda a conversa?'))return;
-  hist=[];localStorage.removeItem('detran_chat');
-  const ca=document.getElementById('chat-area');ca.innerHTML='';
-  initBot();
-}
-
-function verHistorico(){
-  const dados=carregarChatLocal();
-  const banner=document.getElementById('hist-banner');
-  const info=document.getElementById('hist-info');
-  if(!banner||!info)return;
-  if(dados){
-    const dias=Math.floor((Date.now()-dados.ts)/(1000*60*60*24));
-    const expira=7-dias;
-    info.textContent='Conversa salva ha '+dias+' dia(s). Expira em '+expira+' dia(s).';
-  }else{
-    info.textContent='Nenhuma conversa salva. Conversas ficam salvas por 7 dias.';
-  }
-  banner.style.display='flex';
-}
-
-function fecharHistBanner(){
-  const b=document.getElementById('hist-banner');if(b)b.style.display='none';
-}
-
-function abrirFoto(){
-  document.getElementById('foto-input').click();
-}
-
-function cancelarFoto(){
-  imgBase64=null;
-  document.getElementById('img-preview').style.display='none';
-  document.getElementById('img-preview-src').src='';
-}
-
-function processarFoto(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    imgBase64=e.target.result.split(',')[1];
-    document.getElementById('img-preview-src').src=e.target.result;
-    document.getElementById('img-preview').style.display='block';
-  };
-  reader.readAsDataURL(file);
-  input.value='';
-}
-
-let recognition=null;
-async function toggleAudio(){
-  // Use Web Speech API for real transcription
-  const SpeechRecog=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRecog){alert('Seu navegador nao suporta reconhecimento de voz. Use o Chrome para esta funcao.');return;}
-  
-  if(isRecording){
-    isRecording=false;
-    if(recognition)recognition.stop();
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    document.getElementById('audio-status').style.display='none';
-    return;
-  }
-  
-  recognition=new SpeechRecog();
-  recognition.lang='pt-BR';
-  recognition.continuous=false;
-  recognition.interimResults=false;
-  
-  recognition.onstart=()=>{
-    isRecording=true;
-    document.getElementById('btn-audio').style.background='var(--R)';
-    document.getElementById('btn-audio').style.borderColor='var(--R)';
-    document.getElementById('audio-status').style.display='block';
-    document.getElementById('audio-status').textContent='Ouvindo... fale sua pergunta';
-  };
-  
-  recognition.onresult=e=>{
-    const transcript=e.results[0][0].transcript;
-    document.getElementById('cinp').value=transcript;
-    document.getElementById('audio-status').textContent='Transcricao: "'+transcript+'"';
-    setTimeout(()=>enviar(),800);
-  };
-  
-  recognition.onerror=e=>{
-    isRecording=false;
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    document.getElementById('audio-status').style.display='none';
-    if(e.error==='not-allowed')alert('Permissao de microfone negada. Permita o acesso nas configuracoes do navegador.');
-    else alert('Erro no reconhecimento de voz: '+e.error);
-  };
-  
-  recognition.onend=()=>{
-    isRecording=false;
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    setTimeout(()=>{document.getElementById('audio-status').style.display='none';},2000);
-  };
-  
-  recognition.start();
-}
-
-async function enviarComAudio(b64){
-  addMsg('user','🎤 Mensagem de voz enviada');
-  hist.push({role:'user',content:[{type:'text',text:'O usuario enviou um audio. Transcreva e responda como se fosse uma pergunta sobre CNH ou transito.'}]});
-  showTyp();
-  try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'Audio recebido - responda sobre CNH/Detran'}]})});
-    document.getElementById('typ')?.remove();
-    if(!r.ok){addMsg('bot','Erro ao processar audio. Tente digitar sua pergunta.');return;}
-    const d=await r.json();
-    const rep=d.content?.[0]?.text||'Nao consegui processar o audio. Pode digitar sua pergunta?';
-    hist.push({role:'assistant',content:rep});addMsg('bot',rep);
-    salvarChatLocal();
-  }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro ao processar audio.');}
-}
-
-function scrollChatBottom(){
-  const ca=document.getElementById('chat-area');
-  if(ca)setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},100);
-}
-
-
-function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function nomeAss(cat){return{sinalizacao:'Sinalizacao',legislacao:'Legislacao',direcao_defensiva:'Direcao Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente',cto:'Sinalizacao',socorros:'Primeiros Socorros'}[cat]||cat;}
-function maskTel(i){let v=i.value.replace(/\D/g,'');if(v.length>11)v=v.substr(0,11);if(v.length>6)v=v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/^(\d{2})(\d{0,5})/,'($1) $2');else if(v.length>0)v=v.replace(/^(\d{0,2})/,'($1');i.value=v;}
-function tog(id,btn){const i=document.getElementById(id);const m=i.type==='password';i.type=m?'text':'password';}
-
-function trocarTab(t){
-  document.getElementById('tab-e').classList.toggle('on',t==='e');
-  document.getElementById('tab-c').classList.toggle('on',t==='c');
-  document.getElementById('fe').style.display=t==='e'?'block':'none';
-  document.getElementById('fc').style.display=t==='c'?'block':'none';
-}
-
-async function login(){
-  const e=document.getElementById('le').value.trim(),s=document.getElementById('ls').value;
-  const el=document.getElementById('el');el.style.display='none';
-  if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
-  const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
-  if(error){el.textContent='E-mail ou senha incorretos.';el.style.display='block';return;}
-  await loadUser(data.user);openApp();
-}
-
-async function recuperarSenha(){
-  const e=document.getElementById('le').value.trim();
-  const el=document.getElementById('el');el.style.display='none';
-  if(!e){el.textContent='Digite seu e-mail para recuperar a senha.';el.style.color='var(--R)';el.style.display='block';return;}
-  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br'});
-  if(error){el.textContent='Erro ao enviar e-mail. Verifique o endereço.';el.style.color='var(--R)';el.style.display='block';return;}
-  el.textContent='✅ E-mail de recuperação enviado! Verifique sua caixa de entrada.';
-  el.style.color='#15803d';el.style.background='#F0FDF4';el.style.display='block';
-}
-
-async function cad(){
-  const n=document.getElementById('cn').value.trim(),t=document.getElementById('ct').value.trim();
-  const e=document.getElementById('ce').value.trim(),s=document.getElementById('cs').value;
-  const ec=document.getElementById('ec');ec.style.display='none';
-  if(!n||!e||!s){ec.textContent='Preencha todos os campos.';ec.style.display='block';return;}
-  if(s.length<6){ec.textContent='Senha minimo 6 caracteres.';ec.style.display='block';return;}
-  const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
-  if(error){ec.textContent='Erro ao criar conta.';ec.style.display='block';return;}
-  if(data.user){
-    await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}});
-    await loadUser(data.user);openApp();
-  }
-}
-
-async function logout(){
-  await sb.auth.signOut();user=null;isPrem=false;isAdmin=false;qhoje=0;
-  document.getElementById('app').style.display='none';
-  document.getElementById('tela-login').style.display='flex';
-}
-
-async function loadUser(u){
-  user=u;isAdmin=u.email===ADMIN_EMAIL;
-  const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();
-  if(data){
-    isPrem=data.plano==='premium'||isAdmin;
-    qhoje=data.questoes_hoje||0;streak=data.streak||0;
-    qresp=data.total_questoes||0;acertos=data.total_acertos||0;
-    nsim=data.total_simulados||0;erros_ids=data.erros_ids||[];catStats=data.cat_stats||{};
-  }
-}
-
-function openApp(){
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='flex';
-  atuHome();ir('home');initBot();
-}
-
-function atuHome(){
-  const n=user?.user_metadata?.nome||user?.email?.split('@')[0]||'Estudante';
-  const ghdr=document.getElementById('ghdr-titulo');if(ghdr)ghdr.textContent=n+'!';
-  const gs=document.getElementById('ghdr-sub');if(gs)gs.textContent='Ola,';
-  document.getElementById('hstr').textContent=streak;
-  document.getElementById('hhoje').innerHTML=qhoje+'<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span>';
-  if(isPrem){const h=document.getElementById('hprem');if(h)h.style.display='inline-block';}
-  const p=qresp>0?Math.min(Math.round(acertos/qresp*100),100):0;
-  const pc=document.getElementById('pressao-card');
-  const pt=document.getElementById('pressao-titulo');
-  const pm=document.getElementById('pressao-msg');
-  const pb=document.getElementById('pressao-bar');
-  if(!pc||!pt||!pm||!pb)return;
-  document.getElementById('pressao-pct').textContent=p+'% de aproveitamento';
-  pb.style.width=p+'%';
-  if(p>=70){pc.className='pressao-card pressao-aprovado';pt.textContent='Voce passaria na prova!';pm.textContent='Continue assim!';}
-  else if(p>=50){pc.className='pressao-card pressao-quase';pt.textContent='Voce esta quase la!';pm.textContent='Falta melhorar '+(70-p)+'% para aprovacao';}
-  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil(0.7*qresp-acertos));pt.textContent='Voce ainda reprovaria hoje';pm.textContent='Faltam '+faltam+' acertos para 70%';}
-  else{pc.className='pressao-card pressao-reprovado';pt.textContent='Voce esta pronto para comecar?';pm.textContent='Faca o simulado e descubra seu nivel';}
-  const ne=erros_ids.length;
-  const ec=document.getElementById('erros-count');if(ec)ec.textContent=ne>0?ne+' questoes para revisar':'Revise o que voce errou';
-  const ec2=document.getElementById('erros-count2');if(ec2)ec2.textContent=ne>0?ne+' questoes para revisar':'Responda questoes para ver seus erros';
-  atuRecomendacao(p);atuPerfAssuntos();atuPerfil();
-}
-
-function atuRecomendacao(p){
-  const rt=document.getElementById('rec-titulo'),rd=document.getElementById('rec-desc'),rb=document.getElementById('rec-btn');
-  if(!rt||!rd||!rb)return;
-  if(qresp===0){rt.textContent='Faca seu primeiro simulado';rd.textContent='Descubra seu nivel atual';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
-  else if(erros_ids.length>5){rt.textContent='Revise seus erros agora';rd.textContent='Voce tem '+erros_ids.length+' questoes para revisar';rb.textContent='Revisar erros';rb.onclick=iniciarModoErros;}
-  else{
-    let piorCat=null,piorPct=100;
-    Object.entries(catStats).forEach(([cat,s])=>{const p2=s.total>0?Math.round(s.acertos/s.total*100):0;if(p2<piorPct){piorPct=p2;piorCat=cat;}});
-    if(piorCat&&piorPct<70){rt.textContent='Treine '+nomeAss(piorCat);rd.textContent='Voce acerta apenas '+piorPct+'% neste assunto';rb.textContent='Treinar agora';rb.onclick=()=>iniciarTreino(piorCat);}
-    else{rt.textContent='Faca mais um simulado';rd.textContent='Consistencia e o segredo da aprovacao';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
-  }
-}
-
-function atuPerfAssuntos(){
-  ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
-    const el=document.getElementById('perf-'+cat);if(!el)return;
-    const s=catStats[cat];if(!s){el.textContent='→';el.style.color='var(--CT)';return;}
-    const p=Math.round(s.acertos/s.total*100);
-    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
-    el.innerHTML='<span style="color:'+cor+';font-weight:700;">'+p+'%</span>';
-  });
-}
-
-function atuPerfil(){
-  const n=user?.user_metadata?.nome||'Estudante',e=user?.email||'';
-  const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
-  if(_isAdm){isAdmin=true;isPrem=true;}
-  _s('pnome',n);_s('pemail',e);_s('pavatar',n.charAt(0).toUpperCase());
-  _s('stot',qresp);_s('stax',qresp>0?Math.round(acertos/qresp*100)+'%':'0%');
-  _s('ssim',nsim);_s('serr',erros_ids.length);
-  const aw=document.getElementById('admin-btn-wrap');if(aw)aw.style.display=_isAdm?'flex':'none';
-  const pp=document.getElementById('pplan');
-  if(pp){if(_isAdm)pp.innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">Admin</span>';
-  else if(isPrem)pp.innerHTML='<span class="tag tgl">Premium</span>';
-  else pp.innerHTML='<span class="tag tgc">Gratuito</span>';}
-  const pn=document.getElementById('p-nome');if(pn&&!pn.value)pn.value=user?.user_metadata?.nome||'';
-  const pe=document.getElementById('p-email');if(pe)pe.value=user?.email||'';
-  const pt=document.getElementById('p-tel');if(pt&&!pt.value)pt.value=user?.user_metadata?.telefone||'';
-  atuMeuPlano();
-  const el=document.getElementById('perf-assuntos-perfil');
-  if(!el)return;
-  if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questoes para ver</div>';return;}
-  el.innerHTML=Object.entries(catStats).map(([cat,s])=>{
-    const p=s.total>0?Math.round(s.acertos/s.total*100):0;
-    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
-    return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">'+nomeAss(cat)+'</span><span style="font-size:11px;font-weight:600;color:'+cor+';">'+p+'%</span></div><div class="pbg"><div class="pfl" style="width:'+p+'%;background:'+cor+';"></div></div></div>';
-  }).join('');
-}
-
-function atuMeuPlano(){
-  const el=document.getElementById('meu-plano-card');
-  const ps=document.getElementById('planos-section');
-  if(!el)return;
-  if(isPrem&&!isAdmin){
-    el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado</div></div></div>';
-    if(ps)ps.style.display='none';
-  }else{
-    el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes por dia</div></div></div>';
-    if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
-  }
-}
-
-async function salvarPerfil(){
-  const nome=document.getElementById('p-nome')?.value.trim();
-  const tel=document.getElementById('p-tel')?.value.trim();
-  const cidade=document.getElementById('p-cidade')?.value.trim();
-  const ok=document.getElementById('perfil-ok');
-  if(!nome){if(ok){ok.textContent='Digite seu nome.';ok.style.display='block';}return;}
-  if(!user)return;
-  await sb.from('usuarios').update({nome,telefone:tel,cidade}).eq('id',user.id);
-  user.user_metadata=user.user_metadata||{};user.user_metadata.nome=nome;
-  if(ok){ok.textContent='Perfil salvo!';ok.style.display='block';ok.style.background='var(--VC)';ok.style.color='#15803d';}
-  atuHome();setTimeout(()=>{if(ok)ok.style.display='none';},3000);
-}
-
-async function iniciarTreino(cat){
-  if(!isPrem&&qhoje>=30){showPW();return;}
-  modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');
-  // Buscar todas da categoria sem limit para garantir variedade
-  let q=sb.from('questoes').select('*').eq('ativo',true);
-  if(cat!=='todos')q=q.eq('categoria',cat);
-  const{data}=await q;
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}
-  // Deduplicar por ID e embaralhar
-  const idsVistos=new Set();
-  const unicas=data.filter(q=>{if(idsVistos.has(q.id))return false;idsVistos.add(q.id);return true;});
-  fila=unicas.sort(()=>Math.random()-.5).slice(0,30);
-  idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-async function iniciarModoErros(){
-  if(!isPrem){showPW();return;}
-  if(erros_ids.length===0){alert('Voce nao tem erros registrados ainda!');return;}
-  modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');
-  const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);
-  if(!data||data.length===0){alert('Questoes nao encontradas.');return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-async function iniciarSimulado(){
-  if(!isPrem){showPW();return;}
-  modoAtual='simulado';ir('questao');
-  // Buscar TODAS as questoes para garantir variedade
-  const{data}=await sb.from('questoes').select('*').eq('ativo',true);
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}
-  // Embaralhar todas primeiro
-  const todas=data.sort(()=>Math.random()-.5);
-  // Selecionar sem repeticao por categoria (max 8 por categoria)
-  const idsUsados=new Set();const mistura=[];
-  const cats=['cto','legislacao','socorros','meio_ambiente'];
-  cats.forEach(cat=>{
-    todas.filter(q=>q.categoria===cat&&!idsUsados.has(q.id))
-      .slice(0,8).forEach(q=>{idsUsados.add(q.id);mistura.push(q);});
-  });
-  // Completar com outras questoes nao usadas ate 30
-  todas.filter(q=>!idsUsados.has(q.id)).forEach(q=>{
-    if(mistura.length<30){idsUsados.add(q.id);mistura.push(q);}
-  });
-  // Embaralhar a fila final
-  fila=mistura.slice(0,30).sort(()=>Math.random()-.5);
-  idx=0;simAcertos=0;simErros=0;simSegundos=3600;simInicio=new Date();
-  const te=document.getElementById('qtimer');te.style.display='block';te.textContent='60:00';te.className='timer';
-  if(simTimer)clearInterval(simTimer);
-  simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);
-  renderQ();
-}
-
-function sairQuestao(){if(simTimer)clearInterval(simTimer);ir(modoAtual==='simulado'?'simulado':'treino');}
-
-function renderQ(){
-  if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else{ir('treino');return;}return;}
-  qatual=fila[idx];resp=false;
-  document.getElementById('qcont').textContent='Questao '+(idx+1)+'/'+fila.length;
-  document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
-  document.getElementById('qprog').style.width=((idx+1)/fila.length*100)+'%';
-  const ilHtml=getIl(qatual);
-  const ilEl=document.getElementById('qilus');
-  ilEl.innerHTML=ilHtml;
-  ilEl.style.display=ilHtml?'flex':'none';
-  document.getElementById('qenu').textContent=qatual.enunciado;
-  document.getElementById('qcom').style.display='none';
-  document.getElementById('qnxt').style.display='none';
-  document.getElementById('qcomt').textContent=qatual.comentario||'';
-  document.getElementById('qart').textContent=qatual.artigo_ctb||'';
-  const nxt=document.getElementById('qnxt');
-  if(!isPrem&&qhoje===28)nxt.textContent='Proxima (restam 2 gratis)';
-  else if(!isPrem&&qhoje===29)nxt.textContent='Ultima questao gratuita hoje';
-  else nxt.textContent='Proxima questao →';
-  const al=document.getElementById('qalts');al.innerHTML='';
-  ['A','B','C','D'].forEach((l,i)=>{
-    const op=[qatual.alternativa_a,qatual.alternativa_b,qatual.alternativa_c,qatual.alternativa_d][i];
-    const b=document.createElement('button');b.className='alt';
-    b.innerHTML='<span class="al">'+l+'</span>'+op;
-    b.onclick=()=>responder(b,l);al.appendChild(b);
-  });
-  // Animacao de entrada na questao
-  const qcard=document.getElementById('qcard');
-  if(qcard){qcard.classList.remove('fade-up');void qcard.offsetWidth;qcard.classList.add('fade-up');}
-  const ilus=document.getElementById('qilus');
-  if(ilus&&ilus.innerHTML){ilus.classList.remove('pop-in');void ilus.offsetWidth;ilus.classList.add('pop-in');}
-}
-
-async function enviarContato(){
-  const a=document.getElementById('cass').value,m=document.getElementById('cmsg').value.trim();
-  const cs=document.getElementById('csuc'),ce=document.getElementById('cerr2');
-  cs.style.display='none';ce.style.display='none';
-  if(!a||!m){ce.textContent='Preencha assunto e mensagem.';ce.style.display='block';return;}
-  await sb.from('contatos').insert({usuario_id:user?.id,email:user?.email,assunto:a,mensagem:m});
-  cs.textContent='Mensagem enviada!';cs.style.display='block';
-  document.getElementById('cass').value='';document.getElementById('cmsg').value='';
-}
-
-function mostrarInstalar(){
-  const ua=navigator.userAgent.toLowerCase();
-  if(ua.includes('iphone')||ua.includes('ipad')){alert('Para instalar no iPhone:\n1. Toque no icone de compartilhar\n2. Toque em Adicionar a Tela de Inicio\n3. Toque em Adicionar');}
-  else{alert('Para instalar no Android:\n1. Toque nos 3 pontinhos\n2. Toque em Adicionar a tela inicial\n3. Toque em Adicionar');}
-}
-
-
-async function init(){
-  try{
-    const{data:{session}}=await sb.auth.getSession();
-    if(session?.user){await loadUser(session.user);openApp();}
-    else{
-      // Show login screen explicitly
-      document.getElementById('tela-login').style.display='flex';
-    }
-  }catch(e){
-    console.error('Init error:',e);
-    // Show login even on error
-    document.getElementById('tela-login').style.display='flex';
-  }
-}
-init();
-</script>
-</body>
-</html>
