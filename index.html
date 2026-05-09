@@ -962,7 +962,16 @@ function assinarPlano(plano){
 let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
 async function carregarAdmin(){
   const{data:users,error}=await sb.from('usuarios').select('*').order('id',{ascending:false});
-  if(error||!users)return;
+  if(error){
+    console.error('Admin error:',error);
+    document.getElementById('admin-subtitulo').textContent='Erro ao carregar: '+error.message;
+    return;
+  }
+  if(!users||users.length===0){
+    document.getElementById('admin-subtitulo').textContent='Nenhum usuario encontrado';
+    document.getElementById('admin-lista').innerHTML='<div class="card" style="text-align:center;padding:20px;font-size:12px;color:var(--CT);">Nenhum usuario cadastrado ainda.</div>';
+    return;
+  }
   todosUsers=users;
   const total=users.length,ativos=users.filter(u=>u.plano==='premium').length,grat=users.filter(u=>u.plano==='gratuito').length;
   const cancelados=users.filter(u=>u.plano==='cancelado').length;
@@ -999,7 +1008,27 @@ function renderLista(users){
     const wlink=tel?'https://wa.me/55'+tel:'';
     const dias=u.created_at?Math.floor((new Date()-new Date(u.created_at))/(1000*60*60*24)):0;
     const div=document.createElement('div');div.className='u-item';
-    div.innerHTML='<div class="u-av">'+av+'</div><div class="u-info"><div class="u-nome">'+(u.nome||'Sem nome')+'</div><div class="u-email">'+u.email+'</div><div style="margin-top:2px;"><span class="tag '+(u.plano==='premium'?'tgv':'tgl')+'" style="font-size:9px;">'+(u.plano||'gratuito')+'</span><span style="font-size:9px;color:var(--CT);"> · '+dias+'d</span></div></div>'+(wlink?'<button class="ubtn ubtn-w" onclick="window.open(\''+wlink+'\',\'_blank\')">WhatsApp</button>':'');
+    const statusCor={premium:'#22C55E',gratuito:'#888',cancelado:'#EF4444',atrasado:'#f59e0b'}[u.plano||'gratuito']||'#888';
+    const statusIcon={premium:'⭐',gratuito:'🆓',cancelado:'❌',atrasado:'⚠️'}[u.plano||'gratuito']||'🆓';
+    const questoes=u.total_questoes||0;
+    const acertosU=u.total_acertos||0;
+    const taxa=questoes>0?Math.round(acertosU/questoes*100):0;
+    const simulados=u.total_simulados||0;
+    div.innerHTML=
+      '<div class="u-av" style="background:'+statusCor+'22;color:'+statusCor+';">'+av+'</div>'+
+      '<div class="u-info" style="flex:1;">'+
+        '<div class="u-nome">'+(u.nome||'Sem nome')+'</div>'+
+        '<div class="u-email" style="font-size:10px;">'+u.email+'</div>'+
+        '<div style="margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'+
+          '<span class="tag" style="font-size:9px;background:'+statusCor+'22;color:'+statusCor+';">'+statusIcon+' '+(u.plano||'gratuito')+'</span>'+
+          '<span style="font-size:9px;color:var(--CT);">📅 '+dias+'d atrás</span>'+
+          '<span style="font-size:9px;color:var(--CT);">📝 '+questoes+' questões</span>'+
+          '<span style="font-size:9px;color:var(--CT);">🎯 '+taxa+'% acertos</span>'+
+          (simulados>0?'<span style="font-size:9px;color:var(--CT);">📊 '+simulados+' simulados</span>':'')+
+          (u.cidade?'<span style="font-size:9px;color:var(--CT);">📍 '+u.cidade+'</span>':'')+
+        '</div>'+
+      '</div>'+
+      (wlink?'<a class="ubtn ubtn-w" href="'+wlink+'" target="_blank" style="text-decoration:none;">WhatsApp</a>':'');
     lista.appendChild(div);
   });
 }
