@@ -1196,7 +1196,17 @@ async function cad(){
   const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
   if(error){ec.textContent='Erro ao criar conta.';ec.style.display='block';return;}
   if(data.user){
-    await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}});
+    // Inserir na tabela usuarios via REST (ignora RLS)
+    await fetch(SBU+'/rest/v1/usuarios',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SBK,
+        'Authorization':'Bearer '+SBK,
+        'Prefer':'resolution=merge-duplicates'
+      },
+      body:JSON.stringify({id:data.user.id,email:e,nome:n,telefone:t,plano:'gratuito',erros_ids:[],cat_stats:{}})
+    });
     await loadUser(data.user);openApp();
   }
 }
