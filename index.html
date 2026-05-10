@@ -483,7 +483,11 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
         <button onclick="sairQuestao()" style="background:rgba(255,255,255,.2);border:none;border-radius:9px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--FC);">Sair</button>
       </div>
     </div>
-    <div style="padding:7px 15px;background:var(--L);flex-shrink:0;"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
+    <div style="padding:4px 15px 2px;background:var(--L);flex-shrink:0;display:flex;justify-content:space-between;align-items:center;">
+      <span id="qcont-pct" style="font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;">0 respondidas</span>
+      <span id="qacertos-pct" style="font-size:12px;font-weight:800;color:#fff;"></span>
+    </div>
+    <div style="padding:4px 15px 7px;background:var(--L);flex-shrink:0;"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
     <div class="cnt" id="qcard">
       <div class="ilus" id="qilus"></div>
       <div class="card" id="qenu" style="font-size:12px;color:#222;line-height:1.7;"></div>
@@ -835,6 +839,16 @@ function responder(btn,l){
   if(!ok)document.querySelectorAll('.alt')[ls.indexOf(cResp)].classList.add('re');
   document.getElementById('qcom').style.display='block';
   document.getElementById('qnxt').style.display='block';
+  // Calcular e mostrar % de acertos em tempo real
+  const totalResp=idx+1;
+  const pctVal=Math.round(simAcertos/totalResp*100);
+  const pctAcEl=document.getElementById('qacertos-pct');
+  if(pctAcEl){
+    pctAcEl.textContent='Acertos: '+pctVal+'%';
+    pctAcEl.style.color=pctVal>=70?'#86efac':pctVal>=50?'#fde68a':'#fca5a5';
+  }
+  const pctContEl=document.getElementById('qcont-pct');
+  if(pctContEl)pctContEl.textContent=totalResp+' respondida'+(totalResp>1?'s':'');
   const comEl=document.getElementById('qcom');
   comEl.querySelectorAll('.feedback-msg,.motivacao-msg').forEach(e=>e.remove());
   const MSGS_OK=['🔥 Boa! Voce esta evoluindo!','🚀 Mandou bem!','👏 Excelente! Continue assim!','✅ Correto! Voce esta preparado!','💪 Isso ai! Mais uma acertada!'];
@@ -1420,6 +1434,12 @@ function renderQ(){
   if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else{ir('treino');return;}return;}
   qatual=fila[idx];resp=false;
   document.getElementById('qcont').textContent='Questao '+(idx+1)+'/'+fila.length;
+  // Atualizar contador de respondidas
+  const respAte=idx;
+  const pctEl=document.getElementById('qcont-pct');
+  if(pctEl)pctEl.textContent=respAte>0?respAte+' respondida'+(respAte>1?'s':''):'Começando...';
+  const pctAc=document.getElementById('qacertos-pct');
+  if(pctAc)pctAc.textContent='';
   document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
   document.getElementById('qprog').style.width=((idx+1)/fila.length*100)+'%';
   const ilHtml=getIl(qatual);
