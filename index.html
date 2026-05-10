@@ -836,11 +836,19 @@ function responder(btn,l){
   document.getElementById('qcom').style.display='block';
   document.getElementById('qnxt').style.display='block';
   const comEl=document.getElementById('qcom');
-  const oldFb=comEl.querySelector('.feedback-msg');if(oldFb)oldFb.remove();
+  comEl.querySelectorAll('.feedback-msg,.motivacao-msg').forEach(e=>e.remove());
+  const MSGS_OK=['🔥 Boa! Voce esta evoluindo!','🚀 Mandou bem!','👏 Excelente! Continue assim!','✅ Correto! Voce esta preparado!','💪 Isso ai! Mais uma acertada!'];
+  const MSGS_NO=['⚠️ Essa cai muito na prova, revise!','👀 Fique atento nessa questao','📌 Essa e importante revisar','💡 Errou agora, mas nao erra na prova!','🎯 Anote esse tema para revisar'];
+  const MSGS_MOT_OK=['So mais uma 👇','Voce esta indo muito bem!','Continue, voce esta no caminho certo!','Cada questao te deixa mais preparado!'];
+  const MSGS_MOT_NO=['Respira e foca na proxima 💪','Errar faz parte do aprendizado!','Nao desanima, voce consegue!'];
   const fb=document.createElement('div');
-  fb.textContent=ok?'✅ Correto!':'❌ Revise essa — cai muito na prova';
+  fb.textContent=(ok?MSGS_OK:MSGS_NO)[Math.floor(Math.random()*(ok?MSGS_OK:MSGS_NO).length)];
   fb.className='feedback-msg '+(ok?'feedback-ok':'feedback-no');
   comEl.insertBefore(fb,comEl.firstChild);
+  const restam=fila.length-(idx+1);
+  let motTxt=restam===0?'🎉 Ultima questao! Voce chegou ate aqui!':restam<=3?'🏁 Faltam so '+restam+' questao(oes)!':(ok?MSGS_MOT_OK:MSGS_MOT_NO)[Math.floor(Math.random()*(ok?MSGS_MOT_OK:MSGS_MOT_NO).length)];
+  const mot=document.createElement('div');mot.textContent=motTxt;mot.className='motivacao-msg';
+  comEl.appendChild(mot);
   qresp++;qhoje++;
   if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);
   }
