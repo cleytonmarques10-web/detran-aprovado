@@ -402,12 +402,12 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
     </div>
     <nav class="nt">
       <button class="ni on" id="nav-home" onclick="ir('home')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#FF6B00" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="#FF6B00" stroke-width="2"/></svg>
-        <span>Home</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="2"/></svg>
+        <span>Início</span>
       </button>
       <button class="ni" id="nav-treino" onclick="ir('treino')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="2"/><path d="M9 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Treino</span>
+        <span>Questões</span>
       </button>
       <button class="ni" id="nav-simulado" onclick="ir('simulado')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#888" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
@@ -415,11 +415,11 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       </button>
       <button class="ni" id="nav-bot" onclick="ir('bot')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
-        <span>Professor</span>
+        <span>Prof. IA</span>
       </button>
       <button class="ni" id="nav-perfil" onclick="ir('perfil')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
-        <span>Perfil</span>
+        <span>Conta</span>
       </button>
     </nav>
   </div>
@@ -901,11 +901,9 @@ async function atuHistorico(){
 
 function initBot(){
   const ca=document.getElementById('chat-area');ca.innerHTML='';
-  // Try load saved chat (7 days)
   const saved=carregarChatLocal();
   if(saved&&saved.msgs&&saved.msgs.length>0){
     hist=saved.msgs;
-    // Replay messages visually
     hist.forEach(m=>{
       const tipo=m.role==='user'?'user':'bot';
       const txt=Array.isArray(m.content)?m.content.find(x=>x.type==='text')?.text||'📷 Imagem':m.content;
@@ -915,10 +913,9 @@ function initBot(){
     return;
   }
   hist=[];
-  let chips=['O que cai na prova?','Quantas questoes tem?','Como funciona a CNH?','O que e infracao gravissima?'];
-  let msg='Ola! Sou o <b>DetranBot</b> 🚗 Seu professor de CNH. Pergunte qualquer coisa sobre a prova do Detran, leis de transito ou habilitacao!';
-  if(erros_ids.length>3){msg='Ola! Vi que voce tem <b>'+erros_ids.length+' questoes marcadas como erro</b>. Quer que eu explique alguma delas?';chips=['Explique sobre placas','Duvida sobre infracoes','Como funciona CTB?','O que errei?'];}
-  addMsg('bot',msg,chips);
+  const bemVindo='👋 Olá! Eu sou seu Professor de CNH\n\nPosso te ajudar com qualquer dúvida da prova:\n\n🎤 Pode enviar áudio\n📸 Pode mandar foto da questão\n📘 Explico passo a passo\n⚡ Respondo na hora\n\n👉 Escreva ou envie sua dúvida abaixo';
+  addMsg('bot',bemVindo);
+  hist=[{role:'assistant',content:bemVindo}];
 }
 function fmtMsg(t){return t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}
 function addMsg(tipo,txt,chips){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg '+tipo;const h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});const ftxt=tipo==='bot'?fmtMsg(txt):txt;d.innerHTML='<div class="bub">'+ftxt+'</div><div class="mt">'+h+'</div>';if(chips&&chips.length){const r=document.createElement('div');r.className='chips';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{document.getElementById('cinp').value=c;enviar();};r.appendChild(b);});d.appendChild(r);}ca.appendChild(d);setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},50);}
