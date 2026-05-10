@@ -17,12 +17,12 @@ body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;ov
 .global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
 .global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
 .nt{background:#fff;border-top:1.5px solid #F0F0F0;display:flex;justify-content:space-around;align-items:center;height:56px;box-shadow:0 -2px 10px rgba(0,0,0,0.06);}
-.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;transition:transform .15s ease;color:#bbb;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;transition:transform .15s ease;color:#666;}
 .ni svg{transition:all .2s ease;}
-.ni span{font-size:9px;font-weight:500;white-space:nowrap;transition:all .2s ease;}
+.ni span{font-size:9px;font-weight:600;white-space:nowrap;transition:all .2s ease;}
 .ni:active{transform:scale(0.92);}
 .ni.on{color:var(--L);}
-.ni.on svg{filter:drop-shadow(0 1px 4px rgba(255,107,0,0.3));}
+.ni.on svg{filter:drop-shadow(0 1px 4px rgba(255,107,0,0.35));}
 .ni.on span{font-weight:800;font-size:10px;}
 .tela{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .tela.on{display:flex;}
@@ -415,7 +415,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       </button>
       <button class="ni" id="nav-bot" onclick="ir('bot')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
-        <span>Prof. IA</span>
+        <span>Professor</span>
       </button>
       <button class="ni" id="nav-perfil" onclick="ir('perfil')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
@@ -449,12 +449,12 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       </div>
       <div class="ass-card" onclick="iniciarTreino('todos')">
         <div class="ass-icon" style="background:var(--LC);">📚</div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Treino livre</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos</div></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões variadas</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos</div></div>
         <span style="color:var(--CT);">→</span>
       </div>
       <div class="ass-card" onclick="iniciarModoErros()">
         <div class="ass-icon" style="background:var(--RC);">🔁</div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">So meus erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count">Revise o que errou</div></div>
+        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões que errei</div><div style="font-size:11px;color:var(--CT);" id="erros-count">Revise o que errou</div></div>
         <span style="color:var(--CT);">→</span>
       </div>
     </div>
@@ -464,7 +464,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
   <div id="tela-treino" class="tela">
     <div class="cnt">
       <div class="ass-card" onclick="iniciarTreino('todos')"><div class="ass-icon" style="background:var(--LC);">📚</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Treino completo</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos</div></div><span class="tag tgl">→</span></div>
-      <div class="ass-card" onclick="iniciarModoErros()"><div class="ass-icon" style="background:var(--RC);">🔁</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">So meus erros</div><div style="font-size:11px;color:var(--CT);" id="erros-count2">Responda questoes para ver</div></div><span class="tag tgr">→</span></div>
+      <div class="ass-card" onclick="iniciarModoErros()"><div class="ass-icon" style="background:var(--RC);">🔁</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões que errei</div><div style="font-size:11px;color:var(--CT);" id="erros-count2">Responda questoes para ver</div></div><span class="tag tgr">→</span></div>
       <div style="font-size:12px;font-weight:600;color:#555;">Por assunto</div>
       <div class="ass-card" onclick="iniciarTreino('sinalizacao')"><div class="ass-icon" style="background:#FFF9E6;">🚦</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Sinalizacao</div><div style="font-size:11px;color:var(--CT);">Placas, semaforos e marcas</div></div><div id="perf-sinalizacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
       <div class="ass-card" onclick="iniciarTreino('legislacao')"><div class="ass-icon" style="background:#EEF2FF;">⚖️</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Legislacao</div><div style="font-size:11px;color:var(--CT);">CTB, infracoes e penalidades</div></div><div id="perf-legislacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
