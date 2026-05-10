@@ -1346,11 +1346,15 @@ async function salvarPerfil(){
 async function iniciarTreino(cat){
   if(!isPrem&&qhoje>=30){showPW();return;}
   modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');
+  // Buscar todas sem limit
   let q=sb.from('questoes').select('*').eq('ativo',true);
   if(cat!=='todos')q=q.eq('categoria',cat);
-  const{data}=await q.limit(30);
+  const{data}=await q;
   if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
+  // Deduplicar por ID e embaralhar
+  const mapa=new Map();data.forEach(q=>mapa.set(q.id,q));
+  fila=Array.from(mapa.values()).sort(()=>Math.random()-.5).slice(0,30);
+  idx=0;simAcertos=0;simErros=0;renderQ();
 }
 
 async function iniciarModoErros(){
@@ -1365,16 +1369,24 @@ async function iniciarModoErros(){
 async function iniciarSimulado(){
   if(!isPrem){showPW();return;}
   modoAtual='simulado';ir('questao');
-  const{data}=await sb.from('questoes').select('*').eq('ativo',true).limit(60);
+  // Buscar TODAS as questoes de uma vez
+  const{data}=await sb.from('questoes').select('*').eq('ativo',true);
   if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}
-  const mistura=[];
-  ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
-    const qs=data.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5);
-    mistura.push(...qs.slice(0,6));
+  // Deduplicar por ID
+  const mapa=new Map();data.forEach(q=>mapa.set(q.id,q));
+  const unicas=Array.from(mapa.values());
+  // Mistura por categoria (max 8 por cat) para variedade
+  const cats=['cto','legislacao','socorros','meio_ambiente'];
+  const usados=new Set();const mistura=[];
+  cats.forEach(cat=>{
+    unicas.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5)
+      .slice(0,8).forEach(q=>{usados.add(q.id);mistura.push(q);});
   });
-  const idsUsados=new Set();const filaUnica=[];
-  [...mistura,...data].forEach(q=>{if(!idsUsados.has(q.id)){idsUsados.add(q.id);filaUnica.push(q);}});
-  fila=filaUnica.slice(0,30).sort(()=>Math.random()-.5);
+  // Completar ate 30 com outras categorias
+  unicas.sort(()=>Math.random()-.5).forEach(q=>{
+    if(mistura.length<30&&!usados.has(q.id)){usados.add(q.id);mistura.push(q);}
+  });
+  fila=mistura.slice(0,30).sort(()=>Math.random()-.5);
   idx=0;simAcertos=0;simErros=0;simSegundos=3600;simInicio=new Date();
   const te=document.getElementById('qtimer');te.style.display='block';te.textContent='60:00';te.className='timer';
   if(simTimer)clearInterval(simTimer);
