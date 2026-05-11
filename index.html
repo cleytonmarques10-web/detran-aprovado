@@ -360,6 +360,8 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 .feedback-no{background:#FFF7ED;color:#C2410C;border-left:3px solid #F97316;}
 .motivacao-msg{font-size:12px;color:var(--L);font-weight:600;text-align:center;padding:6px 0 2px;animation:fadeUp 0.4s ease both;}
 /* ======================================================= */
+
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
@@ -1274,6 +1276,8 @@ function openApp(){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='flex';
   atuHome();ir('home');initBot();
+  // Mostrar modal de instalação (até 3 vezes)
+  setTimeout(mostrarInstalar, 1500);
 }
 
 function atuHome(){
@@ -1514,6 +1518,43 @@ async function executarReset(){
   alert('✅ Progresso reiniciado com sucesso!');
 }
 
+
+// ===== INSTALAR APP =====
+function detectarOS(){
+  const ua=navigator.userAgent.toLowerCase();
+  if(/iphone|ipad|ipod/.test(ua))return'ios';
+  if(/android/.test(ua))return'android';
+  return'outros';
+}
+function mostrarInstalar(){
+  const visto=parseInt(localStorage.getItem('instalar_visto')||'0');
+  const instalado=localStorage.getItem('instalar_ok')==='1';
+  if(instalado||visto>=3)return;
+  localStorage.setItem('instalar_visto',visto+1);
+  const modal=document.getElementById('modal-instalar');
+  if(!modal)return;
+  // Mostrar instruções corretas por OS
+  const os=detectarOS();
+  document.getElementById('inst-android').style.display=os==='android'?'block':'none';
+  document.getElementById('inst-ios').style.display=os==='ios'?'block':'none';
+  document.getElementById('inst-outros').style.display=os==='outros'?'block':'none';
+  // Contador
+  const restam=3-(visto+1);
+  const ctr=document.getElementById('inst-contador');
+  if(ctr)ctr.textContent=restam>0?'Este aviso aparecerá mais '+restam+' vez(es)':'Última vez que mostramos isso';
+  modal.style.display='flex';
+}
+function fecharInstalar(){
+  const modal=document.getElementById('modal-instalar');
+  if(modal)modal.style.display='none';
+  localStorage.setItem('instalar_ok','1');
+}
+function irInstalar(){
+  const modal=document.getElementById('modal-instalar');
+  if(modal)modal.style.display='none';
+  localStorage.setItem('instalar_ok','1');
+}
+// ========================
 async function init(){
   try{
     const{data:{session}}=await sb.auth.getSession();
@@ -1530,5 +1571,78 @@ async function init(){
 }
 init();
 </script>
+
+<!-- MODAL INSTALAR APP -->
+<div id="modal-instalar" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;max-width:480px;animation:slideUp 0.3s ease;">
+    <!-- Handle -->
+    <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px;"></div>
+    <!-- Ícone -->
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,#FF6B00,#FF9500);border-radius:18px;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(255,107,0,0.3);">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2L8 6h3v8h2V6h3L12 2z" fill="#fff"/><path d="M4 14v4a2 2 0 002 2h12a2 2 0 002-2v-4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <!-- Título -->
+    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;text-align:center;color:#1a1a1a;margin:0 0 8px;">Instale o Detran Aprovado!</h2>
+    <p style="font-size:13px;color:#666;text-align:center;margin:0 0 24px;line-height:1.5;">Tenha o app na tela inicial do seu celular e acesse muito mais rápido — sem precisar abrir o navegador.</p>
+    <!-- Instruções Android -->
+    <div id="inst-android" style="display:none;">
+      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 No Android (Chrome):</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">1</div>
+            Toque no menu <strong>⋮</strong> (3 pontos) no canto superior direito
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">2</div>
+            Selecione <strong>"Adicionar à tela inicial"</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">3</div>
+            Confirme tocando em <strong>"Adicionar"</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Instruções iOS -->
+    <div id="inst-ios" style="display:none;">
+      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 No iPhone (Safari):</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">1</div>
+            Toque no ícone <strong>compartilhar</strong> <span style="font-size:14px;">⬆️</span> na barra inferior
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">2</div>
+            Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
+            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">3</div>
+            Toque em <strong>"Adicionar"</strong> no canto superior direito
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Instruções genéricas (fallback) -->
+    <div id="inst-outros" style="display:none;">
+      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 Como instalar:</div>
+        <div style="font-size:12px;color:#444;line-height:1.6;">
+          No menu do seu navegador, procure a opção <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong> e confirme.
+        </div>
+      </div>
+    </div>
+    <!-- Contador -->
+    <div style="text-align:center;margin-bottom:16px;">
+      <span id="inst-contador" style="font-size:11px;color:#aaa;"></span>
+    </div>
+    <!-- Botões -->
+    <button onclick="irInstalar()" style="width:100%;background:#FF6B00;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;margin-bottom:10px;">📲 Vou instalar agora!</button>
+    <button onclick="fecharInstalar()" style="width:100%;background:#f5f5f5;color:#888;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Já instalei</button>
+  </div>
+</div>
 </body>
 </html>
