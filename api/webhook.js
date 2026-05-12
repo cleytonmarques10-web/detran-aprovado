@@ -49,12 +49,20 @@ export default async function handler(req, res) {
 
     // Definir plano pelo evento
     let novoPlano = 'premium';
-    if (evento === 'order_approved' || evento === 'subscription_renewed') {
+    // Aceitar eventos em inglês E português (Kiwify muda conforme idioma)
+    const eventoAprovado = ['order_approved','pedido_aprovado','subscription_renewed','assinatura_renovada'];
+    const eventoAtrasado = ['subscription_delayed','assinatura_atrasada'];
+    const eventoCancelado = ['subscription_canceled','assinatura_cancelada','order_refunded','pedido_reembolsado','chargedback'];
+
+    if (eventoAprovado.includes(evento)) {
       novoPlano = 'premium';
-    } else if (evento === 'subscription_delayed') {
+    } else if (eventoAtrasado.includes(evento)) {
       novoPlano = 'atrasado';
-    } else if (evento === 'subscription_canceled' || evento === 'order_refunded' || evento === 'chargedback') {
+    } else if (eventoCancelado.includes(evento)) {
       novoPlano = 'cancelado';
+    } else {
+      // Evento não reconhecido (pix_created, boleto_gerado, etc) — ignorar
+      return res.status(200).json({ ok: true, msg: 'Evento ignorado: ' + evento });
     }
 
     // Verificar se usuario existe
@@ -106,7 +114,7 @@ export default async function handler(req, res) {
     }
 
     // Enviar email apenas em compra aprovada ou renovacao
-    if (resendKey && (evento === 'order_approved' || evento === 'subscription_renewed')) {
+    if (resendKey && eventoAprovado.includes(evento)) {
       const primeiroNome = (nome || email).split(' ')[0];
       const dataExpiracao = acesso_ate
         ? new Date(acesso_ate).toLocaleDateString('pt-BR')
