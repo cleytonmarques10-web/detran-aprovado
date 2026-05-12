@@ -396,16 +396,19 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 </div>
 
 <!-- RESET SENHA -->
-<div id="tela-reset" class="lw" style="display:none;flex-direction:column;align-items:center;min-height:100vh;">
-  <div class="ll"><svg width="40" height="40" viewBox="0 0 42 42" fill="none"><path d="M7 33L21 9l14 24Z" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="21" cy="28" r="3" fill="#fff"/></svg><span>Detran Aprovado</span></div>
+<div id="tela-reset" class="lw" style="display:none;">
+  <div class="ll">
+    <svg width="40" height="40" viewBox="0 0 42 42" fill="none"><path d="M7 33L21 9l14 24Z" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="21" cy="28" r="3" fill="#fff"/></svg>
+  </div>
+  <div style="font-family:var(--FT);font-size:18px;font-weight:900;color:var(--L);margin:12px 0 24px;">Detran Aprovado</div>
   <div class="lc">
-    <div class="lh">Nova senha</div>
-    <div class="ls">Digite sua nova senha abaixo</div>
-    <div class="ig"><label class="il">Nova senha</label><input type="password" id="rs-senha" class="ii" placeholder="Minimo 6 caracteres"></div>
+    <div class="lh">Criar nova senha</div>
+    <div class="ls">Digite e confirme sua nova senha</div>
+    <div class="ig"><label class="il">Nova senha</label><input type="password" id="rs-senha" class="ii" placeholder="Mínimo 6 caracteres"></div>
     <div class="ig"><label class="il">Confirmar senha</label><input type="password" id="rs-confirma" class="ii" placeholder="Digite novamente"></div>
     <div class="em" id="rs-err" style="display:none;"></div>
     <div class="sm" id="rs-ok" style="display:none;"></div>
-    <button class="btn btnl" onclick="salvarNovaSenha()">Salvar nova senha</button>
+    <button class="btn btnl" style="margin-top:8px;" onclick="salvarNovaSenha()">Salvar nova senha</button>
   </div>
 </div>
 
