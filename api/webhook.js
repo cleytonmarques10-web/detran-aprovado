@@ -1,15 +1,15 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS,GET');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'GET') return res.status(200).json({ ok: true, msg: 'Webhook ativo' });
 
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+
+  // Salvar log IMEDIATAMENTE — antes de qualquer processamento
   try {
-    const data = req.body;
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SECRET_KEY;
-
-    // Salvar log para debug
     await fetch(supabaseUrl + '/rest/v1/webhook_logs', {
       method: 'POST',
       headers: {
@@ -17,41 +17,32 @@ export default async function handler(req, res) {
         'apikey': supabaseKey,
         'Authorization': 'Bearer ' + supabaseKey
       },
-      body: JSON.stringify({ payload: data })
+      body: JSON.stringify({ payload: req.body || {} })
     });
+  } catch (logErr) {
+    console.error('Erro ao salvar log:', logErr.message);
+  }
 
-    // Extrair dados
+  try {
+    const data = req.body || {};
+
     const email = data?.Customer?.email || data?.customer?.email ||
                   data?.buyer?.email || data?.subscription?.customer?.email || '';
-
-    const plano = data?.Product?.name || data?.product?.name ||
-                  data?.plan?.name || data?.subscription?.plan?.name || 'Premium';
 
     const evento = data?.webhook_event_type || data?.event ||
                    data?.type || data?.status || '';
 
-    const kiwify_id = data?.order_id || data?.id ||
-                      data?.subscription?.id || '';
+    if (!email) return res.status(200).json({ ok: true, msg: 'Sem email — log salvo' });
 
-    if (!email) return res.status(400).json({ error: 'Email nao encontrado' });
-
-    // Definir plano pelo evento
     let novoPlano = 'premium';
-    let acesso_ate = null;
-
     if (evento === 'order_approved' || evento === 'subscription_renewed') {
       novoPlano = 'premium';
     } else if (evento === 'subscription_delayed') {
       novoPlano = 'atrasado';
-      const sete_dias = new Date();
-      sete_dias.setDate(sete_dias.getDate() + 7);
-      acesso_ate = sete_dias.toISOString();
     } else if (evento === 'subscription_canceled' || evento === 'order_refunded' || evento === 'chargedback') {
       novoPlano = 'cancelado';
-      acesso_ate = new Date().toISOString();
     }
 
-    // Verificar se usuario existe
     const checkRes = await fetch(
       supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
       headers: {
@@ -91,10 +82,10 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({ success: true, email: email, plano: novoPlano, evento: evento });
+    return res.status(200).json({ success: true, email: email, plano: novoPlano });
 
   } catch (error) {
     console.error('Erro webhook:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(200).json({ ok: true, error: error.message });
   }
 }
