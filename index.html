@@ -1,4 +1,4 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1350,7 +1350,7 @@ async function recuperarSenha(){
   const e=document.getElementById('le').value.trim();
   const el=document.getElementById('el');
   if(!e){el.textContent='Digite seu e-mail para recuperar a senha.';el.style.color='var(--R)';el.style.display='block';return;}
-  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br'});
+  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br/#type=recovery'});
   el.style.display='block';
   if(error){el.textContent='Erro ao enviar. Verifique o e-mail.';el.style.color='var(--R)';}
   else{el.textContent='✅ Se o e-mail existir, voce receberá instruções para redefinir a senha.';el.style.color='#15803d';el.style.background='#F0FDF4';}
