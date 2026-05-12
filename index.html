@@ -709,9 +709,9 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 <div class="pw" id="pw">
   <div class="pwc">
     <div style="text-align:center;">
-      <div style="font-size:36px;margin-bottom:8px;">🚫</div>
-      <div style="font-family:var(--FT);font-size:20px;font-weight:900;color:#111;">Voce atingiu o limite gratuito!</div>
-      <div style="font-size:13px;color:#888;margin-top:6px;">Voce usou suas 30 questoes gratuitas de hoje.</div>
+      <div style="font-size:36px;margin-bottom:8px;" id="pw-icon">🔒</div>
+      <div style="font-family:var(--FT);font-size:20px;font-weight:900;color:#111;" id="pw-titulo">Simulado disponivel no plano Premium</div>
+      <div style="font-size:13px;color:#888;margin-top:6px;" id="pw-subtitulo">Voce ainda tem questoes gratuitas para treinar 👇</div>
     </div>
     <div style="background:#FFF3EA;border:1.5px solid #FFD4B0;border-radius:12px;padding:14px;text-align:center;">
       <div style="font-size:13px;color:#111;font-weight:600;line-height:1.5;">A prova do DETRAN nao espera. Cada dia sem treino e um dia mais perto de <span style="color:#DC2626;font-weight:700;">reprovar.</span></div>
@@ -978,7 +978,16 @@ async function enviar(){
   }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro de conexao. Tente novamente.');}
 }
 
-function showPW(){document.getElementById('pw').style.display='flex';}
+function showPW(){
+  const esgotado=qresp>=30;
+  const icon=document.getElementById('pw-icon');
+  const titulo=document.getElementById('pw-titulo');
+  const sub=document.getElementById('pw-subtitulo');
+  if(icon)icon.textContent=esgotado?'🚫':'🔒';
+  if(titulo)titulo.textContent=esgotado?'Voce ja utilizou suas 30 questoes gratuitas':'Simulado disponivel no plano Premium';
+  if(sub)sub.textContent=esgotado?'Para continuar treinando sem limites, ative o plano Premium.':'Voce ainda tem questoes gratuitas para treinar. Para simulados completos, ative o Premium.';
+  document.getElementById('pw').style.display='flex';
+}
 function hidePW(){document.getElementById('pw').style.display='none';}
 
 function assinarPlano(plano){
@@ -1434,7 +1443,7 @@ function atuMeuPlano(){
     el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado</div></div></div>';
     if(ps)ps.style.display='none';
   }else{
-    el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes por dia</div></div></div>';
+    el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes gratis para comecar</div></div></div>';
     if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
   }
 }
