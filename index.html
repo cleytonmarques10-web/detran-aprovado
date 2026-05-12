@@ -1669,21 +1669,16 @@ function irInstalar(){
   localStorage.setItem('instalar_ok','1');
 }
 // ========================
+// Ouvir PASSWORD_RECOVERY ANTES de qualquer coisa
+sb.auth.onAuthStateChange((event,session)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    document.querySelectorAll('.lw,#app').forEach(el=>el.style.display='none');
+    document.getElementById('tela-reset').style.display='flex';
+  }
+});
+
 async function init(){
   try{
-    // Verificar recovery PRIMEIRO antes de qualquer coisa
-    if(window.location.href.includes('type=recovery')){
-      document.getElementById('tela-reset').style.display='flex';
-      return;
-    }
-    // Ouvir evento PASSWORD_RECOVERY do Supabase
-    sb.auth.onAuthStateChange((event,session)=>{
-      if(event==='PASSWORD_RECOVERY'){
-        document.getElementById('tela-login').style.display='none';
-        document.getElementById('app').style.display='none';
-        document.getElementById('tela-reset').style.display='flex';
-      }
-    });
     const{data:{session}}=await sb.auth.getSession();
     if(session?.user){await loadUser(session.user);openApp();}
     else{
