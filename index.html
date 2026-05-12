@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -392,6 +392,20 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       <div class="em" id="ec"></div>
       <button class="btn btnl" onclick="cad()">Criar minha conta</button>
     </div>
+  </div>
+</div>
+
+<!-- RESET SENHA -->
+<div id="tela-reset" class="lw" style="display:none;flex-direction:column;align-items:center;min-height:100vh;">
+  <div class="ll"><svg width="40" height="40" viewBox="0 0 42 42" fill="none"><path d="M7 33L21 9l14 24Z" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="21" cy="28" r="3" fill="#fff"/></svg><span>Detran Aprovado</span></div>
+  <div class="lc">
+    <div class="lh">Nova senha</div>
+    <div class="ls">Digite sua nova senha abaixo</div>
+    <div class="ig"><label class="il">Nova senha</label><input type="password" id="rs-senha" class="ii" placeholder="Minimo 6 caracteres"></div>
+    <div class="ig"><label class="il">Confirmar senha</label><input type="password" id="rs-confirma" class="ii" placeholder="Digite novamente"></div>
+    <div class="em" id="rs-err" style="display:none;"></div>
+    <div class="sm" id="rs-ok" style="display:none;"></div>
+    <button class="btn btnl" onclick="salvarNovaSenha()">Salvar nova senha</button>
   </div>
 </div>
 
@@ -1313,6 +1327,23 @@ async function cad(){
     }
     await loadUser(data.user);openApp();
   }
+}
+
+async function salvarNovaSenha(){
+  const s1=document.getElementById('rs-senha').value;
+  const s2=document.getElementById('rs-confirma').value;
+  const err=document.getElementById('rs-err');
+  const ok=document.getElementById('rs-ok');
+  err.style.display='none';ok.style.display='none';
+  if(!s1||s1.length<6){err.textContent='A senha precisa ter pelo menos 6 caracteres.';err.style.display='block';return;}
+  if(s1!==s2){err.textContent='As senhas nao coincidem.';err.style.display='block';return;}
+  const{error}=await sb.auth.updateUser({password:s1});
+  if(error){err.textContent='Erro ao salvar senha. Tente novamente.';err.style.display='block';return;}
+  ok.textContent='✅ Senha alterada com sucesso! Redirecionando...';ok.style.display='block';
+  setTimeout(()=>{
+    document.getElementById('tela-reset').style.display='none';
+    document.getElementById('tela-login').style.display='flex';
+  },2000);
 }
 
 async function recuperarSenha(){
