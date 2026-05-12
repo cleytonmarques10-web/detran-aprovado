@@ -6,10 +6,10 @@ export default async function handler(req, res) {
 
   try {
     const data = req.body;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SECRET_KEY;
 
-    // 1. Salvar log para debug
+    // Salvar log para debug
     await fetch(supabaseUrl + '/rest/v1/webhook_logs', {
       method: 'POST',
       headers: {
@@ -20,25 +20,38 @@ export default async function handler(req, res) {
       body: JSON.stringify({ payload: data })
     });
 
-    // 2. Extrair dados
+    // Extrair dados
     const email = data?.Customer?.email || data?.customer?.email ||
                   data?.buyer?.email || data?.subscription?.customer?.email || '';
 
-    const evento = data?.webhook_event_type || data?.event || data?.type || '';
+    const plano = data?.Product?.name || data?.product?.name ||
+                  data?.plan?.name || data?.subscription?.plan?.name || 'Premium';
+
+    const evento = data?.webhook_event_type || data?.event ||
+                   data?.type || data?.status || '';
+
+    const kiwify_id = data?.order_id || data?.id ||
+                      data?.subscription?.id || '';
 
     if (!email) return res.status(400).json({ error: 'Email nao encontrado' });
 
-    // 3. Definir plano pelo evento
+    // Definir plano pelo evento
     let novoPlano = 'premium';
+    let acesso_ate = null;
+
     if (evento === 'order_approved' || evento === 'subscription_renewed') {
       novoPlano = 'premium';
     } else if (evento === 'subscription_delayed') {
       novoPlano = 'atrasado';
+      const sete_dias = new Date();
+      sete_dias.setDate(sete_dias.getDate() + 7);
+      acesso_ate = sete_dias.toISOString();
     } else if (evento === 'subscription_canceled' || evento === 'order_refunded' || evento === 'chargedback') {
       novoPlano = 'cancelado';
+      acesso_ate = new Date().toISOString();
     }
 
-    // 4. Verificar se usuario existe
+    // Verificar se usuario existe
     const checkRes = await fetch(
       supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
       headers: {
@@ -49,7 +62,6 @@ export default async function handler(req, res) {
     const existentes = await checkRes.json();
 
     if (existentes && existentes.length > 0) {
-      // Atualizar plano
       await fetch(
         supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
         method: 'PATCH',
@@ -61,7 +73,6 @@ export default async function handler(req, res) {
         body: JSON.stringify({ plano: novoPlano })
       });
     } else {
-      // Criar usuario
       await fetch(supabaseUrl + '/rest/v1/usuarios', {
         method: 'POST',
         headers: {
