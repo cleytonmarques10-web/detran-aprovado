@@ -990,14 +990,53 @@ let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
 async function carregarAdmin(){
   document.getElementById('admin-subtitulo').textContent='Carregando...';
   try{
-    const r=await fetch(SBU+'/rest/v1/usuarios?select=*&order=id.desc',{
+    // Buscar usuarios (cadastrados no app)
+    const r1=await fetch(SBU+'/rest/v1/usuarios?select=*&order=id.desc',{
       headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
     });
-    const dados=await r.json();
-    if(!Array.isArray(dados)){
-      document.getElementById('admin-subtitulo').textContent='Erro: verifique o RLS';
-      console.error('Admin erro:',dados);return;
+    const usuarios=await r1.json();
+
+    // Buscar assinantes (compraram na Kiwify)
+    const r2=await fetch(SBU+'/rest/v1/assinantes?select=*&order=id.desc',{
+      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
+    });
+    const assinantes=await r2.json();
+
+    // Mesclar as duas listas — assinantes têm prioridade no plano
+    const mapa=new Map();
+
+    // Primeiro adicionar usuarios do app
+    if(Array.isArray(usuarios)){
+      usuarios.forEach(u=>mapa.set(u.email,{
+        id: u.id,
+        email: u.email,
+        nome: u.nome||'',
+        telefone: u.telefone||'',
+        plano: u.plano||'gratuito',
+        acesso_ate: u.acesso_ate||null,
+        created_at: u.created_at||null,
+        fonte: 'app'
+      }));
     }
+
+    // Depois sobrescrever/adicionar assinantes da Kiwify
+    if(Array.isArray(assinantes)){
+      assinantes.forEach(a=>{
+        const existente=mapa.get(a.email);
+        mapa.set(a.email,{
+          id: existente?.id||a.id,
+          email: a.email,
+          nome: a.nome||existente?.nome||'',
+          telefone: a.telefone||existente?.telefone||'',
+          plano: a.plano||existente?.plano||'gratuito',
+          acesso_ate: a.acesso_ate||existente?.acesso_ate||null,
+          created_at: a.criado_em||existente?.created_at||null,
+          fonte: existente?'app+kiwify':'kiwify'
+        });
+      });
+    }
+
+    const dados=Array.from(mapa.values());
     todosUsers=dados;admSelecionados=new Set();
     const total=dados.length;
     const ativos=dados.filter(u=>u.plano==='premium').length;
@@ -1012,6 +1051,7 @@ async function carregarAdmin(){
     filtrarAdmin();
   }catch(e){
     document.getElementById('admin-subtitulo').textContent='Erro: '+e.message;
+    console.error('Admin erro:',e);
   }
 }
 function setFiltro(f){filtroAtual=f;document.querySelectorAll('.admin-filtro').forEach(b=>b.classList.remove('on'));const fb=document.getElementById('f-'+f);if(fb)fb.classList.add('on');filtrarAdmin();}
