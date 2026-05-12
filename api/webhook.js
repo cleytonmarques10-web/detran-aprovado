@@ -27,7 +27,6 @@ export default async function handler(req, res) {
   try {
     const data = req.body || {};
 
-    // Extrair dados
     const email = data?.Customer?.email || data?.customer?.email ||
                   data?.buyer?.email || data?.subscription?.customer?.email || '';
 
@@ -39,7 +38,6 @@ export default async function handler(req, res) {
 
     const evento = data?.webhook_event_type || data?.event || data?.type || '';
 
-    // Data de expiração — pegar do payload da Kiwify
     const acesso_ate = data?.Subscription?.customer_access?.access_until ||
                        data?.Subscription?.next_payment ||
                        data?.subscription?.next_payment ||
@@ -48,12 +46,11 @@ export default async function handler(req, res) {
     if (!email) return res.status(200).json({ ok: true, msg: 'Sem email' });
 
     // Definir plano pelo evento
-    let novoPlano = 'premium';
-    // Aceitar eventos em inglês E português (Kiwify muda conforme idioma)
     const eventoAprovado = ['order_approved','pedido_aprovado','subscription_renewed','assinatura_renovada'];
     const eventoAtrasado = ['subscription_delayed','assinatura_atrasada'];
     const eventoCancelado = ['subscription_canceled','assinatura_cancelada','order_refunded','pedido_reembolsado','chargedback'];
 
+    let novoPlano = 'premium';
     if (eventoAprovado.includes(evento)) {
       novoPlano = 'premium';
     } else if (eventoAtrasado.includes(evento)) {
@@ -61,13 +58,12 @@ export default async function handler(req, res) {
     } else if (eventoCancelado.includes(evento)) {
       novoPlano = 'cancelado';
     } else {
-      // Evento não reconhecido (pix_created, boleto_gerado, etc) — ignorar
       return res.status(200).json({ ok: true, msg: 'Evento ignorado: ' + evento });
     }
 
-    // Verificar se usuario existe
+    // 1. Atualizar tabela ASSINANTES (igual ao Lobo Mecanico)
     const checkRes = await fetch(
-      supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
+      supabaseUrl + '/rest/v1/assinantes?email=eq.' + encodeURIComponent(email), {
       headers: {
         'apikey': supabaseKey,
         'Authorization': 'Bearer ' + supabaseKey
@@ -75,13 +71,45 @@ export default async function handler(req, res) {
     });
     const existentes = await checkRes.json();
 
-    const dadosUpdate = {
-      plano: novoPlano,
-      acesso_ate: acesso_ate
-    };
-
     if (existentes && existentes.length > 0) {
-      // Atualizar usuario existente
+      await fetch(
+        supabaseUrl + '/rest/v1/assinantes?email=eq.' + encodeURIComponent(email), {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': 'Bearer ' + supabaseKey
+        },
+        body: JSON.stringify({ plano: novoPlano, status: novoPlano, acesso_ate, nome, telefone: tel })
+      });
+    } else {
+      await fetch(supabaseUrl + '/rest/v1/assinantes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': 'Bearer ' + supabaseKey
+        },
+        body: JSON.stringify({
+          email, nome, telefone: tel,
+          plano: novoPlano,
+          status: novoPlano,
+          acesso_ate,
+          criado_em: new Date().toISOString()
+        })
+      });
+    }
+
+    // 2. Atualizar tabela USUARIOS se já tiver conta no app
+    const checkUsuario = await fetch(
+      supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': 'Bearer ' + supabaseKey
+      }
+    });
+    const usuarioExiste = await checkUsuario.json();
+    if (usuarioExiste && usuarioExiste.length > 0) {
       await fetch(
         supabaseUrl + '/rest/v1/usuarios?email=eq.' + encodeURIComponent(email), {
         method: 'PATCH',
@@ -90,38 +118,16 @@ export default async function handler(req, res) {
           'apikey': supabaseKey,
           'Authorization': 'Bearer ' + supabaseKey
         },
-        body: JSON.stringify(dadosUpdate)
-      });
-    } else {
-      // Criar usuario novo
-      await fetch(supabaseUrl + '/rest/v1/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': supabaseKey,
-          'Authorization': 'Bearer ' + supabaseKey
-        },
-        body: JSON.stringify({
-          email: email,
-          nome: nome,
-          telefone: tel,
-          plano: novoPlano,
-          acesso_ate: acesso_ate,
-          erros_ids: [],
-          cat_stats: {}
-        })
+        body: JSON.stringify({ plano: novoPlano, acesso_ate })
       });
     }
 
-    // Enviar email apenas em compra aprovada ou renovacao
+    // 3. Enviar email apenas em compra aprovada
     if (resendKey && eventoAprovado.includes(evento)) {
       const primeiroNome = (nome || email).split(' ')[0];
-      const dataExpiracao = acesso_ate
-        ? new Date(acesso_ate).toLocaleDateString('pt-BR')
-        : '';
+      const dataExpiracao = acesso_ate ? new Date(acesso_ate).toLocaleDateString('pt-BR') : '';
 
-      const emailHtml = `
-<!DOCTYPE html>
+      const emailHtml = `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
@@ -132,15 +138,10 @@ export default async function handler(req, res) {
     </div>
     <div style="padding:32px 24px;">
       <h2 style="color:#1a1a1a;font-size:20px;margin:0 0 16px;">Olá, ${primeiroNome}! 👋</h2>
-      <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 8px;">
-        Seu acesso ao <strong>DETRAN Aprovado</strong> já está liberado!
-      </p>
+      <p style="color:#444;font-size:15px;line-height:1.6;margin:0 0 8px;">Seu acesso ao <strong>DETRAN Aprovado</strong> já está liberado!</p>
       ${dataExpiracao ? `<p style="color:#888;font-size:13px;margin:0 0 24px;">Válido até: <strong>${dataExpiracao}</strong></p>` : ''}
       <div style="text-align:center;margin:24px 0;">
-        <a href="https://app.detranaprovado.com.br"
-           style="background:#FF6B00;color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-size:16px;font-weight:700;display:inline-block;">
-          👉 Acessar o app agora
-        </a>
+        <a href="https://app.detranaprovado.com.br" style="background:#FF6B00;color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-size:16px;font-weight:700;display:inline-block;">👉 Acessar o app agora</a>
       </div>
       <div style="background:#FFF4EE;border-left:4px solid #FF6B00;border-radius:8px;padding:16px;margin:24px 0;">
         <p style="margin:0 0 8px;font-weight:700;color:#FF6B00;">⚠️ IMPORTANTE</p>
@@ -172,10 +173,7 @@ export default async function handler(req, res) {
           <li>Tirar dúvidas com o Professor IA</li>
         </ul>
       </div>
-      <p style="color:#444;font-size:14px;line-height:1.6;">
-        Se tiver qualquer dúvida, pode responder este email ou me chamar no WhatsApp.<br><br>
-        Bons estudos! 🚀
-      </p>
+      <p style="color:#444;font-size:14px;line-height:1.6;">Se tiver qualquer dúvida, pode responder este email ou me chamar no WhatsApp.<br><br>Bons estudos! 🚀</p>
     </div>
     <div style="background:#f5f5f5;padding:16px 24px;text-align:center;">
       <p style="margin:0;color:#888;font-size:12px;">DETRAN Aprovado · app.detranaprovado.com.br</p>
@@ -198,7 +196,6 @@ export default async function handler(req, res) {
             html: emailHtml
           })
         });
-        console.log('Email enviado para:', email);
       } catch(emailErr) {
         console.error('Erro email:', emailErr.message);
       }
