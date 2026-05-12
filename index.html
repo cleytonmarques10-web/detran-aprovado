@@ -990,48 +990,39 @@ let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
 async function carregarAdmin(){
   document.getElementById('admin-subtitulo').textContent='Carregando...';
   try{
-    // Buscar usuarios (cadastrados no app)
-    const r1=await fetch(SBU+'/rest/v1/usuarios?select=*&order=id.desc',{
-      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
-    });
-    const usuarios=await r1.json();
+    // Buscar AMBAS as tabelas igual ao Lobo Mecanico
+    const[r1,r2]=await Promise.all([
+      fetch(SBU+'/rest/v1/usuarios?select=*&order=id.desc',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}}),
+      fetch(SBU+'/rest/v1/assinantes?select=*&order=id.desc',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}})
+    ]);
+    const[usuarios,assinantes]=await Promise.all([r1.json(),r2.json()]);
 
-    // Buscar assinantes (compraram na Kiwify)
-    const r2=await fetch(SBU+'/rest/v1/assinantes?select=*&order=id.desc',{
-      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
-    });
-    const assinantes=await r2.json();
-
-    // Mesclar as duas listas — assinantes têm prioridade no plano
+    // Montar mapa por email — assinante tem prioridade no plano
     const mapa=new Map();
 
-    // Primeiro adicionar usuarios do app
     if(Array.isArray(usuarios)){
-      usuarios.forEach(u=>mapa.set(u.email,{
-        id: u.id,
-        email: u.email,
-        nome: u.nome||'',
-        telefone: u.telefone||'',
-        plano: u.plano||'gratuito',
-        acesso_ate: u.acesso_ate||null,
-        created_at: u.created_at||null,
-        fonte: 'app'
+      usuarios.forEach(u=>mapa.set((u.email||'').toLowerCase(),{
+        email:u.email,nome:u.nome||'',telefone:u.telefone||'',
+        plano:u.plano||'gratuito',acesso_ate:u.acesso_ate||null,
+        created_at:u.created_at||null,total_questoes:u.total_questoes||0,
+        total_acertos:u.total_acertos||0,total_simulados:u.total_simulados||0
       }));
     }
 
-    // Depois sobrescrever/adicionar assinantes da Kiwify
     if(Array.isArray(assinantes)){
       assinantes.forEach(a=>{
-        const existente=mapa.get(a.email);
-        mapa.set(a.email,{
-          id: existente?.id||a.id,
-          email: a.email,
-          nome: a.nome||existente?.nome||'',
-          telefone: a.telefone||existente?.telefone||'',
-          plano: a.plano||existente?.plano||'gratuito',
-          acesso_ate: a.acesso_ate||existente?.acesso_ate||null,
-          created_at: a.criado_em||existente?.created_at||null,
-          fonte: existente?'app+kiwify':'kiwify'
+        const key=(a.email||'').toLowerCase();
+        const ex=mapa.get(key)||{};
+        mapa.set(key,{
+          email:a.email,
+          nome:a.nome||ex.nome||'',
+          telefone:a.telefone||ex.telefone||'',
+          plano:a.plano||ex.plano||'gratuito',
+          acesso_ate:a.acesso_ate||ex.acesso_ate||null,
+          created_at:a.criado_em||ex.created_at||null,
+          total_questoes:ex.total_questoes||0,
+          total_acertos:ex.total_acertos||0,
+          total_simulados:ex.total_simulados||0
         });
       });
     }
