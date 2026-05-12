@@ -1261,7 +1261,7 @@ async function login(){
   if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
   const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
   if(error){
-    const msgs={'Invalid login credentials':'E-mail ou senha incorretos.','Email not confirmed':'Confirme seu e-mail antes de entrar.','Too many requests':'Muitas tentativas. Aguarde alguns minutos.'};
+    const msgs={'Invalid login credentials':'E-mail ou senha incorretos.','Email not confirmed':'E-mail ou senha incorretos.','Too many requests':'Muitas tentativas. Aguarde alguns minutos.'};
     el.textContent=msgs[error.message]||msgs[error.code]||'E-mail ou senha incorretos.';el.style.display='block';return;
   }
   await loadUser(data.user);openApp();
@@ -1288,7 +1288,7 @@ async function cad(){
     const planoFinal=assinante&&assinante.length>0&&assinante[0].plano==='premium'?'premium':'gratuito';
     const acesso_ate=assinante&&assinante.length>0?assinante[0].acesso_ate:null;
 
-    // Inserir via REST igual ao Lobo Mecanico — nunca falha com UUID
+    // Inserir via REST igual ao Lobo Mecanico
     await fetch(SBU+'/rest/v1/usuarios',{
       method:'POST',
       headers:{
@@ -1299,15 +1299,18 @@ async function cad(){
       },
       body:JSON.stringify({
         id:data.user.id,
-        email:e,
-        nome:n,
-        telefone:t,
-        plano:planoFinal,
-        acesso_ate:acesso_ate,
-        erros_ids:[],
-        cat_stats:{}
+        email:e,nome:n,telefone:t,
+        plano:planoFinal,acesso_ate:acesso_ate,
+        erros_ids:[],cat_stats:{}
       })
     });
+    // Se email nao confirmado, fazer login manual
+    if(!data.session){
+      const{data:loginData,error:loginError}=await sb.auth.signInWithPassword({email:e,password:s});
+      if(!loginError&&loginData.user){
+        await loadUser(loginData.user);openApp();return;
+      }
+    }
     await loadUser(data.user);openApp();
   }
 }
