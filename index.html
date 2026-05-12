@@ -1271,11 +1271,34 @@ async function cad(){
     ec.textContent=msg;ec.style.display='block';return;
   }
   if(data.user){
-    // Verificar se já existe registro com plano premium (comprou antes de cadastrar)
-    const{data:existing}=await sb.from('usuarios').select('plano').eq('email',e).single();
-    const planoAtual=existing?.plano||'gratuito';
-    const planoFinal=planoAtual==='premium'?'premium':'gratuito';
-    await sb.from('usuarios').upsert({id:data.user.id,email:e,nome:n,telefone:t,plano:planoFinal,erros_ids:[],cat_stats:{}},{onConflict:'email',ignoreDuplicates:false});
+    // Verificar se ja comprou na Kiwify antes de cadastrar
+    const rAss=await fetch(SBU+'/rest/v1/assinantes?email=eq.'+encodeURIComponent(e),{
+      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
+    });
+    const assinante=await rAss.json();
+    const planoFinal=assinante&&assinante.length>0&&assinante[0].plano==='premium'?'premium':'gratuito';
+    const acesso_ate=assinante&&assinante.length>0?assinante[0].acesso_ate:null;
+
+    // Inserir via REST igual ao Lobo Mecanico — nunca falha com UUID
+    await fetch(SBU+'/rest/v1/usuarios',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SBK,
+        'Authorization':'Bearer '+SBK,
+        'Prefer':'resolution=merge-duplicates'
+      },
+      body:JSON.stringify({
+        id:data.user.id,
+        email:e,
+        nome:n,
+        telefone:t,
+        plano:planoFinal,
+        acesso_ate:acesso_ate,
+        erros_ids:[],
+        cat_stats:{}
+      })
+    });
     await loadUser(data.user);openApp();
   }
 }
