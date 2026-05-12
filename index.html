@@ -1269,6 +1269,19 @@ async function loadUser(u){
   user=u;isAdmin=u.email===ADMIN_EMAIL;
   const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();
   if(data){
+    // Verificar se acesso premium expirou
+    if(data.acesso_ate&&data.plano==='premium'&&!isAdmin){
+      if(new Date(data.acesso_ate)<new Date()){
+        data.plano='gratuito';
+        await fetch(SBU+'/rest/v1/usuarios?id=eq.'+u.id,{
+          method:'PATCH',
+          headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK},
+          body:JSON.stringify({plano:'gratuito'})
+        });
+      }
+    }
+    // Admin sempre premium
+    if(isAdmin)data.plano='premium';
     isPrem=data.plano==='premium'||isAdmin;
     qhoje=data.questoes_hoje||0;streak=data.streak||0;
     qresp=data.total_questoes||0;acertos=data.total_acertos||0;
