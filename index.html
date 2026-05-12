@@ -1004,7 +1004,7 @@ async function enviar(){
     document.getElementById('typ')?.remove();
     if(!r.ok){addMsg('bot','Erro ao conectar. Verifique sua internet e tente novamente.');return;}
     const d=await r.json();
-    const rep=d.content?.[0]?.text||'Desculpe, tente novamente!';
+    const rep=d.reply||d.content?.[0]?.text||'Desculpe, tente novamente!';
     hist.push({role:'assistant',content:rep});
     addMsg('bot',rep);
     salvarChatLocal();
