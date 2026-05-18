@@ -1,6 +1,6 @@
 {
   "name": "Detran Aprovado",
-  "short_name": "Detran Aprovado",
+  "short_name": "DetranAprova",
   "description": "Simulado para CNH com mais de 1.500 questões comentadas e atualizadas. Treine para sua prova do DETRAN!",
   "start_url": "/",
   "scope": "/",
