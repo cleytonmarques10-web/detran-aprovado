@@ -393,7 +393,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
     </div>
     <div id="fc" style="display:none;">
       <div class="ig"><label class="il">Seu nome</label><input type="text" id="cn" class="ii iis" placeholder="Ex: Joao"></div>
-      <div class="ig"><label class="il">Seu WhatsApp</label><input type="tel" id="ct" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
+      <div class="ig"><label class="il">Contato</label><input type="tel" id="ct" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
       <div class="ig"><label class="il">Seu e-mail</label><input type="email" id="ce" class="ii iis" placeholder="seu@email.com"></div>
       <div class="ig"><label class="il">Sua senha</label><input type="password" id="cs" class="ii" placeholder="Minimo 6 caracteres"><button class="eye" onclick="tog('cs',this)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg></button></div>
       <div class="em" id="ec"></div>
@@ -479,6 +479,18 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
           <span id="pressao-pct">0% de aproveitamento</span><span>Meta: 70%</span>
         </div>
       </div>
+      <!-- BANNER YOUTUBE -->
+      <div onclick="window.open('https://www.youtube.com/@detranaprovado/videos','_blank')" style="background:linear-gradient(135deg,#FF0000,#cc0000);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:2px;box-shadow:0 4px 12px rgba(255,0,0,0.25);">
+        <div style="background:rgba(255,255,255,0.2);border-radius:10px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-family:var(--FT);font-size:13px;font-weight:900;color:#fff;">Aulas gratuitas no YouTube</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:2px;">Acesse o canal Detran Aprovado 📺</div>
+        </div>
+        <div style="color:rgba(255,255,255,0.7);font-size:18px;">›</div>
+      </div>
+
       <div class="g2">
         <div class="card" style="text-align:center;"><div style="font-size:10px;color:var(--CT);margin-bottom:3px;">Sequencia</div><div style="font-family:var(--FT);font-size:24px;font-weight:800;color:var(--L);" id="hstr">0</div><div style="font-size:10px;color:var(--CT);">dias seguidos</div></div>
         <div class="card" style="text-align:center;"><div style="font-size:10px;color:var(--CT);margin-bottom:3px;">Hoje</div><div style="font-family:var(--FT);font-size:24px;font-weight:800;" id="hhoje">0<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span></div><div style="font-size:10px;color:var(--CT);">questoes</div></div>
@@ -630,7 +642,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
       <div class="card" style="padding:16px;">
         <div class="ig" style="margin-bottom:10px;"><label class="il">Seu nome</label><input type="text" id="p-nome" class="ii iis" placeholder="Seu nome"></div>
         <div class="ig" style="margin-bottom:10px;"><label class="il">Seu e-mail</label><input type="text" id="p-email" class="ii iis" readonly style="opacity:.7;"></div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu WhatsApp</label><input type="tel" id="p-tel" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
+        <div class="ig" style="margin-bottom:10px;"><label class="il">Contato</label><input type="tel" id="p-tel" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
         <div class="ig" style="margin-bottom:14px;"><label class="il">Sua cidade</label><input type="text" id="p-cidade" class="ii iis" placeholder="Ex: Belo Horizonte - MG"></div>
         <button class="btn btnl" onclick="salvarPerfil()">Salvar perfil</button>
         <div class="sm" id="perfil-ok" style="margin-top:8px;"></div>
