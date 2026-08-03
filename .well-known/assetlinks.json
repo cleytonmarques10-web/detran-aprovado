@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "br.com.detranaprovado.app",
+      "sha256_cert_fingerprints": [
+        "B3:4A:49:B2:5E:97:6C:77:C2:F4:07:22:F0:55:FB:ED:F4:0B:C1:E2:A9:DB:B1:BB:AD:4E:FF:FF:D1:34:B4:14"
+      ]
+    }
+  }
+]
