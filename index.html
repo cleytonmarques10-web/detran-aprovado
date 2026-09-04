@@ -3,1807 +3,969 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Detran Aprovado</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#FF6B00">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Detran Aprovado">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>DetranAprovado — Plataforma de Preparação para a Prova Teórica</title>
+<meta name="description" content="DetranAprovado é uma plataforma educacional privada com simulados, questões comentadas e Professor IA para você se preparar para a prova teórica de habilitação.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--L:#FF6B00;--LC:#FFF4EE;--LB:#FFD4B8;--LE:#e55f00;--V:#22C55E;--VC:#E8F8EE;--R:#EF4444;--RC:#FEE2E2;--C:#F5F5F5;--CB:#E0E0E0;--CT:#888;--P:#111;--FT:'Syne',sans-serif;--FC:'DM Sans',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;margin:0;padding:0;overflow:hidden;background:#d0d0d0;}
-*,*::before,*::after{box-sizing:border-box;}
-body{font-family:var(--FC);color:var(--P);display:flex;justify-content:center;overflow:hidden;}
-.app-root{width:100%;max-width:480px;background:var(--C);height:100%;display:flex;flex-direction:column;overflow:hidden;}
-.top-bar{position:sticky;top:0;z-index:100;flex-shrink:0;background:var(--C);width:100%;}
-.global-hdr{background:var(--L);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
-.global-hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
-.nt{background:#fff;border-top:1.5px solid #F0F0F0;display:flex;justify-content:space-around;align-items:center;height:56px;box-shadow:0 -2px 10px rgba(0,0,0,0.06);}
-.ni{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;flex:1;border:none;background:none;transition:transform .15s ease;color:#666;}
-.ni svg{transition:all .2s ease;}
-.ni span{font-size:9px;font-weight:600;white-space:nowrap;transition:all .2s ease;}
-.ni:active{transform:scale(0.92);}
-.ni.on{color:var(--L);}
-.ni.on svg{filter:drop-shadow(0 1px 4px rgba(255,107,0,0.35));}
-.ni.on span{font-weight:800;font-size:10px;}
-.tela{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.tela.on{display:flex;}
-.tela.on:not(#tela-bot):not(#tela-questao){overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-#tela-bot.on{flex-direction:column;overflow:hidden;}
-#tela-bot.on #chat-area{flex:1;min-height:0;overflow-y:auto;}
-.scroll-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-.adm-wrap{overflow-x:hidden;width:100%;padding:14px;}
-.adm-cards{display:flex;flex-wrap:wrap;gap:10px;width:100%;}
-.adm-card{flex:1;min-width:140px;max-width:100%;overflow:hidden;}
-.hdr{background:var(--L);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.hdr h1{font-family:var(--FT);font-size:17px;color:#fff;}
-.sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:2px;}
-.cnt{flex:1;padding:14px;padding-bottom:24px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
-.card{background:#fff;border-radius:14px;padding:13px;border:1.5px solid var(--CB);}
-.cardl{background:var(--LC);border-color:var(--LB);}
-.cardr{background:var(--RC);border-color:var(--R);}
-.btn{width:100%;padding:13px;border-radius:13px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);transition:all .2s;}
-.btnl{background:var(--L);color:#fff;}
-.btnl:hover{background:var(--LE);}
-.btnc{background:var(--C);color:#555;border:1.5px solid var(--CB);}
-.pbg{background:#F0F0F0;border-radius:99px;height:8px;}
-.pfl{border-radius:99px;height:8px;transition:width .5s;}
-.pbw{background:rgba(255,255,255,.3);border-radius:99px;height:5px;}
-.pfw{background:#fff;border-radius:99px;height:5px;transition:width .4s;}
-.tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;}
-.tgl{background:var(--LC);color:var(--L);}
-.tgv{background:var(--VC);color:#15803d;}
-.tgr{background:var(--RC);color:#b91c1c;}
-.tgb{background:rgba(255,255,255,.22);color:#fff;}
-.tgc{background:#F0F0F0;color:#555;}
-.alt{width:100%;padding:12px 13px;border-radius:13px;background:#fff;border:1.5px solid var(--CB);color:#333;font-size:12px;font-family:var(--FC);text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all .18s;}
-.alt:hover{border-color:var(--L);background:var(--LC);}
-.alt.ok{background:var(--VC);border-color:var(--V);color:#15803d;}
-.alt.no{background:var(--RC);border-color:var(--R);color:#b91c1c;}
-.alt.re{background:var(--VC);border-color:var(--V);color:#15803d;}
-.alt:disabled{pointer-events:none;}
-.al{width:28px;height:28px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0;}
-.alt.ok .al,.alt.re .al{background:var(--V);color:#fff;}
-.alt.no .al{background:var(--R);color:#fff;}
+:root{
+  --L:#FF6A00;
+  --LH:#E55A00;
+  --Y:#FFD400;
+  --BG:#FFFFFF;
+  --BG2:#F7F7F7;
+  --T:#111111;
+  --TS:#555555;
+  --TF:#999999;
+  --G:#16A34A;
+  --R:#DC2626;
+  --B:#1D4ED8;
+  --FT:'Barlow Condensed',sans-serif;
+  --FC:'Barlow',sans-serif;
+  --SH:0 2px 20px rgba(0,0,0,0.08);
+  --SH2:0 8px 40px rgba(0,0,0,0.12);
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--FC);background:var(--BG);color:var(--T);overflow-x:hidden;}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(255,255,255,0.97);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid #E8E8E8;
+  padding:0 5%;
+  height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo-box{
+  width:36px;height:36px;background:var(--L);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-logo-box svg{width:20px;height:20px;}
+.nav-name{font-family:var(--FT);font-size:20px;font-weight:800;color:var(--T);letter-spacing:.3px;}
+.nav-name span{color:var(--L);}
+.nav-links{display:flex;gap:24px;list-style:none;flex-wrap:wrap;}
+.nav-links a{font-size:14px;font-weight:500;color:var(--TS);text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--L);}
+.nav-btn{
+  background:var(--L);color:#fff;border:none;
+  padding:11px 24px;border-radius:6px;
+  font-family:var(--FC);font-size:14px;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  transition:all .2s;
+}
+.nav-btn:hover{background:var(--LH);}
+
+/* ===== HERO ===== */
+.hero{
+  padding:130px 5% 80px;
+  background:var(--BG);
+  border-bottom:1px solid #EFEFEF;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;top:0;right:0;bottom:0;left:50%;
+  background:linear-gradient(135deg,#FFF8F3 0%,#FFF3EA 100%);
+  pointer-events:none;
+}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;}
+.hero-left{}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#FFF3EA;border:1.5px solid #FFD4B0;
+  border-radius:99px;padding:6px 14px;margin-bottom:24px;
+  font-size:12px;font-weight:700;color:var(--L);letter-spacing:1px;text-transform:uppercase;
+}
+.hero-tag-dot{width:6px;height:6px;background:var(--L);border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+h1{
+  font-family:var(--FT);
+  font-size:clamp(52px,5.5vw,76px);
+  font-weight:900;line-height:.97;
+  letter-spacing:-1px;
+  margin-bottom:20px;
+  color:var(--T);
+}
+h1 .orange{color:var(--L);}
+h1 .line-deco{
+  position:relative;display:inline-block;
+}
+h1 .line-deco::after{
+  content:'';position:absolute;
+  bottom:-4px;left:0;right:0;height:4px;
+  background:var(--Y);border-radius:2px;
+}
+.hero-sub{
+  font-size:18px;color:var(--TS);
+  line-height:1.7;margin-bottom:36px;font-weight:400;
+  max-width:480px;
+}
+.hero-sub strong{color:var(--T);font-weight:700;}
+.hero-ctas{display:flex;flex-direction:column;gap:14px;}
+.cta-main{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--L);color:#fff;
+  padding:18px 36px;border-radius:8px;
+  font-family:var(--FT);font-size:22px;font-weight:800;
+  text-decoration:none;letter-spacing:.3px;
+  transition:all .25s;
+  box-shadow:0 4px 24px rgba(255,106,0,0.3);
+  width:fit-content;
+}
+.cta-main:hover{background:var(--LH);transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,106,0,0.4);}
+.cta-sub{font-size:13px;color:var(--TF);display:flex;align-items:center;gap:6px;}
+.cta-sub span{color:var(--G);font-weight:600;}
+.hero-proof{
+  display:flex;gap:0;margin-top:40px;
+  border:1px solid #EBEBEB;border-radius:12px;
+  background:#FAFAFA;overflow:hidden;width:fit-content;
+}
+.proof-item{padding:16px 24px;text-align:center;border-right:1px solid #EBEBEB;}
+.proof-item:last-child{border-right:none;}
+.proof-num{font-family:var(--FT);font-size:26px;font-weight:900;color:var(--L);}
+.proof-lbl{font-size:11px;color:var(--TF);margin-top:2px;line-height:1.3;}
+
+/* HERO RIGHT - PHONE */
+.hero-right{display:flex;justify-content:center;align-items:center;position:relative;}
+.hero-right::before{
+  content:'';position:absolute;
+  width:350px;height:350px;
+  background:radial-gradient(circle,rgba(255,106,0,0.08),transparent 70%);
+  border-radius:50%;
+}
+.phone{
+  width:280px;
+  background:#F0F0F0;
+  border-radius:44px;padding:10px;
+  border:2px solid #E0E0E0;
+  box-shadow:0 32px 80px rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.04);
+  position:relative;z-index:1;
+}
+.phone-screen{
+  background:#FFFFFF;
+  border-radius:36px;overflow:hidden;
+  min-height:520px;display:flex;flex-direction:column;
+  border:1px solid #EBEBEB;
+}
+.ph-hdr{background:var(--L);padding:18px 16px 16px;}
+.ph-hdr-s{font-size:10px;color:rgba(255,255,255,.75);font-family:var(--FC);}
+.ph-hdr-t{font-family:var(--FT);font-size:18px;font-weight:800;color:#fff;margin-top:2px;}
+.ph-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:10px;}
+.ph-card{background:#FFF8F3;border:1.5px solid #FFD4B0;border-radius:12px;padding:14px;}
+.ph-pct{font-family:var(--FT);font-size:32px;font-weight:900;color:var(--L);line-height:1;}
+.ph-bar-bg{background:#FFE8D6;border-radius:99px;height:6px;margin-top:8px;}
+.ph-bar{background:var(--L);border-radius:99px;height:6px;width:68%;}
+.ph-lbl{font-size:10px;color:var(--TS);margin-top:6px;font-family:var(--FC);}
+.ph-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ph-mc{background:#F7F7F7;border:1px solid #EBEBEB;border-radius:10px;padding:10px;text-align:center;}
+.ph-mn{font-family:var(--FT);font-size:20px;font-weight:800;color:var(--L);}
+.ph-ml{font-size:9px;color:var(--TF);font-family:var(--FC);}
+.ph-btn{background:var(--L);border-radius:10px;padding:12px;text-align:center;font-family:var(--FT);font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.ph-q{background:#F7F7F7;border:1px solid #EBEBEB;border-radius:10px;padding:12px;}
+.ph-q-t{font-size:10px;font-weight:600;color:var(--T);line-height:1.5;font-family:var(--FC);}
+.ph-opts{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
+.ph-opt{background:#fff;border:1px solid #E8E8E8;border-radius:6px;padding:6px 8px;font-size:9px;color:var(--TS);font-family:var(--FC);}
+.ph-opt.ok{background:#F0FDF4;border-color:#BBF7D0;color:#16A34A;font-weight:600;}
+
+/* ===== ALERT BAR ===== */
+.
 
 
-.msg{display:flex;flex-direction:column;gap:3px;max-width:85%;}
-.msg.bot{align-self:flex-start;}
-.msg.user{align-self:flex-end;}
-.bub{padding:9px 12px;border-radius:13px;font-size:12px;line-height:1.6;}
-.msg.bot .bub{background:#fff;color:#333;border-bottom-left-radius:4px;border:1px solid var(--CB);}
-.msg.user .bub{background:var(--L);color:#fff;border-bottom-right-radius:4px;}
-.mt{font-size:9px;color:var(--CT);}
-.msg.user .mt{text-align:right;}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-.chip{padding:4px 10px;border-radius:20px;font-size:10px;background:var(--LC);border:1px solid var(--LB);color:var(--L);cursor:pointer;font-family:var(--FC);}
-.chip:hover{background:var(--L);color:#fff;}
-.cr{background:#fff;border-top:1px solid var(--CB);padding:10px 13px;display:flex;gap:8px;flex-shrink:0;}
-.ci{flex:1;background:var(--C);border:1px solid var(--CB);border-radius:20px;padding:9px 13px;font-size:12px;color:var(--P);font-family:var(--FC);outline:none;}
-.ci:focus{border-color:var(--L);}
-.cs{width:36px;height:36px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--CT);animation:bou .9s infinite;}
-.dot:nth-child(2){animation-delay:.2s;}
-.dot:nth-child(3){animation-delay:.4s;}
-@keyframes bou{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.lw{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;background:#fff;}
-.ll{width:72px;height:72px;background:var(--L);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-.lt{font-family:var(--FT);font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;}
-.ls{font-size:13px;color:var(--CT);text-align:center;margin-bottom:22px;}
-.lc{width:100%;max-width:380px;display:flex;flex-direction:column;}
-.ltabs{display:flex;background:var(--C);border-radius:12px;padding:3px;gap:3px;margin-bottom:18px;}
-.ltab{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--CT);font-family:var(--FC);transition:all .2s;}
-.ltab.on{background:#fff;color:var(--P);box-shadow:0 1px 4px rgba(0,0,0,.1);}
-.ig{display:flex;flex-direction:column;gap:5px;position:relative;margin-bottom:12px;}
-.il{font-size:12px;font-weight:500;color:#555;}
-.ii{padding:13px 42px 13px 14px;border-radius:12px;border:1.5px solid var(--CB);font-size:14px;font-family:var(--FC);outline:none;color:var(--P);background:var(--C);width:100%;}
-.ii:focus{border-color:var(--L);background:#fff;}
-.iis{padding:13px 14px;}
-.eye{position:absolute;right:12px;bottom:12px;background:none;border:none;cursor:pointer;}
-.em{font-size:11px;color:var(--R);display:none;padding:8px;background:var(--RC);border-radius:8px;text-align:center;margin-bottom:8px;}
-.sm{font-size:11px;color:#15803d;display:none;padding:8px;background:var(--VC);border-radius:8px;text-align:center;margin-bottom:8px;}
-.ilus{width:100%;height:180px;min-height:180px;max-height:180px;display:flex;align-items:center;justify-content:center;background:#ffffff;border-radius:12px;border:1.5px solid var(--CB);overflow:hidden;flex-shrink:0;}
-.ilus img,.ilus svg{max-width:90%;max-height:160px;width:auto;height:auto;object-fit:contain;display:block;}
-.com{background:var(--LC);border-left:3px solid var(--L);border-radius:11px;padding:11px 13px;display:none;}
-.coml{font-size:10px;font-weight:700;color:var(--L);margin-bottom:3px;}
-.comt{font-size:11px;color:#555;line-height:1.6;}
-.timer{font-family:var(--FT);font-size:20px;font-weight:800;color:#fff;background:rgba(0,0,0,.2);padding:3px 10px;border-radius:10px;}
-.timer.urgente{color:#ffd4b8;animation:pulse 1s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.pw{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:flex-end;justify-content:center;}
-.pwc{background:#fff;border-radius:22px 22px 0 0;padding:22px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:13px;}
-.plc{border-radius:14px;padding:14px;border:2px solid var(--CB);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .2s;}
-.plc:hover{border-color:var(--L);}
-.plc.dest{border-color:var(--L);background:var(--LC);}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.g4{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.ass-card{background:#fff;border-radius:14px;padding:13px;border:1.5px solid var(--CB);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
-.ass-card:hover{border-color:var(--L);background:var(--LC);}
-.ass-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
-.stat-card{background:#fff;border-radius:14px;padding:14px;border:1.5px solid var(--CB);text-align:center;}
-.stat-num{font-family:var(--FT);font-size:28px;font-weight:800;margin-top:4px;}
-.u-item{background:#fff;border-radius:12px;padding:12px;border:1.5px solid var(--CB);display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.u-av{width:38px;height:38px;border-radius:50%;background:var(--L);display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
-.u-info{flex:1;min-width:0;}
-.u-nome{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.u-email{font-size:10px;color:var(--CT);}
-.ubtn{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:var(--FC);}
-.ubtn-w{background:#25D366;color:#fff;}
-.admin-filtro{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--CB);background:#fff;color:#555;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:var(--FC);white-space:nowrap;transition:all .2s;}
-.admin-filtro.on{background:var(--L);color:#fff;border-color:var(--L);}
-.u-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--CB);cursor:pointer;flex-shrink:0;accent-color:var(--L);}
-.pressao-card{border-radius:16px;padding:16px;}
-.pressao-reprovado{background:linear-gradient(135deg,#b91c1c,#ef4444);color:#fff;}
-.pressao-quase{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;}
-.pressao-aprovado{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;}
+/* ===== DOR ===== */
+.dor{padding:96px 5%;background:var(--BG);}
+.dor-inner{max-width:1100px;margin:0 auto;}
+.sec-label{
+  display:inline-block;
+  font-family:var(--FT);font-size:12px;font-weight:700;
+  color:var(--L);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:12px;
+  background:#FFF3EA;border:1px solid #FFD4B0;
+  border-radius:4px;padding:4px 12px;
+}
+.sec-title{
+  font-family:var(--FT);font-size:clamp(34px,4.5vw,56px);
+  font-weight:900;line-height:1.05;letter-spacing:-.5px;
+  margin-bottom:16px;color:var(--T);
+}
+.sec-title span{color:var(--L);}
+.sec-sub{font-size:17px;color:var(--TS);line-height:1.7;max-width:560px;font-weight:400;}
+.dor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px;}
+.dor-card{
+  background:var(--BG2);border:1.5px solid #EBEBEB;
+  border-radius:14px;padding:28px;
+  border-left:4px solid var(--R);
+  transition:all .3s;
+}
+.dor-card:hover{box-shadow:var(--SH2);transform:translateY(-3px);}
+.dor-icon{font-size:28px;margin-bottom:14px;}
+.dor-card h3{font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:8px;color:var(--T);}
+.dor-card p{font-size:14px;color:var(--TS);line-height:1.7;}
+.dor-highlight{
+  margin-top:40px;
+  background:#FFF8F3;border:2px solid #FFD4B0;
+  border-radius:16px;padding:36px;
+  display:flex;align-items:center;gap:32px;
+  flex-wrap:wrap;
+}
+.dor-hl-num{font-family:var(--FT);font-size:clamp(64px,8vw,96px);font-weight:900;color:var(--L);line-height:1;flex-shrink:0;}
+.dor-hl-text h3{font-family:var(--FT);font-size:24px;font-weight:800;margin-bottom:8px;}
+.dor-hl-text p{font-size:15px;color:var(--TS);line-height:1.7;}
 
-/* ===================== PREMIUM VISUAL ===================== */
+/* ===== SOLUÇÃO ===== */
+.sol{padding:96px 5%;background:var(--BG2);}
+.sol-inner{max-width:1200px;margin:0 auto;}
+.sol-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:48px;}
+.sol-list{display:flex;flex-direction:column;gap:16px;}
+.sol-item{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:20px;background:var(--BG);
+  border:1.5px solid #EBEBEB;border-radius:12px;
+  transition:all .3s;
+}
+.sol-item:hover{border-color:var(--L);box-shadow:0 4px 20px rgba(255,106,0,0.1);}
+.sol-ic{
+  width:40px;height:40px;
+  background:#FFF3EA;border:1.5px solid #FFD4B0;
+  border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;
+}
+.sol-item h4{font-family:var(--FT);font-size:18px;font-weight:800;margin-bottom:4px;color:var(--T);}
+.sol-item p{font-size:13px;color:var(--TS);line-height:1.6;}
 
-/* Cards modernos */
-.card {
-  border-radius: 16px !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  border: 1px solid rgba(0,0,0,0.06) !important;
-  transition: box-shadow 0.2s, transform 0.2s;
-}
-.card:active { transform: scale(0.99); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+/* SOL PHONE */
+.sol-phone-wrap{display:flex;justify-content:center;position:relative;}
+.sol-phone-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;background:radial-gradient(circle,rgba(255,106,0,0.07),transparent 70%);border-radius:50%;}
 
-/* Botões principais */
-.btn, button[onclick] {
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-}
-.btn:active, button[onclick]:active {
-  transform: scale(0.97);
-  opacity: 0.9;
-}
+/* ===== DIFERENCIAL ===== */
+.dif{padding:96px 5%;background:var(--BG);}
+.dif-inner{max-width:1100px;margin:0 auto;}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;}
+.vs-card{border-radius:16px;padding:32px;border:1.5px solid #EBEBEB;}
+.vs-card.bad{background:#FFF9F9;}
+.vs-card.good{background:#FFF8F3;border:2px solid var(--L);position:relative;overflow:hidden;}
+.vs-card.good::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--L),var(--LH));}
+.vs-hd{font-family:var(--FT);font-size:22px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px;color:var(--T);}
+.vs-i{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:14px;color:var(--TS);line-height:1.5;}
+.vs-x{color:var(--R);flex-shrink:0;}
+.vs-ok{color:var(--L);flex-shrink:0;}
 
-/* Botão primário laranja */
-.btn-p {
-  border-radius: 14px !important;
-  box-shadow: 0 4px 14px rgba(255,107,0,0.3) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.3px;
+/* ===== DEPOIMENTOS ===== */
+.depos{padding:96px 5%;background:var(--BG2);}
+.depos-inner{max-width:1200px;margin:0 auto;}
+.depos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+.depo{
+  background:var(--BG);border:1.5px solid #EBEBEB;
+  border-radius:16px;padding:28px;
+  transition:all .3s;position:relative;overflow:hidden;
 }
-.btn-p:active {
-  box-shadow: 0 2px 6px rgba(255,107,0,0.2) !important;
-  transform: scale(0.98);
-}
-
-/* Alternativas das questoes */
-.alt {
-  border-radius: 14px !important;
-  border: 1.5px solid #EBEBEB !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
-  padding: 14px 16px !important;
-  font-size: 14px !important;
-  line-height: 1.4 !important;
-}
-.alt:not(:disabled):active {
-  transform: scale(0.99);
-  border-color: var(--L) !important;
-  box-shadow: 0 2px 8px rgba(255,107,0,0.15);
-}
-.alt.ok { 
-  border-color: #22C55E !important; 
-  background: #F0FDF4 !important;
-  box-shadow: 0 2px 8px rgba(34,197,94,0.15) !important;
-}
-.alt.no { 
-  border-color: #EF4444 !important; 
-  background: #FEF2F2 !important;
-}
-.alt.re { 
-  border-color: #22C55E !important; 
-  background: #F0FDF4 !important;
+.depo:hover{box-shadow:var(--SH2);transform:translateY(-4px);border-color:#FFD4B0;}
+.depo::before{content:'"';position:absolute;top:-14px;right:16px;font-family:var(--FT);font-size:90px;font-weight:900;color:#FFF3EA;}
+.depo-stars{color:var(--L);font-size:14px;letter-spacing:2px;margin-bottom:14px;}
+.depo-txt{font-size:15px;color:var(--TS);line-height:1.7;margin-bottom:20px;font-style:italic;}
+.depo-txt strong{color:var(--T);font-style:normal;font-weight:700;}
+.depo-auth{display:flex;align-items:center;gap:12px;}
+.depo-av{width:44px;height:44px;border-radius:50%;background:var(--L);display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:18px;font-weight:800;color:#fff;flex-shrink:0;}
+.depo-nm{font-weight:700;font-size:14px;color:var(--T);}
+.depo-mt{font-size:12px;color:var(--TF);}
+.depo-badge{
+  display:inline-block;
+  background:#F0FDF4;border:1px solid #BBF7D0;
+  color:var(--G);font-size:11px;font-weight:700;
+  padding:3px 8px;border-radius:4px;margin-top:4px;
 }
 
-/* Container da imagem */
-.ilus {
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
-  border: 1px solid #F0F0F0 !important;
+/* ===== OFERTA ===== */
+.oferta{padding:96px 5%;background:var(--BG);}
+.oferta-inner{max-width:960px;margin:0 auto;}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+.plan{
+  background:var(--BG2);border:1.5px solid #EBEBEB;
+  border-radius:20px;padding:32px 24px;
+  position:relative;text-align:center;
+  transition:all .3s;
 }
+.plan:hover{transform:translateY(-4px);box-shadow:var(--SH2);}
+.plan.hot{
+  background:var(--BG);
+  border:2px solid var(--L);
+  transform:scale(1.04);
+  box-shadow:0 8px 40px rgba(255,106,0,0.15);
+}
+.plan.hot:hover{transform:scale(1.04) translateY(-4px);}
+.plan-badge{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:var(--L);color:#fff;
+  font-family:var(--FT);font-size:11px;font-weight:800;
+  padding:5px 18px;border-radius:99px;white-space:nowrap;
+  letter-spacing:.8px;
+}
+.plan-name{font-family:var(--FT);font-size:13px;font-weight:700;color:var(--TS);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.plan-price{font-family:var(--FT);font-size:54px;font-weight:900;line-height:1;color:var(--T);display:flex;align-items:flex-start;justify-content:center;gap:2px;}
+.plan-price.orange{color:var(--L);}
+.plan-price sup{font-size:20px;vertical-align:top;margin-top:6px;font-weight:700;}
+.plan-price sub{font-size:16px;color:var(--TS);font-weight:400;align-self:flex-end;margin-bottom:4px;}
+.plan-price span{font-size:28px !important;font-weight:900 !important;align-self:flex-start;margin-top:2px;}
+.plan-eco{font-size:13px;font-weight:700;color:var(--G);margin:8px 0 20px;min-height:20px;}
+.plan-div{border:none;border-top:1px solid #EBEBEB;margin:20px 0;}
+.plan-feats{list-style:none;text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.plan-feats li{font-size:14px;color:var(--TS);display:flex;align-items:center;gap:8px;}
+.plan-feats li::before{content:"✓";color:var(--L);font-weight:700;font-size:15px;flex-shrink:0;}
+.plan-btn{
+  width:100%;padding:14px;border-radius:10px;
+  font-family:var(--FT);font-size:19px;font-weight:800;
+  cursor:pointer;transition:all .2s;border:none;letter-spacing:.2px;
+}
+.plan-btn.p{background:var(--L);color:#fff;}
+.plan-btn.p:hover{background:var(--LH);}
+.plan-btn.s{background:transparent;color:var(--L);border:2px solid var(--L);}
+.plan-btn.s:hover{background:#FFF3EA;}
+.oferta-note{text-align:center;margin-top:28px;font-size:13px;color:var(--TF);}
 
-/* Enunciado da questao */
-#qenu {
-  font-size: 15px !important;
-  line-height: 1.55 !important;
-  color: #1a1a1a !important;
-  font-weight: 500;
+/* ===== URGÊNCIA ===== */
+.urg{
+  padding:72px 5%;
+  background:#111111;
+  text-align:center;
 }
+.urg-inner{max-width:680px;margin:0 auto;}
+.urg h2{
+  font-family:var(--FT);
+  font-size:clamp(30px,4.5vw,52px);
+  font-weight:900;line-height:1.05;
+  color:#fff;letter-spacing:-.5px;margin-bottom:16px;
+}
+.urg h2 span{color:var(--L);}
+.urg p{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:32px;line-height:1.7;}
+.urg-pills{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:36px;}
+.urg-pill{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,106,0,.1);border:1px solid rgba(255,106,0,.25);
+  border-radius:8px;padding:10px 18px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.85);
+}
+.urg-dot{width:7px;height:7px;background:var(--L);border-radius:50%;animation:pulse 1.5s infinite;}
 
-/* Cards de assunto no treino */
-.ass-card {
-  border-radius: 16px !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
-  border: 1px solid rgba(0,0,0,0.05) !important;
-  transition: transform 0.15s, box-shadow 0.15s;
+/* ===== CTA FINAL ===== */
+.cta-final{
+  padding:120px 5%;
+  background:var(--BG);
+  text-align:center;
+  border-top:1px solid #EBEBEB;
+  position:relative;overflow:hidden;
 }
-.ass-card:active {
-  transform: scale(0.98);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+.cta-final::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,transparent,var(--L),transparent);
 }
+.cta-final-inner{max-width:680px;margin:0 auto;}
+.cta-final h2{
+  font-family:var(--FT);
+  font-size:clamp(44px,6vw,76px);
+  font-weight:900;line-height:.97;
+  letter-spacing:-1.5px;margin-bottom:20px;
+}
+.cta-final h2 span{color:var(--L);}
+.cta-final p{font-size:18px;color:var(--TS);margin-bottom:40px;line-height:1.7;}
+.cta-final-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--L);color:#fff;
+  padding:22px 52px;border-radius:10px;
+  font-family:var(--FT);font-size:24px;font-weight:800;
+  text-decoration:none;letter-spacing:.3px;
+  transition:all .25s;
+  box-shadow:0 6px 30px rgba(255,106,0,0.35);
+}
+.cta-final-btn:hover{background:var(--LH);transform:translateY(-3px);box-shadow:0 12px 48px rgba(255,106,0,0.45);}
+.cta-final-sub{margin-top:16px;font-size:13px;color:var(--TF);}
+.cta-final-sub span{color:var(--G);font-weight:600;}
 
-/* Icones dos cards */
-.ass-icon {
-  border-radius: 12px !important;
-  width: 44px !important;
-  height: 44px !important;
-  font-size: 20px !important;
+/* ===== FAQ ===== */
+.faq{padding:80px 5%;background:var(--BG2);}
+.faq-inner{max-width:760px;margin:0 auto;}
+.faq-list{display:flex;flex-direction:column;gap:10px;margin-top:48px;}
+.faq-item{
+  background:var(--BG);border:1.5px solid #EBEBEB;
+  border-radius:12px;overflow:hidden;
 }
+.faq-q{
+  padding:18px 22px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:600;font-size:15px;color:var(--T);
+  transition:color .2s;user-select:none;
+}
+.faq-q:hover{color:var(--L);}
+.faq-ic{font-size:20px;color:var(--L);transition:transform .3s;flex-shrink:0;margin-left:16px;}
+.faq-item.open .faq-ic{transform:rotate(45deg);}
+.faq-item.open{border-color:var(--L);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;font-size:14px;color:var(--TS);line-height:1.7;}
+.faq-item.open .faq-a{max-height:220px;}
+.faq-ai{padding:0 22px 18px;}
 
-/* Header do app */
-.global-hdr {
-  box-shadow: 0 2px 8px rgba(255,107,0,0.2);
+/* ===== FOOTER ===== */
+footer{
+  padding:40px 5%;
+  background:var(--T);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
 }
+.f-brand{display:flex;align-items:center;gap:8px;}
+.f-logo{width:30px;height:30px;background:var(--L);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:15px;font-weight:800;color:#fff;}
+.f-name{font-family:var(--FT);font-size:16px;font-weight:700;color:#fff;}
+.f-copy{font-size:13px;color:rgba(255,255,255,.4);}
+.f-links{display:flex;gap:20px;}
+.f-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;}
+.f-links a:hover{color:rgba(255,255,255,.8);}
 
-/* Navbar */
-.nav {
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.08) !important;
-  border-top: 1px solid rgba(0,0,0,0.06) !important;
+/* ===== STICKY BAR ===== */
+.sticky{
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:rgba(17,17,17,.97);backdrop-filter:blur(20px);
+  border-top:2px solid var(--L);
+  padding:14px 5%;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transform:translateY(100%);transition:transform .4s ease;
+  flex-wrap:wrap;
 }
+.sticky.show{transform:translateY(0);}
+.sticky-txt{font-family:var(--FT);font-size:17px;font-weight:700;color:#fff;}
+.sticky-txt span{color:var(--L);}
+.sticky-btn{
+  background:var(--L);color:#fff;border:none;
+  padding:12px 28px;border-radius:8px;
+  font-family:var(--FT);font-size:17px;font-weight:800;
+  cursor:pointer;text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+}
+.sticky-btn:hover{background:var(--LH);}
 
-/* Inputs */
-input[type=text], input[type=email], input[type=password], textarea, select {
-  border-radius: 12px !important;
-  border: 1.5px solid #E8E8E8 !important;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-size: 14px !important;
-}
-input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, textarea:focus {
-  border-color: var(--L) !important;
-  box-shadow: 0 0 0 3px rgba(255,107,0,0.1) !important;
-  outline: none !important;
-}
+/* ===== ANIMATIONS ===== */
+.rev{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.rev.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.18s;}.d3{transition-delay:.26s;}.d4{transition-delay:.34s;}
 
-/* Perfil avatar */
-#pavatar-box {
-  box-shadow: 0 4px 16px rgba(255,107,0,0.25) !important;
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  .hero-inner,.sol-grid,.vs-grid{grid-template-columns:1fr;}
+  .hero-bg{display:none;}
+  .hero-left{text-align:center;}
+  .hero-sub{margin:0 auto 36px;}
+  .hero-ctas{align-items:center;}
+  .hero-proof{margin:40px auto 0;}
+  .dor-grid,.depos-grid,.plans{grid-template-columns:1fr;}
+  .plan.hot{transform:none;}
+  .plan.hot:hover{transform:translateY(-4px);}
 }
-
-/* Tags de plano */
-.tag {
-  border-radius: 20px !important;
-  padding: 4px 12px !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
+@media(max-width:600px){
+  nav{padding:0 4%;}
+  .nav-links{display:none;}
+  footer{flex-direction:column;text-align:center;}
+  .f-links{justify-content:center;}
 }
-
-/* Comentario da questao */
-.com {
-  border-radius: 14px !important;
-  border-left: 4px solid var(--L) !important;
-  padding: 14px 16px !important;
-  box-shadow: 0 2px 8px rgba(255,107,0,0.08) !important;
-}
-
-/* Progress bar */
-.pbg {
-  border-radius: 8px !important;
-  height: 7px !important;
-  background: #F0F0F0 !important;
-}
-.pfl {
-  border-radius: 8px !important;
-  height: 7px !important;
-}
-
-/* Botoes de acao do admin */
-.adm-card {
-  border-radius: 16px !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07) !important;
-}
-
-/* Quick suggestions no chat */
-.sugg {
-  border-radius: 20px !important;
-  transition: background 0.15s, transform 0.15s;
-}
-.sugg:active {
-  transform: scale(0.97);
-}
-
-/* Mensagens do chat */
-.msg {
-  border-radius: 16px !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
-  line-height: 1.5 !important;
-}
-
-/* Espacamento geral */
-.cnt {
-  gap: 12px !important;
-}
-
-/* Secao labels */
-.sec-label {
-  font-size: 11px !important;
-  letter-spacing: 0.8px !important;
-  font-weight: 700 !important;
-  color: #999 !important;
-  text-transform: uppercase;
-}
-/* ========================================================= */
-
-/* ===================== ANIMACOES ===================== */
-@keyframes acerto {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-@keyframes erro {
-  0%   { transform: translateX(0); }
-  20%  { transform: translateX(-6px); }
-  40%  { transform: translateX(6px); }
-  60%  { transform: translateX(-4px); }
-  80%  { transform: translateX(4px); }
-  100% { transform: translateX(0); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes popIn {
-  0%   { transform: scale(0.95); opacity: 0; }
-  60%  { transform: scale(1.02); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.alt { transition: all 0.2s ease; }
-.alt.ok  { animation: acerto 0.35s ease; }
-.alt.no  { animation: erro 0.4s ease; }
-.fade-up { animation: fadeUp 0.35s ease both; }
-.pop-in  { animation: popIn 0.3s ease both; }
-/* ==================================================== */
-
-/* ===================== UX FEEDBACK ===================== */
-.feedback-msg{font-size:13px;font-weight:700;margin-bottom:8px;padding:8px 12px;border-radius:10px;animation:fadeUp 0.3s ease both;}
-.feedback-ok{background:#F0FDF4;color:#15803d;border-left:3px solid #22C55E;}
-.feedback-no{background:#FFF7ED;color:#C2410C;border-left:3px solid #F97316;}
-.motivacao-msg{font-size:12px;color:var(--L);font-weight:600;text-align:center;padding:6px 0 2px;animation:fadeUp 0.4s ease both;}
-/* ======================================================= */
-
-@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
-<div class="app-root">
-
-<!-- LOGIN -->
-<div id="tela-login" class="lw" style="display:flex;flex-direction:column;align-items:center;min-height:100vh;">
-  <div class="ll" style="background:none;box-shadow:none;overflow:hidden;padding:0"><img src="/icon-192.png" alt="Detran Aprovado" style="width:72px;height:72px;border-radius:18px;display:block"></div>
-  <div class="lt">Detran Aprovado</div>
-  <div class="ls">Estude, simule e passe de primeira!</div>
-  <div class="lc">
-    <div class="ltabs">
-      <button class="ltab on" id="tab-e" onclick="trocarTab('e')">Entrar</button>
-      <button class="ltab" id="tab-c" onclick="trocarTab('c')">Criar conta</button>
-    </div>
-    <div id="fe">
-      <div class="ig"><label class="il">E-mail</label><input type="email" id="le" class="ii iis" placeholder="seu@email.com"></div>
-      <div class="ig"><label class="il">Senha</label><input type="password" id="ls" class="ii" placeholder="Minimo 6 caracteres"><button class="eye" onclick="tog('ls',this)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg></button></div>
-      <div class="em" id="el"></div>
-      <button class="btn btnl" onclick="login()">Entrar</button>
-      <button onclick="recuperarSenha()" style="background:none;border:none;color:var(--L);font-size:13px;font-weight:600;cursor:pointer;padding:10px;width:100%;font-family:var(--FC);">Esqueci minha senha</button>
-    </div>
-    <div id="fc" style="display:none;">
-      <div class="ig"><label class="il">Seu nome</label><input type="text" id="cn" class="ii iis" placeholder="Ex: Joao"></div>
-      <div class="ig"><label class="il">Contato</label><input type="tel" id="ct" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
-      <div class="ig"><label class="il">Seu e-mail</label><input type="email" id="ce" class="ii iis" placeholder="seu@email.com"></div>
-      <div class="ig"><label class="il">Sua senha</label><input type="password" id="cs" class="ii" placeholder="Minimo 6 caracteres"><button class="eye" onclick="tog('cs',this)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg></button></div>
-      <div class="em" id="ec"></div>
-      <button class="btn btnl" onclick="cad()">Criar minha conta</button>
-    </div>
-  </div>
+<div style="background:#1a3a6b;color:#fff;text-align:center;padding:10px 20px;font-size:13px;font-weight:500;line-height:1.5">
+  ⚠️ O <strong>DetranAprovado</strong> é uma plataforma privada e independente de preparação para a prova teórica. <strong>Não somos um site oficial do DETRAN</strong> e não possuímos vínculo com órgãos governamentais.
 </div>
 
-<!-- RESET SENHA -->
-<div id="tela-reset" class="lw" style="display:none;position:relative;z-index:100;">
-  <div class="ll">
-    <svg width="40" height="40" viewBox="0 0 42 42" fill="none"><path d="M7 33L21 9l14 24Z" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="21" cy="28" r="3" fill="#fff"/></svg>
-  </div>
-  <div style="font-family:var(--FT);font-size:18px;font-weight:900;color:var(--L);margin:12px 0 24px;">Detran Aprovado</div>
-  <div class="lc">
-    <div class="lh">Criar nova senha</div>
-    <div class="ls">Digite e confirme sua nova senha</div>
-    <div class="ig">
-      <label class="il">Nova senha</label>
-      <div style="position:relative;">
-        <input type="password" id="rs-senha" class="ii" placeholder="Mínimo 6 caracteres" style="padding-right:44px;">
-        <button class="eye" onclick="tog('rs-senha',this)" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg>
-        </button>
-      </div>
+<!-- NAV -->
+<nav style="justify-content:space-between">
+  <div class="nav-brand">
+    <div class="nav-logo-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
     </div>
-    <div class="ig">
-      <label class="il">Confirmar senha</label>
-      <div style="position:relative;">
-        <input type="password" id="rs-confirma" class="ii" placeholder="Digite novamente" style="padding-right:44px;">
-        <button class="eye" onclick="tog('rs-confirma',this)" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#aaa" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="#aaa" stroke-width="2"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="em" id="rs-err" style="display:none;"></div>
-    <div class="sm" id="rs-ok" style="display:none;"></div>
-    <button class="btn btnl" style="margin-top:8px;" onclick="salvarNovaSenha()">Salvar nova senha</button>
+    <span class="nav-name">Detran<span>Aprovado</span></span>
   </div>
-</div>
+  <a href="https://app.detranaprovado.com.br" target="_blank" class="nav-btn">Começar Grátis →</a>
+</nav>
 
-<!-- APP -->
-<div id="app" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;height:0;">
-  <div class="top-bar">
-    <div class="global-hdr" id="global-hdr">
-      <div><div style="font-size:10px;color:rgba(255,255,255,.75);" id="ghdr-sub">Ola,</div><h1 id="ghdr-titulo">Detran Aprovado</h1></div>
-      <span id="hprem" class="tag tgb" style="display:none;">Premium</span>
-    </div>
-    <nav class="nt">
-      <button class="ni on" id="nav-home" onclick="ir('home')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="2"/></svg>
-        <span>Início</span>
-      </button>
-      <button class="ni" id="nav-treino" onclick="ir('treino')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="2"/><path d="M9 9a3 3 0 015.83 1c0 2-3 3-3 3" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Questões</span>
-      </button>
-      <button class="ni" id="nav-simulado" onclick="ir('simulado')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#888" stroke-width="2"/><path d="M8 12l3 3 5-5" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Simulado</span>
-      </button>
-      <button class="ni" id="nav-bot" onclick="ir('bot')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#888" stroke-width="2"/></svg>
-        <span>Professor</span>
-      </button>
-      <button class="ni" id="nav-perfil" onclick="ir('perfil')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#888" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="#888" stroke-width="2"/></svg>
-        <span>Conta</span>
-      </button>
-    </nav>
-  </div>
+<!-- ALERT BAR -->
 
-  <!-- HOME -->
-  <div id="tela-home" class="tela on">
-    <div class="cnt">
-      <div id="pressao-card" class="pressao-card pressao-reprovado">
-        <div style="font-family:var(--FT);font-size:18px;font-weight:800;margin-bottom:4px;" id="pressao-titulo">Voce ainda reprovaria hoje</div>
-        <div style="font-size:12px;opacity:.9;margin-bottom:12px;" id="pressao-msg">Faltam 20 acertos para passar</div>
-        <div style="background:rgba(255,255,255,.25);border-radius:99px;height:8px;margin-bottom:6px;">
-          <div id="pressao-bar" style="background:#fff;border-radius:99px;height:8px;width:0%;transition:width .5s;"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="hero-tag-dot"></span> Plataforma educacional privada · Sem vínculo governamental</div>
+      <h1>
+        Você passaria na<br>
+        prova do DETRAN<br>
+        <span class="orange"><span class="line-deco">hoje?</span></span>
+      </h1>
+      <p class="hero-sub" style="color:#DC2626;font-weight:600;font-size:17px;margin-bottom:12px;">
+        Descubra antes do dia da prova se você está preparado.
+      </p>
+      <p class="hero-sub">
+        Não espere o dia da prova para descobrir seus erros.<br><br>
+        Descubra agora quais assuntos precisam de mais atenção e chegue mais preparado.
+      </p>
+      <div class="hero-ctas">
+        <a href="https://app.detranaprovado.com.br" target="_blank" class="cta-main">
+          🚗 TESTAR MEUS CONHECIMENTOS AGORA
+        </a>
+        <p class="cta-sub">
+          <span>✓ Sem cartão de crédito</span> &nbsp;·&nbsp; Acesso em 30 segundos
+        </p>
+        <p style="font-size:12px;color:#888;margin-top:10px;line-height:1.5;">Plataforma educacional privada e independente, sem vínculo oficial com os DETRANs ou órgãos governamentais.</p>
+      </div>
+      <div class="hero-proof">
+        <div class="proof-item">
+          <div class="proof-num">+2.000</div>
+          <div class="proof-lbl">questões<br>comentadas</div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;opacity:.8;">
-          <span id="pressao-pct">0% de aproveitamento</span><span>Meta: 70%</span>
+        <div class="proof-item">
+          <div class="proof-num">24h</div>
+          <div class="proof-lbl">Professor<br>IA online</div>
         </div>
       </div>
-      <div class="g2">
-        <div class="card" style="text-align:center;"><div style="font-size:10px;color:var(--CT);margin-bottom:3px;">Sequencia</div><div style="font-family:var(--FT);font-size:24px;font-weight:800;color:var(--L);" id="hstr">0</div><div style="font-size:10px;color:var(--CT);">dias seguidos</div></div>
-        <div class="card" style="text-align:center;"><div style="font-size:10px;color:var(--CT);margin-bottom:3px;">Hoje</div><div style="font-family:var(--FT);font-size:24px;font-weight:800;" id="hhoje">0<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span></div><div style="font-size:10px;color:var(--CT);">questoes</div></div>
-      </div>
-      <div class="card cardl">
-        <div style="font-size:10px;color:var(--L);font-weight:600;margin-bottom:4px;">RECOMENDADO PARA VOCE</div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:4px;" id="rec-titulo">Comece pelo simulado</div>
-        <div style="font-size:11px;color:#666;margin-bottom:12px;" id="rec-desc">Descubra seu nivel atual</div>
-        <button class="btn btnl" id="rec-btn" onclick="ir('simulado')">Fazer agora</button>
-      </div>
-      <div class="ass-card" onclick="iniciarTreino('todos')">
-        <div class="ass-icon" style="background:var(--LC);">📚</div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões variadas</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos</div></div>
-        <span style="color:var(--CT);">→</span>
-      </div>
-      <div class="ass-card" onclick="iniciarModoErros()">
-        <div class="ass-icon" style="background:var(--RC);">🔁</div>
-        <div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões que errei</div><div style="font-size:11px;color:var(--CT);" id="erros-count">Revise o que errou</div></div>
-        <span style="color:var(--CT);">→</span>
-      </div>
-
-      <!-- BOTÃO YOUTUBE -->
-      <div class="ass-card" onclick="window.open('https://www.youtube.com/@detranaprovado/videos','_blank')" style="background:linear-gradient(135deg,#0b3058,#0a2548);border:none;margin-top:4px;">
-        <div style="background:rgba(255,255,255,0.2);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:700;color:#fff;">Aulas gratuitas no YouTube</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-top:2px;">Canal Detran Aprovado 📺</div>
-        </div>
-        <div style="background:#FF0000;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:800;color:#fff;">▶ VER</div>
-      </div>
-
     </div>
-  </div>
-
-  <!-- TREINO -->
-  <div id="tela-treino" class="tela">
-    <div class="cnt">
-      <div class="ass-card" onclick="iniciarTreino('todos')"><div class="ass-icon" style="background:var(--LC);">📚</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Treino completo</div><div style="font-size:11px;color:var(--CT);">Todos os assuntos</div></div><span class="tag tgl">→</span></div>
-      <div class="ass-card" onclick="iniciarModoErros()"><div class="ass-icon" style="background:var(--RC);">🔁</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Questões que errei</div><div style="font-size:11px;color:var(--CT);" id="erros-count2">Responda questoes para ver</div></div><span class="tag tgr">→</span></div>
-      <div style="font-size:12px;font-weight:600;color:#555;">Por assunto</div>
-      <div class="ass-card" onclick="iniciarTreino('sinalizacao')"><div class="ass-icon" style="background:#FFF9E6;">🚦</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Sinalizacao</div><div style="font-size:11px;color:var(--CT);">Placas, semaforos e marcas</div></div><div id="perf-sinalizacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
-      <div class="ass-card" onclick="iniciarTreino('legislacao')"><div class="ass-icon" style="background:#EEF2FF;">⚖️</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Legislacao</div><div style="font-size:11px;color:var(--CT);">CTB, infracoes e penalidades</div></div><div id="perf-legislacao" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
-      <div class="ass-card" onclick="iniciarTreino('direcao_defensiva')"><div class="ass-icon" style="background:#F0FFF4;">🚗</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Direcao Defensiva</div><div style="font-size:11px;color:var(--CT);">Tecnicas seguras</div></div><div id="perf-direcao_defensiva" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
-      <div class="ass-card" onclick="iniciarTreino('primeiros_socorros')"><div class="ass-icon" style="background:#FFF0F0;">🏥</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Primeiros Socorros</div><div style="font-size:11px;color:var(--CT);">Acidentes e emergencias</div></div><div id="perf-primeiros_socorros" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
-      <div class="ass-card" onclick="iniciarTreino('meio_ambiente')"><div class="ass-icon" style="background:#F0FFF4;">🌿</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Meio Ambiente</div><div style="font-size:11px;color:var(--CT);">Responsabilidade ambiental</div></div><div id="perf-meio_ambiente" style="font-size:11px;font-weight:600;color:var(--CT);">→</div></div>
-    </div>
-  </div>
-
-  <!-- QUESTAO -->
-  <div id="tela-questao" class="tela">
-    <div class="hdr">
-      <div><span id="qcont" class="tag tgb" style="font-size:11px;font-weight:700;">Questao 1/30</span><div style="margin-top:4px;"><span id="qcat" class="tag tgb" style="font-size:9px;">sinalizacao</span></div></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span id="qtimer" class="timer" style="display:none;">60:00</span>
-        <button onclick="sairQuestao()" style="background:rgba(255,255,255,.2);border:none;border-radius:9px;padding:5px 11px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--FC);">Sair</button>
-      </div>
-    </div>
-    <div style="padding:4px 15px 2px;background:var(--L);flex-shrink:0;display:flex;justify-content:space-between;align-items:center;">
-      <span id="qcont-pct" style="font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;">0 respondidas</span>
-      <span id="qacertos-pct" style="font-size:12px;font-weight:800;color:#fff;"></span>
-    </div>
-    <div style="padding:4px 15px 7px;background:var(--L);flex-shrink:0;"><div class="pbw"><div class="pfw" id="qprog" style="width:3%;"></div></div></div>
-    <div class="cnt" id="qcard">
-      <div class="ilus" id="qilus"></div>
-      <div class="card" id="qenu" style="font-size:12px;color:#222;line-height:1.7;"></div>
-      <div id="qalts" style="display:flex;flex-direction:column;gap:8px;"></div>
-      <div class="com" id="qcom"><div class="coml">Por que esta e a resposta correta?</div><div class="comt" id="qcomt"></div><div id="qart" style="font-size:10px;color:var(--L);font-weight:600;margin-top:3px;"></div></div>
-      <button class="btn btnl" id="qnxt" style="display:none;" onclick="proxQ()">Proxima questao →</button>
-    </div>
-  </div>
-
-  <!-- SIMULADO -->
-  <div id="tela-simulado" class="tela">
-    <div class="cnt">
-      <div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:none;padding:20px;text-align:center;">
-        <div style="font-size:36px;margin-bottom:8px;">⚡</div>
-        <div style="font-family:var(--FT);font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Voce esta pronto?</div>
-        <div style="font-size:11px;color:#aaa;margin-bottom:4px;">30 questoes · 60 minutos · Sem ajuda</div>
-        <div style="font-size:12px;color:var(--L);font-weight:600;margin-bottom:6px;">Precisa de 20 acertos para passar</div>
-        <div style="font-size:11px;color:#f87171;margin-bottom:18px;">63% dos candidatos reprovam na 1a tentativa — nao seja mais um!</div>
-        <button class="btn btnl" onclick="iniciarSimulado()">Iniciar simulado agora →</button>
-      </div>
-      <div class="card"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">Historico de simulados</div><div id="hist-simulados"><div style="font-size:11px;color:var(--CT);text-align:center;padding:10px 0;">Nenhum simulado realizado ainda</div></div></div>
-    </div>
-  </div>
-
-  <!-- RESULTADO -->
-  <div id="tela-resultado" class="tela">
-    <div class="cnt">
-      <div class="card" style="text-align:center;padding:20px;">
-        <svg width="120" height="120" viewBox="0 0 120 120" style="display:block;margin:0 auto 12px;">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="#F0F0F0" stroke-width="10"/>
-          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--L)" stroke-width="10" stroke-dasharray="314" id="res-ring" stroke-dashoffset="314" stroke-linecap="round" transform="rotate(-90 60 60)"/>
-          <text x="60" y="55" text-anchor="middle" font-family="Syne,sans-serif" font-size="26" font-weight="800" fill="#111" id="res-acertos">0</text>
-          <text x="60" y="72" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#888" id="res-total">de 30</text>
-        </svg>
-        <div style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:6px;" id="res-veredicto">Resultado</div>
-        <div style="font-size:12px;color:#555;" id="res-msg"></div>
-      </div>
-      <div class="g3">
-        <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">acertos</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;color:#15803d;" id="res-c">0</div></div>
-        <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">erros</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;color:#b91c1c;" id="res-e">0</div></div>
-        <div class="card" style="text-align:center;"><div style="font-size:9px;color:var(--CT);">tempo</div><div style="font-family:var(--FT);font-size:20px;font-weight:800;" id="res-t">-</div></div>
-      </div>
-      <div class="card" id="res-cats"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">Desempenho por assunto</div></div>
-      <div id="res-proxima-acao"></div>
-      <button class="btn btnc" onclick="ir('simulado')">Novo simulado</button>
-    </div>
-  </div>
-
-  <!-- BOT -->
-  <div id="tela-bot" class="tela" style="flex-direction:column;">
-    <div style="background:var(--L);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-      <div style="display:flex;align-items:center;gap:9px;">
-        <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-        <div><div style="font-family:var(--FT);font-size:14px;font-weight:800;color:#fff;">Prof. Detran</div><div style="font-size:10px;color:rgba(255,255,255,.8);">Especialista em CNH</div></div>
-      </div>
-      <div style="display:flex;gap:6px;">
-        <button onclick="limparChat()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;font-family:var(--FC);">Limpar</button>
-        <button onclick="verHistorico()" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;font-size:11px;font-weight:600;font-family:var(--FC);">Historico</button>
-      </div>
-    </div>
-    <div id="hist-banner" style="display:none;background:#FFF3EA;border-bottom:1px solid #FFD4B0;padding:8px 14px;font-size:11px;color:var(--L);font-weight:600;align-items:center;justify-content:space-between;flex-shrink:0;">
-      <span id="hist-info">Conversas salvas por 7 dias</span>
-      <button onclick="fecharHistBanner()" style="background:none;border:none;color:var(--L);cursor:pointer;font-size:18px;padding:0 4px;">x</button>
-    </div>
-    <div id="chat-area" style="flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;min-height:0;"></div>
-    <div id="img-preview" style="display:none;background:#fff;border-top:1px solid var(--CB);padding:8px 12px;align-items:center;gap:8px;flex-shrink:0;">
-      <div style="position:relative;display:inline-block;">
-        <img id="img-preview-src" style="max-height:60px;border-radius:8px;border:1.5px solid var(--CB);" />
-        <button onclick="cancelarFoto()" style="position:absolute;top:-6px;right:-6px;background:var(--R);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:13px;line-height:20px;text-align:center;">x</button>
-      </div>
-      <span style="font-size:11px;color:var(--CT);">Imagem pronta para enviar</span>
-    </div>
-    <div id="audio-status" style="display:none;background:#FEE2E2;padding:6px 14px;font-size:11px;color:var(--R);font-weight:600;text-align:center;flex-shrink:0;">Ouvindo... fale sua pergunta</div>
-    <div style="background:#fff;border-top:1.5px solid var(--CB);padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0;">
-      <button onclick="abrirFoto()" style="width:40px;height:40px;min-width:40px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="15" rx="2" stroke="#888" stroke-width="2"/><circle cx="12" cy="13" r="3" stroke="#888" stroke-width="2"/><path d="M8 5l1-2h6l1 2" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      <button id="btn-audio" onclick="toggleAudio()" style="width:40px;height:40px;min-width:40px;border-radius:50%;background:var(--C);border:1.5px solid var(--CB);cursor:pointer;display:flex;align-items:center;justify-content:center;">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="9" y="2" width="6" height="12" rx="3" stroke="#888" stroke-width="2"/><path d="M5 10a7 7 0 0014 0" stroke="#888" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      <input type="text" id="cinp" style="flex:1;min-width:0;background:#F5F5F5;border:1.5px solid #E0E0E0;border-radius:22px;padding:11px 16px;font-size:14px;color:#111;font-family:var(--FC);outline:none;" placeholder="Digite ou envie sua dúvida sobre a prova…" onkeydown="if(event.key==='Enter')enviar()" onfocus="this.style.borderColor='var(--L)'" onblur="this.style.borderColor='#E0E0E0'">
-      <button onclick="enviar()" style="width:42px;height:42px;min-width:42px;border-radius:50%;background:var(--L);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M22 2L15 22 11 13 2 9l20-7z" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
-    <input type="file" id="foto-input" accept="image/*" capture="environment" style="display:none;" onchange="processarFoto(this)">
-  </div>
-  <!-- PERFIL -->
-  <div id="tela-perfil" class="tela">
-    <div class="cnt" style="padding-top:16px;">
-      <div style="text-align:center;padding:4px 0 8px;">
-        <div style="width:70px;height:70px;border-radius:50%;background:var(--LC);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:var(--FT);font-size:26px;font-weight:800;color:var(--L);border:3px solid var(--LB);" id="pavatar">?</div>
-        <div style="font-family:var(--FT);font-size:18px;font-weight:800;" id="pnome">Estudante</div>
-        <div style="font-size:11px;color:var(--CT);" id="pemail"></div>
-        <div id="pplan" style="margin-top:6px;"></div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;">MEUS DADOS</div>
-      <div class="card" style="padding:16px;">
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu nome</label><input type="text" id="p-nome" class="ii iis" placeholder="Seu nome"></div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Seu e-mail</label><input type="text" id="p-email" class="ii iis" readonly style="opacity:.7;"></div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Contato</label><input type="tel" id="p-tel" class="ii iis" placeholder="(00) 00000-0000" maxlength="15" oninput="maskTel(this)"></div>
-        <div class="ig" style="margin-bottom:14px;"><label class="il">Sua cidade</label><input type="text" id="p-cidade" class="ii iis" placeholder="Ex: Belo Horizonte - MG"></div>
-        <button class="btn btnl" onclick="salvarPerfil()">Salvar perfil</button>
-        <div class="sm" id="perfil-ok" style="margin-top:8px;"></div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">MEU PLANO</div>
-      <div id="meu-plano-card"></div>
-      <div class="card" style="background:#111;border:none;padding:18px;text-align:center;">
-        <div style="font-size:22px;margin-bottom:6px;">📋</div>
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">Reprovar na prova do Detran</div>
-        <div style="font-size:12px;color:#aaa;">pode te custar <span style="color:var(--R);font-weight:700;">mais de R$500</span> em novas taxas</div>
-      </div>
-      <div id="planos-section" style="display:none;flex-direction:column;gap:10px;">
-        <div onclick="assinarPlano('mensal')" style="border:1.5px solid var(--CB);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff;">
-          <div><div style="font-size:13px;font-weight:600;">📅 Plano Mensal</div><div style="font-size:11px;color:var(--CT);">Simulados + Modo Erros + Professor IA</div></div>
-          <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;">R$19,90</div><div style="font-size:10px;color:var(--CT);">/mes</div></div>
-        </div>
-        <div style="position:relative;">
-          <div style="position:absolute;top:-10px;left:14px;background:var(--L);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;z-index:1;">MAIS POPULAR</div>
-          <div onclick="assinarPlano('trimestral')" style="border:2px solid var(--L);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:var(--LC);">
-            <div><div style="font-size:13px;font-weight:600;">🏆 Plano Trimestral</div><div style="font-size:11px;color:var(--L);font-weight:600;">Economize 16%</div></div>
-            <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;color:var(--L);">R$49,90</div><div style="font-size:10px;color:var(--CT);">/3 meses</div></div>
+    <div class="hero-right">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-hdr">
+            <div class="ph-hdr-s">Bem-vindo de volta 👋</div>
+            <div class="ph-hdr-t">DetranAprovado</div>
+          </div>
+          <div class="ph-body">
+            <div class="ph-card">
+              <div style="font-size:10px;color:var(--L);font-weight:700;font-family:'Barlow';">PRONTIDÃO PARA A PROVA</div>
+              <div class="ph-pct">68%</div>
+              <div class="ph-bar-bg"><div class="ph-bar"></div></div>
+              <div class="ph-lbl">Você está quase lá! Treine mais 2 assuntos.</div>
+            </div>
+            <div class="ph-grid">
+              <div class="ph-mc"><div class="ph-mn">🔥12</div><div class="ph-ml">dias seguidos</div></div>
+              <div class="ph-mc"><div class="ph-mn">142</div><div class="ph-ml">questões feitas</div></div>
+            </div>
+            <div class="ph-btn">▶ Iniciar Simulado Completo</div>
+            <div class="ph-q">
+              <div class="ph-q-t">O que significa a placa circular com fundo branco e borda vermelha?</div>
+              <div class="ph-opts">
+                <div class="ph-opt">A) Placa de Advertência</div>
+                <div class="ph-opt ok">B) Placa de Regulamentação ✓</div>
+                <div class="ph-opt">C) Placa de Indicação</div>
+                <div class="ph-opt">D) Placa Educativa</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div onclick="assinarPlano('semestral')" style="border:1.5px solid var(--CB);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:#fff;">
-          <div><div style="font-size:13px;font-weight:600;">💎 Plano Semestral</div><div style="font-size:11px;color:var(--V);font-weight:600;">Economize 33%</div></div>
-          <div style="text-align:right;"><div style="font-family:var(--FT);font-size:18px;font-weight:800;">R$79,90</div><div style="font-size:10px;color:var(--CT);">/6 meses</div></div>
-        </div>
-        <div style="text-align:center;font-size:11px;color:var(--CT);">7 dias gratis em todos os planos · Cancele quando quiser</div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">DESEMPENHO</div>
-      <div class="card">
-        <div style="display:flex;flex-direction:column;gap:9px;">
-          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Questoes respondidas</span><span style="font-weight:600;" id="stot">0</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Taxa de acerto</span><span style="font-weight:600;color:var(--L);" id="stax">0%</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Simulados realizados</span><span style="font-weight:600;" id="ssim">0</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#555;">Erros registrados</span><span style="font-weight:600;color:var(--R);" id="serr">0</span></div>
-        </div>
-      </div>
-      <div class="card"><div style="font-size:12px;font-weight:600;margin-bottom:10px;">Por assunto</div><div id="perf-assuntos-perfil"></div></div>
-      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">SUPORTE</div>
-      <button class="btn" style="background:#25D366;color:#fff;" onclick="window.open('https://wa.me/5533988363278?text=Ola! Tenho uma duvida sobre o Detran Aprovado','_blank')">Abrir WhatsApp</button>
-      <div id="admin-btn-wrap" style="display:none;flex-direction:column;gap:8px;">
-        <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">ADMINISTRADOR</div>
-        <div class="card" style="background:#111;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px;" onclick="ir('admin')">
-          <div style="width:40px;height:40px;border-radius:12px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🛡️</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--L);">Painel Administrativo</div><div style="font-size:11px;color:#666;">Gerenciar usuarios e planos</div></div>
-        </div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--CT);letter-spacing:.5px;margin-top:4px;">CONTA</div>
-      <button class="btn btnc" onclick="logout()" style="color:var(--R);border-color:var(--RC);">Sair do app</button>
-      <div style="height:8px;"></div>
-    </div>
-  </div>
-
-  <!-- ADMIN -->
-  <div id="tela-admin" class="tela">
-    <div class="hdr" style="display:flex;align-items:center;gap:10px;">
-      <button onclick="ir('perfil')" style="background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:6px;cursor:pointer;display:flex;align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <div><h1 style="font-size:15px;">Painel Admin</h1><div class="sub" id="admin-subtitulo">Carregando...</div></div>
-    </div>
-    <div class="cnt">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="card" style="text-align:center;padding:16px;"><div style="font-size:26px;">👥</div><div style="font-size:10px;color:var(--CT);margin:4px 0;">Total de usuarios</div><div style="font-family:var(--FT);font-size:28px;font-weight:900;" id="adm-total">0</div></div>
-        <div class="card" style="text-align:center;padding:16px;"><div style="font-size:26px;">✅</div><div style="font-size:10px;color:var(--CT);margin:4px 0;">Assinaturas ativas</div><div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#22C55E;" id="adm-ativos">0</div></div>
-        <div class="card" style="text-align:center;padding:16px;"><div style="font-size:26px;">⏳</div><div style="font-size:10px;color:var(--CT);margin:4px 0;">Pagamento atrasado</div><div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#f59e0b;" id="adm-atrasados">0</div></div>
-        <div class="card" style="text-align:center;padding:16px;"><div style="font-size:26px;">❌</div><div style="font-size:10px;color:var(--CT);margin:4px 0;">Canceladas</div><div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#EF4444;" id="adm-cancelados">0</div></div>
-      </div>
-      <div class="card" style="text-align:center;padding:14px;"><div style="font-size:26px;">🆓</div><div style="font-size:10px;color:var(--CT);margin:4px 0;">Plano gratuito</div><div style="font-family:var(--FT);font-size:28px;font-weight:900;color:#888;" id="adm-gratuitos">0</div></div>
-      <input type="text" id="admin-busca" class="ii iis" placeholder="🔍 Buscar por nome ou e-mail..." style="padding:10px 13px;font-size:12px;" oninput="filtrarAdmin()">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="admin-filtro on" id="f-todos" onclick="setFiltro('todos')">Todos</button>
-        <button class="admin-filtro" id="f-premium" onclick="setFiltro('premium')">⭐ Ativos</button>
-        <button class="admin-filtro" id="f-atrasados" onclick="setFiltro('atrasados')">⚠️ Atrasados</button>
-        <button class="admin-filtro" id="f-cancelados" onclick="setFiltro('cancelados')">❌ Cancelados</button>
-        <button class="admin-filtro" id="f-gratuitos" onclick="setFiltro('gratuitos')">🆓 Gratuitos</button>
-      </div>
-      <div id="adm-sel-bar" style="display:none;"><button onclick="waSelecionados()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:12px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">💬 Enviar WhatsApp para selecionados (<span id="adm-sel-count">0</span>)</button></div>
-      <div id="admin-lista"></div>
-      <div class="card" style="padding:14px;">
-        <div style="font-size:11px;font-weight:700;color:var(--CT);margin-bottom:10px;">MENSAGEM EM MASSA</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <button onclick="waMassa('premium','Ola [nome]! Obrigado por ser Premium no Detran Aprovado!')" style="background:#22C55E;color:#fff;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Ativos</button>
-          <button onclick="waMassa('atrasado','Ola [nome]! Seu acesso esta atrasado. Renove: app.detranaprovado.com.br')" style="background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Atrasados</button>
-          <button onclick="waMassa('cancelado','Ola [nome]! Sentimos sua falta. Volte: app.detranaprovado.com.br')" style="background:#EF4444;color:#fff;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Cancelados</button>
-          <button onclick="waMassa('gratuito','Ola [nome]! Assine o Premium e treine sem limites: app.detranaprovado.com.br')" style="background:#888;color:#fff;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:left;">💬 WhatsApp — Gratuitos</button>
-        </div>
-      </div>
-      <div class="card" style="border:2px solid var(--LB);padding:16px;">
-        <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🎁 Liberar acesso cortesia</div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">E-mail do usuario</label><input type="email" id="cort-email" class="ii iis" placeholder="usuario@email.com"></div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Plano</label><select id="cort-plano" class="ii iis" style="padding:11px 13px;font-size:13px;"><option value="premium">⭐ Premium</option><option value="gratuito">🆓 Gratuito</option><option value="atrasado">⚠️ Atrasado</option><option value="cancelado">❌ Cancelado</option></select></div>
-        <div class="ig" style="margin-bottom:10px;"><label class="il">Dias de acesso</label><input type="number" id="cort-dias" class="ii iis" placeholder="Ex: 30" value="30" min="1" max="365"></div>
-        <div class="ig" style="margin-bottom:14px;"><label class="il">Motivo (opcional)</label><input type="text" id="cort-motivo" class="ii iis" placeholder="Ex: teste, parceiro, influencer"></div>
-        <button class="btn btnl" style="font-size:14px;padding:14px;" onclick="liberarCortesia()">Liberar acesso ✓</button>
-        <div class="sm" id="cort-ok" style="margin-top:8px;"></div>
-        <div class="em" id="cort-err" style="margin-top:8px;"></div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- MODAL RESET -->
-<div id="modal-reset" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:999;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:20px;padding:24px;margin:20px;max-width:400px;width:100%;">
-    <div style="font-size:32px;text-align:center;margin-bottom:12px;">⚠️</div>
-    <div style="font-family:var(--FT);font-size:17px;font-weight:800;text-align:center;margin-bottom:12px;">Reiniciar Progresso?</div>
-    <div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:20px;">Isso irá remover:<br>• Questões respondidas<br>• Erros registrados<br>• Histórico de desempenho<br><br><strong>Essa ação não pode ser desfeita.</strong></div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="fecharReset()" style="flex:1;padding:13px;border-radius:12px;border:1.5px solid var(--CB);background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--FC);">Cancelar</button>
-      <button onclick="executarReset()" style="flex:1;padding:13px;border-radius:12px;border:none;background:var(--R);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--FC);">Sim, reiniciar</button>
+<!-- DOR -->
+<section class="dor">
+  <div class="dor-inner">
+    <div class="rev">
+      <span class="sec-label">⚠ O problema que ninguém te conta</span>
+      <h2 class="sec-title">Por que tantas pessoas chegam<br><span>despreparadas</span> na prova do DETRAN?</h2>
+      <p class="sec-sub">Não é por falta de inteligência. É por estudar sem método — e chegar no dia despreparado.</p>
+    </div>
+    <div class="dor-grid rev d1">
+      <div class="dor-card">
+        <div class="dor-icon">📚</div>
+        <h3>Apostilas que não preparam</h3>
+        <p>Você lê, tenta memorizar e na hora da prova trava. Decorar sem praticar não funciona. Você precisa simular o exame de verdade.</p>
+      </div>
+      <div class="dor-card">
+        <div class="dor-icon">⏱️</div>
+        <h3>50 minutos que parecem 5</h3>
+        <p>A prova tem 30 questões e 50 minutos. Quem nunca treinou com cronômetro entra em pânico e erra até o que sabe.</p>
+      </div>
+      <div class="dor-card">
+        <div class="dor-icon">🔁</div>
+        <h3>Os mesmos erros sem saber</h3>
+        <p>Sinalização, placas, preferência de passagem. Você repete os mesmos erros porque nunca descobriu exatamente onde estava falhando.</p>
+      </div>
+      <div class="dor-card">
+        <div class="dor-icon">💸</div>
+        <h3>Reprovar sai muito caro</h3>
+        <p>Taxa de exame, nova aula, mais tempo esperando... Uma nova tentativa pode envolver novas taxas, deslocamentos e mais tempo de preparação.</p>
+      </div>
+    </div>
+    <div class="dor-highlight rev d2">
+      <div class="dor-hl-num" style="font-size:clamp(28px,4vw,48px);">PREPARE-SE<br>ANTES</div>
+      <div class="dor-hl-text">
+        <h3>Descubra seus pontos fracos antes da prova</h3>
+        <p>Muitos candidatos chegam à prova sem saber exatamente quais assuntos precisam revisar. Com simulados e análise de desempenho, você identifica seus pontos fracos antes do dia da prova.</p>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- PAYWALL -->
-<div class="pw" id="pw">
-  <div class="pwc">
-    <div style="text-align:center;">
-      <div style="font-size:36px;margin-bottom:8px;" id="pw-icon">🔒</div>
-      <div style="font-family:var(--FT);font-size:20px;font-weight:900;color:#111;" id="pw-titulo">Simulado disponivel no plano Premium</div>
-      <div style="font-size:13px;color:#888;margin-top:6px;" id="pw-subtitulo">Voce ainda tem questoes gratuitas para treinar 👇</div>
+<!-- SOLUÇÃO -->
+<section class="sol" id="solucao">
+  <div class="sol-inner">
+    <div class="rev" style="text-align:center;">
+      <span class="sec-label">✅ A solução completa</span>
+      <h2 class="sec-title">Estude com direção.<br><span>de verdade</span> para a prova</h2>
+      <p class="sec-sub" style="margin:0 auto;">Não é para decorar. É para identificar suas dificuldades, praticar com foco e chegar mais preparado.</p>
     </div>
-    <div style="background:#FFF3EA;border:1.5px solid #FFD4B0;border-radius:12px;padding:14px;text-align:center;">
-      <div style="font-size:13px;color:#111;font-weight:600;line-height:1.5;">A prova do DETRAN nao espera. Cada dia sem treino e um dia mais perto de <span style="color:#DC2626;font-weight:700;">reprovar.</span></div>
+    <div class="sol-grid">
+      <div class="sol-list rev d1">
+        <div class="sol-item">
+          <div class="sol-ic">📋</div>
+          <div>
+            <h4>Simulados no formato da prova teórica</h4>
+            <p>30 questões, 50 minutos, cronômetro. Formato desenvolvido para simular a experiência da prova teórica. Você chega à prova já familiarizado com a dinâmica de um simulado cronometrado.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-ic">🎯</div>
+          <div>
+            <h4>Sistema inteligente de erros</h4>
+            <p>O app memoriza tudo que você errou e te faz revisar só isso. Você melhora rápido exatamente onde mais precisa.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-ic">💡</div>
+          <div>
+            <h4>+2.000 questões com explicação</h4>
+            <p>Errou? Veja a explicação detalhada e entenda o motivo antes de tentar novamente. Questões baseadas nos conteúdos cobrados na prova teórica.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-ic">🤖</div>
+          <div>
+            <h4>Professor IA disponível 24h</h4>
+            <p>Dúvida sobre placas, infrações ou legislação? Pergunte ao Professor IA a qualquer hora — inclusive de madrugada.</p>
+          </div>
+        </div>
+        <div class="sol-item">
+          <div class="sol-ic">📊</div>
+          <div>
+            <h4>Análise de prontidão em tempo real</h4>
+            <p>Veja sua porcentagem de prontidão para a prova. Acompanhe sua evolução e saiba quando está mais preparado para fazer a prova.</p>
+          </div>
+        </div>
+      </div>
+      <div class="sol-phone-wrap rev d2">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="ph-hdr">
+              <div class="ph-hdr-s">Resultado do simulado</div>
+              <div class="ph-hdr-t">26 de 30 acertos 🎉</div>
+            </div>
+            <div class="ph-body">
+              <div class="ph-card">
+                <div style="font-size:10px;color:var(--L);font-weight:700;">APROVADO ✓</div>
+                <div class="ph-pct">87%</div>
+                <div class="ph-bar-bg"><div class="ph-bar" style="width:87%;"></div></div>
+                <div class="ph-lbl">Você passou! Mínimo para aprovação: 70%</div>
+              </div>
+              <div style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:12px;padding:14px;">
+                <div style="font-size:10px;font-weight:700;color:#16A34A;font-family:'Barlow';">📚 REVISAR ERROS (4 questões)</div>
+                <div style="font-size:11px;color:#555;margin-top:6px;font-family:'Barlow';">Sinalização · 2 erros</div>
+                <div style="font-size:11px;color:#555;margin-top:3px;font-family:'Barlow';">Legislação · 2 erros</div>
+              </div>
+              <div class="ph-grid">
+                <div class="ph-mc"><div class="ph-mn" style="font-size:16px;">50min</div><div class="ph-ml">tempo usado</div></div>
+                <div class="ph-mc"><div class="ph-mn" style="font-size:16px;">🔥 15</div><div class="ph-ml">dias seguidos</div></div>
+              </div>
+              <div class="ph-btn">Refazer questões erradas</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div onclick="window.open('https://pay.kiwify.com.br/xY8BNrG','_blank');hidePW()" class="plc dest">
-        <div><div style="font-weight:700;font-size:14px;color:#111;">Plano Mensal</div><div style="font-size:11px;color:#888;">Simulados ilimitados + Professor IA</div></div>
-        <div style="text-align:right;"><div style="font-family:var(--FT);font-size:22px;font-weight:900;color:var(--L);">R$19,90</div><div style="font-size:10px;color:#888;">/mes</div></div>
-      </div>
-      <div onclick="window.open('https://pay.kiwify.com.br/JdZ4969','_blank');hidePW()" class="plc" style="border-color:var(--L);background:var(--LC);">
-        <div><div style="font-weight:700;font-size:14px;color:#111;">Plano Trimestral - MAIS POPULAR</div><div style="font-size:11px;color:var(--L);font-weight:600;">Economize 16%</div></div>
-        <div style="text-align:right;"><div style="font-family:var(--FT);font-size:22px;font-weight:900;color:var(--L);">R$49,90</div><div style="font-size:10px;color:#888;">/3 meses</div></div>
-      </div>
-      <div onclick="window.open('https://pay.kiwify.com.br/jHVTVCR','_blank');hidePW()" class="plc">
-        <div><div style="font-weight:700;font-size:14px;color:#111;">Plano Semestral</div><div style="font-size:11px;color:#22C55E;font-weight:600;">Economize 33%</div></div>
-        <div style="text-align:right;"><div style="font-family:var(--FT);font-size:22px;font-weight:900;color:#111;">R$79,90</div><div style="font-size:10px;color:#888;">/6 meses</div></div>
-      </div>
-    </div>
-    <div style="text-align:center;font-size:11px;color:#aaa;">7 dias gratis · Cancele quando quiser</div>
-    <button onclick="hidePW()" style="width:100%;padding:12px;background:transparent;border:1.5px solid #E0E0E0;border-radius:10px;font-size:14px;color:#888;cursor:pointer;font-family:var(--FC);">Agora nao</button>
   </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section class="dif">
+  <div class="dif-inner">
+    <div class="rev" style="text-align:center;">
+      <span class="sec-label">🏆 Por que DetranAprovado</span>
+      <h2 class="sec-title">Diferente de tudo<br>que você já <span>tentou</span></h2>
+    </div>
+    <div class="vs-grid rev d1">
+      <div class="vs-card bad">
+        <div class="vs-hd">❌ Jeito antigo (não funciona)</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Apostilas para decorar sem praticar</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Sem simulado com tempo real</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Não sabe onde está errando</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Sem explicação — só gabarito</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Material genérico que não mostra onde você está errando</div>
+        <div class="vs-i"><span class="vs-x">✗</span> Sem suporte quando tem dúvida</div>
+      </div>
+      <div class="vs-card good">
+        <div class="vs-hd">✅ DetranAprovado</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> Simulados no formato da prova com cronômetro</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> Sistema inteligente que foca nos seus erros</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> +2.000 questões com comentário explicativo</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> Professor IA tira dúvidas 24h por dia</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> Análise de prontidão em tempo real</div>
+        <div class="vs-i"><span class="vs-ok">✓</span> A partir de R$19,90/mês</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="depos" id="depoimentos">
+  <div class="depos-inner">
+    <div class="rev" style="text-align:center;">
+      <span class="sec-label">📱 Veja como funciona</span>
+      <h2 class="sec-title">Estude com <span>direção e foco</span></h2>
+      <p style="color:var(--TS);font-size:17px;max-width:600px;margin:0 auto 48px;">Não é só um banco de questões. É uma plataforma que identifica suas dificuldades e direciona seus estudos.</p>
+    </div>
+    <div class="depos-grid rev d1">
+      <div class="depo" style="border-left:4px solid var(--L);">
+        <div style="font-size:36px;margin-bottom:12px;">🎯</div>
+        <p class="depo-txt"><strong>Descubra onde você está errando</strong><br><br>Depois de cada simulado, veja exatamente quais assuntos estão derrubando sua pontuação. Sinalização? Legislação? Preferência de passagem? O sistema mostra.</p>
+      </div>
+      <div class="depo" style="border-left:4px solid var(--L);">
+        <div style="font-size:36px;margin-bottom:12px;">🔁</div>
+        <p class="depo-txt"><strong>Revise só o que você errou</strong><br><br>O modo de revisão reúne automaticamente as questões que você errou. Sem perder tempo com o que você já sabe. Foco total no que precisa melhorar.</p>
+      </div>
+      <div class="depo" style="border-left:4px solid var(--L);">
+        <div style="font-size:36px;margin-bottom:12px;">🤖</div>
+        <p class="depo-txt"><strong>Tire dúvidas com o Professor IA</strong><br><br>Não entendeu por que errou? Pergunte ao Professor IA. Ele explica a legislação, interpreta a questão e tira dúvidas sobre qualquer assunto da prova teórica.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:16px;padding:20px;background:#FFF9F0;border-radius:12px;border:1px solid #FFE0C0;max-width:700px;margin-left:auto;margin-right:auto;">
+      <p style="font-size:14px;color:var(--TS);line-height:1.6;">
+        <!-- [INSERIR DEPOIMENTOS REAIS AQUI quando disponíveis] -->
+        ⭐ Tem experiência com o DetranAprovado? <strong>Envie seu depoimento</strong> via <a href="https://wa.me/5533988363278" style="color:var(--L)">WhatsApp</a> e compartilhe com quem ainda está se preparando.
+      </p>
+    </div>
+  </div>
+
+
+
+<!-- COMO FUNCIONA -->
+<section id="como-funciona" style="background:#F7F7F7;padding:96px 5%;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:56px;">
+      <span class="sec-label">🔎 Como funciona</span>
+      <h2 class="sec-title">Em 4 passos simples você<br><span>estuda com muito mais foco</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;">
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,0.06);text-align:center;">
+        <div style="width:52px;height:52px;background:var(--L);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:24px;font-weight:900;color:#fff;margin:0 auto 16px;">1</div>
+        <h3 style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:10px;">Faça um simulado</h3>
+        <p style="font-size:14px;color:var(--TS);line-height:1.7;">Teste seus conhecimentos no formato da prova teórica. 30 questões, 50 minutos, cronômetro.</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,0.06);text-align:center;">
+        <div style="width:52px;height:52px;background:var(--L);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:24px;font-weight:900;color:#fff;margin:0 auto 16px;">2</div>
+        <h3 style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:10px;">Descubra onde está errando</h3>
+        <p style="font-size:14px;color:var(--TS);line-height:1.7;">Veja seu desempenho por assunto e identifique os temas que estão derrubando sua pontuação.</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,0.06);text-align:center;">
+        <div style="width:52px;height:52px;background:var(--L);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:24px;font-weight:900;color:#fff;margin:0 auto 16px;">3</div>
+        <h3 style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:10px;">Treine seus pontos fracos</h3>
+        <p style="font-size:14px;color:var(--TS);line-height:1.7;">Revise as questões que errou com explicações completas. Concentre seus estudos onde mais precisa.</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,0.06);text-align:center;">
+        <div style="width:52px;height:52px;background:var(--L);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--FT);font-size:24px;font-weight:900;color:#fff;margin:0 auto 16px;">4</div>
+        <h3 style="font-family:var(--FT);font-size:20px;font-weight:800;margin-bottom:10px;">Acompanhe sua evolução</h3>
+        <p style="font-size:14px;color:var(--TS);line-height:1.7;">Faça novos simulados, veja sua preparação crescer e saiba quando está mais confiante para a prova.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:40px;">
+      <a href="https://app.detranaprovado.com.br" target="_blank" class="cta-main">FAZER MEU PRIMEIRO SIMULADO</a>
+    </div>
+  </div>
+</section>
+
+<!-- OFERTA -->
+<section class="oferta" id="planos">
+  <div class="oferta-inner">
+    <div class="rev" style="text-align:center;">
+      <span class="sec-label">💰 Escolha seu plano</span>
+      <h2 class="sec-title">Invista menos que<br>uma <span>taxa de exame</span></h2>
+      <p class="sec-sub" style="margin:0 auto;">Comece testando seus conhecimentos gratuitamente. Assine para ter acesso completo.</p>
+      <div style="background:#FFF3EA;border:1.5px solid #FFD4B0;border-radius:12px;padding:16px 24px;margin-top:20px;display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <span style="font-size:22px;">💡</span>
+        <span style="font-size:15px;color:#111;font-weight:600;">Comece gratuitamente e assine quando quiser acesso completo.</span>
+      </div>
+    </div>
+    <div class="plans rev d1">
+      <div class="plan">
+        <div class="plan-name">Mensal</div>
+        <div class="plan-price"><sup>R$</sup>19<span style="font-size:26px;font-weight:900;">,90</span><sub>/mês</sub></div>
+        <div class="plan-eco" style="color:transparent;">—</div>
+        <hr class="plan-div">
+        <ul class="plan-feats">
+          <li>Simulados ilimitados</li>
+          <li>+2.000 questões comentadas</li>
+          <li>Treino por assunto</li>
+          <li>Modo só erros</li>
+          <li>Professor IA completo</li>
+        </ul>
+        <button class="plan-btn s" onclick="window.open('https://pay.kiwify.com.br/xY8BNrG','_blank')">Assinar Mensal</button>
+      </div>
+      <div class="plan hot">
+        <div class="plan-badge">🏆 MAIS POPULAR</div>
+        <div class="plan-name">Trimestral</div>
+        <div class="plan-price orange"><sup>R$</sup>49<span style="font-size:26px;font-weight:900;">,90</span><sub>/3 meses</sub></div>
+        <div class="plan-eco">Economize 16% — R$16,63/mês</div>
+        <hr class="plan-div">
+        <ul class="plan-feats">
+          <li>Tudo do plano mensal</li>
+          <li>7 dias grátis incluídos</li>
+          <li>Histórico completo</li>
+          <li>Suporte prioritário</li>
+          <li>Acesso a novidades primeiro</li>
+        </ul>
+        <button class="plan-btn p" onclick="window.open('https://pay.kiwify.com.br/JdZ4969','_blank')">Assinar Trimestral</button>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Semestral</div>
+        <div class="plan-price"><sup>R$</sup>79<span style="font-size:26px;font-weight:900;">,90</span><sub>/6 meses</sub></div>
+        <div class="plan-eco">Economize 33% — R$13,32/mês</div>
+        <hr class="plan-div">
+        <ul class="plan-feats">
+          <li>Tudo do plano trimestral</li>
+          <li>7 dias grátis incluídos</li>
+          <li>Melhor custo-benefício</li>
+          <li>Suporte via WhatsApp</li>
+          <li>Ideal para estudar com calma</li>
+        </ul>
+        <button class="plan-btn s" onclick="window.open('https://pay.kiwify.com.br/jHVTVCR','_blank')">Assinar Semestral</button>
+      </div>
+    </div>
+    <p class="oferta-note rev">🔒 Pagamento 100% seguro &nbsp;·&nbsp; Cancele quando quiser &nbsp;·&nbsp; Sem burocracia</p>
+  </div>
+</section>
+
+<!-- URGÊNCIA -->
+<section class="urg">
+  <div class="urg-inner rev">
+    <h2>Cada dia sem estudar<br>é um dia mais perto de <span>reprovar</span></h2>
+    <p>A sua prova tem data marcada. Descubra agora quais assuntos precisam de mais atenção e chegue mais preparado.</p>
+    <div class="urg-pills">
+      <div class="urg-pill"><span class="urg-dot"></span> Comece a estudar agora</div>
+      <div class="urg-pill"><span class="urg-dot"></span> Acesso imediato após o cadastro</div>
+      <div class="urg-pill"><span class="urg-dot"></span> Sua prova não espera você estar pronto</div>
+    </div>
+    <a href="https://app.detranaprovado.com.br" target="_blank" class="cta-main" style="margin:0 auto;">🚗 COMEÇAR A ESTUDAR AGORA</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="rev" style="text-align:center;">
+      <span class="sec-label">❓ Dúvidas</span>
+      <h2 class="sec-title">Perguntas <span>frequentes</span></h2>
+    </div>
+    <div class="faq-list rev d1">
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">As questões são baseadas no conteúdo cobrado na prova teórica? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">Sim. Todas as questões são baseadas no Código de Trânsito Brasileiro (CTB) e cobrem os assuntos exigidos na prova teórica de habilitação de todo o Brasil. Cobrimos todos os assuntos cobrados: sinalização, legislação, direção defensiva, primeiros socorros e meio ambiente.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">Funciona para qualquer estado do Brasil? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">Sim! O Código de Trânsito Brasileiro (CTB) é federal e vale em todo o Brasil. O app funciona para candidatos de qualquer estado.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">Precisa instalar algum aplicativo? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">Você pode usar pelo navegador do celular ou computador sem instalar nada. Também está disponível como aplicativo Android na Google Play Store para quem prefere instalar.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">Como funciona o acesso gratuito? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">No plano gratuito você tem acesso a 30 questões por dia. Para simulados ilimitados, modo só erros e Professor IA completo, assine um dos planos. Os primeiros 7 dias são gratuitos em qualquer plano pago.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">Posso cancelar quando quiser? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">Sim, sem burocracia. Cancele a qualquer momento pelo app ou via WhatsApp. Sem fidelidade, sem multa de cancelamento.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="faq(this)">O Professor IA realmente funciona? <span class="faq-ic">+</span></div>
+        <div class="faq-a"><div class="faq-ai">Sim! O Professor IA é especializado em legislação de trânsito e pode responder qualquer dúvida sobre CTB, placas, infrações e o processo de habilitação — 24 horas por dia, 7 dias por semana.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE NÓS -->
+<section id="sobre">
+  <div style="max-width:800px;margin:0 auto;padding:0 5%;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <span class="sec-label">🏢 Sobre o DetranAprovado</span>
+      <h2 class="sec-title">Uma plataforma criada para<br><span>quem quer estudar melhor</span></h2>
+    </div>
+    <div style="background:#fff;border-radius:20px;padding:40px;box-shadow:var(--SH);border-left:4px solid var(--L);">
+      <p style="font-size:16px;line-height:1.8;color:var(--TS);margin-bottom:20px;">
+        O <strong>DetranAprovado</strong> é uma plataforma educacional privada criada para ajudar candidatos a se prepararem para a prova teórica de habilitação por meio de simulados, questões comentadas, análise de desempenho e Professor IA.
+      </p>
+      <div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:12px;padding:18px 20px;margin-bottom:20px;">
+        <p style="font-size:14px;line-height:1.7;color:#555;">
+          ⚠️ <strong>Declaração de independência:</strong> O DetranAprovado é uma iniciativa privada e independente. <strong>Não representamos os DETRANs, não somos um portal governamental, não emitimos CNH, não realizamos agendamentos, não consultamos multas e não prestamos serviços governamentais de qualquer natureza.</strong>
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:14px;color:var(--TS);border-top:1px solid #eee;padding-top:20px;">
+        <div><strong>Responsável:</strong> Josicleiton Marques de Sousa</div>
+        <div><strong>E-mail:</strong> cleytonmarques10@gmail.com</div>
+        <div><strong>WhatsApp:</strong> <a href="https://wa.me/5533988363278" style="color:var(--L)">(33) 98836-3278</a></div>
+        <div><strong>Suporte:</strong> <a href="https://wa.me/5533988363278" style="color:var(--L)">Falar no WhatsApp</a></div>
+      </div>
+    </div>
+  </div>
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-final-inner">
+    <h2 class="rev">Sua CNH não vai<br>esperar <span>para sempre</span></h2>
+    <p class="rev d1">Cada dia sem estudar do jeito certo é um dia mais perto de reprovar e gastar novas taxas e mais tempo de espera.</p>
+    <div class="rev d1" style="background:#FFF3EA;border:2px solid #FFD4B0;border-radius:12px;padding:20px 28px;margin:20px 0;max-width:560px;margin-left:auto;margin-right:auto;">
+      <p style="font-size:17px;color:#111;font-weight:700;line-height:1.5;">Ou você continua estudando errado e arrisca reprovar...<br><span style="color:var(--L);">ou descobre onde melhorar agora, de graça.</span></p>
+    </div>
+    <a href="https://app.detranaprovado.com.br" target="_blank" class="cta-final-btn rev d2">
+      🚗 FAZER MEU PRIMEIRO SIMULADO — GRÁTIS
+    </a>
+    <p class="cta-final-sub rev d3">Sem cartão de crédito &nbsp;·&nbsp; Acesso em 30 segundos &nbsp;·&nbsp; <span>Cancele quando quiser</span></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-brand">
+    <div class="f-logo">D</div>
+    <span class="f-name">DetranAprovado</span>
+  </div>
+  <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:20px">
+    <a href="#solucao" style="color:#888;font-size:14px;text-decoration:none;">Como funciona</a>
+    <a href="#sobre" style="color:#888;font-size:14px;text-decoration:none;">Sobre nós</a>
+    <a href="#depoimentos" style="color:#888;font-size:14px;text-decoration:none;">Depoimentos</a>
+    <a href="#planos" style="color:#888;font-size:14px;text-decoration:none;">Planos</a>
+    <a href="https://app.detranaprovado.com.br/politica-de-privacidade.html" style="color:#888;font-size:14px;text-decoration:none;">Privacidade</a>
+    <a href="https://wa.me/5533988363278" style="color:#888;font-size:14px;text-decoration:none;">Suporte</a>
+  </div>
+  <div class="f-copy">© 2026 DetranAprovado · detranaprovado.com.br<br><small style="color:#666;font-size:12px;display:block;margin-top:8px;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.6;">DetranAprovado é uma plataforma educacional privada e independente, sem vínculo, representação ou afiliação oficial com os DETRANs ou outros órgãos governamentais. Não emitimos CNH nem prestamos serviços governamentais.</small><br><small style="color:rgba(255,255,255,0.5);font-size:11px">DetranAprovado é uma plataforma educacional privada e independente, sem vínculo oficial com os DETRANs ou outros órgãos governamentais.</small></div>
+  <div class="f-links">
+    <a href="/politica-de-privacidade.html">Termos de uso</a>
+    <a href="/politica-de-privacidade.html">Privacidade</a>
+    <a href="https://wa.me/5533988363278">Suporte</a>
+  </div>
+</footer>
+
+<!-- STICKY BAR -->
+<div class="sticky" id="stickyBar">
+  <div class="sticky-txt"><span>Você não precisa ser um deles.</span></div>
+  <a href="https://app.detranaprovado.com.br" target="_blank" class="sticky-btn">COMEÇAR GRÁTIS →</a>
 </div>
 
-</div>
 <script>
-const SBU='https://uxezhlswfjcfoltorhjt.supabase.co';
-const SBK='sb_publishable_AlRalhmR9-LerRU9-lw05A_XIm_FClD';
-const ADMIN_EMAIL='cleytonmarques10@gmail.com';
-const{createClient}=supabase;
-const sb=createClient(SBU,SBK);
-
-let user=null,isPrem=false,isAdmin=false;
-let qhoje=0,qresp=0,acertos=0,streak=0,nsim=0;
-let erros_ids=[],catStats={};
-let fila=[],qatual=null,idx=0,resp=false,hist=[];
-let modoAtual='treino';
-let simTimer=null,simSegundos=3600,simAcertos=0,simErros=0,simInicio=null;
-
-const PL={
-'R-1':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,25 105,85 55,105 5,85 5,25" fill="#CC0000"/><text x="55" y="52" text-anchor="middle" font-family="Arial Black" font-size="17" font-weight="900" fill="#fff">PARE</text></svg>',
-'R-2':'<svg viewBox="0 0 110 100"><polygon points="55,90 5,8 105,8" fill="#fff" stroke="#CC0000" stroke-width="7" stroke-linejoin="round"/></svg>',
-'R-3':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#CC0000"/><rect x="18" y="48" width="74" height="14" rx="5" fill="#fff"/></svg>',
-'R-7':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><circle cx="32" cy="55" r="10" fill="#111"/><circle cx="78" cy="55" r="10" fill="#111"/><line x1="18" y1="18" x2="92" y2="92" stroke="#CC0000" stroke-width="7"/></svg>',
-'R-19':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><text x="55" y="65" text-anchor="middle" font-family="Arial Black" font-size="32" font-weight="900" fill="#111">60</text></svg>',
-'A-1a':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M70,35 Q44,55 70,75" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
-'A-1b':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M40,35 Q66,55 40,75" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
-'A-5':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><line x1="55" y1="25" x2="55" y2="85" stroke="#111" stroke-width="6" stroke-linecap="round"/><line x1="25" y1="55" x2="85" y2="55" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
-'A-11':'<svg viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#CC0000"/><circle cx="35" cy="65" r="13" fill="#FFAA00"/><circle cx="35" cy="100" r="13" fill="#22C55E"/></svg>',
-'A-15':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M22,65 Q38,30 55,58 Q72,86 88,50" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round"/></svg>',
-'A-24':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><circle cx="55" cy="32" r="8" fill="#111"/><line x1="55" y1="40" x2="55" y2="65" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="50" x2="40" y2="62" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="55" y1="50" x2="70" y2="62" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="55" y1="65" x2="45" y2="82" stroke="#111" stroke-width="4" stroke-linecap="round"/><line x1="55" y1="65" x2="65" y2="82" stroke="#111" stroke-width="4" stroke-linecap="round"/></svg>',
-'sv':'<svg viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#CC0000"/><circle cx="35" cy="65" r="13" fill="#333"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
-'sa':'<svg viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#333"/><circle cx="35" cy="65" r="13" fill="#FFAA00"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
-'sg':'<svg viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#333"/><circle cx="35" cy="65" r="13" fill="#333"/><circle cx="35" cy="100" r="13" fill="#22C55E"/></svg>',
-'crz':'<svg width="100%" viewBox="0 0 170 140" style="max-width:260px"><rect width="170" height="140" rx="10" fill="#d4d4d4"/><rect x="58" y="0" width="54" height="140" fill="#aaa"/><rect x="0" y="52" width="170" height="36" fill="#aaa"/><rect x="70" y="95" width="20" height="30" rx="4" fill="#2563eb"/><text x="80" y="114" text-anchor="middle" font-family="Arial" font-size="9" fill="#fff" font-weight="700">A</text><rect x="10" y="58" width="28" height="18" rx="4" fill="#FF6B00"/><text x="24" y="70" text-anchor="middle" font-family="Arial" font-size="9" fill="#fff" font-weight="700">B</text></svg>',
-'fp':'<svg width="100%" viewBox="0 0 170 130" style="max-width:260px"><rect width="170" height="130" rx="10" fill="#aaa"/><rect x="18" y="42" width="134" height="14" fill="#fff"/><rect x="18" y="62" width="134" height="14" fill="#fff"/><rect x="18" y="82" width="134" height="14" fill="#fff"/><circle cx="85" cy="22" r="9" fill="#FF6B00"/></svg>',
-'def':'<svg viewBox="0 0 110 90"><rect width="110" height="90" rx="10" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2"/><text x="55" y="50" text-anchor="middle" font-family="Arial" font-size="11" fill="#ccc">sem ilustracao</text></svg>',
-'R-4a':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M65 30 Q35 55 65 80" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/><polyline points="57,22 65,30 57,38" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="18" y1="18" x2="92" y2="92" stroke="#CC0000" stroke-width="7"/></svg>',
-'R-4b':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M45 30 Q75 55 45 80" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/><polyline points="53,22 45,30 53,38" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="18" y1="18" x2="92" y2="92" stroke="#CC0000" stroke-width="7"/></svg>',
-'R-6a':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><path d="M35 40 Q55 20 75 40 Q80 55 55 65" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/><polyline points="47,32 35,40 47,48" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="18" y1="18" x2="92" y2="92" stroke="#CC0000" stroke-width="7"/></svg>',
-'R-25':'<svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="50" fill="#fff" stroke="#CC0000" stroke-width="8"/><ellipse cx="55" cy="48" rx="18" ry="22" fill="none" stroke="#111" stroke-width="5"/><rect x="42" y="28" width="26" height="8" rx="4" fill="#111"/><line x1="37" y1="68" x2="73" y2="68" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="68" x2="55" y2="82" stroke="#111" stroke-width="5" stroke-linecap="round"/><line x1="40" y1="82" x2="70" y2="82" stroke="#111" stroke-width="4" stroke-linecap="round"/></svg>',
-'A-20':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><path d="M25,70 Q45,45 55,60 Q65,75 85,50" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round"/><circle cx="45" cy="75" r="6" fill="#111"/><circle cx="75" cy="65" r="6" fill="#111"/></svg>',
-'A-14':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><rect x="40" y="28" width="30" height="54" rx="6" fill="#1a1a1a"/><circle cx="55" cy="42" r="9" fill="#CC0000"/><circle cx="55" cy="55" r="9" fill="#FFAA00"/><circle cx="55" cy="68" r="9" fill="#22C55E"/></svg>',
-'A-30':'<svg viewBox="0 0 110 110"><polygon points="55,5 105,55 55,105 5,55" fill="#FFDD00" stroke="#333" stroke-width="3"/><ellipse cx="55" cy="55" rx="22" ry="15" fill="none" stroke="#111" stroke-width="4"/><circle cx="38" cy="48" r="5" fill="#111"/><line x1="77" y1="48" x2="90" y2="42" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="77" y1="52" x2="92" y2="55" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="68" x2="35" y2="80" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="55" y1="70" x2="55" y2="82" stroke="#111" stroke-width="3" stroke-linecap="round"/><line x1="70" y1="68" x2="75" y2="80" stroke="#111" stroke-width="3" stroke-linecap="round"/></svg>'
-};
-
-const SUPABASE_STORAGE='https://uxezhlswfjcfoltorhjt.supabase.co/storage/v1/object/public/placas/';
-
-// Semaforos por cor
-const SEMAFOROS={
-  semaforo_vermelho:'<svg width="90" height="160" viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#CC0000"/><circle cx="35" cy="65" r="13" fill="#333"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
-  semaforo_amarelo:'<svg width="90" height="160" viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#333"/><circle cx="35" cy="65" r="13" fill="#FFAA00"/><circle cx="35" cy="100" r="13" fill="#333"/></svg>',
-  semaforo_verde:'<svg width="90" height="160" viewBox="0 0 70 130"><rect x="8" y="5" width="54" height="118" rx="10" fill="#1a1a1a"/><circle cx="35" cy="30" r="13" fill="#333"/><circle cx="35" cy="65" r="13" fill="#333"/><circle cx="35" cy="100" r="13" fill="#22C55E"/></svg>'
-};
-
-function getIl(q){
-  const enu=(q.enunciado||'').toLowerCase();
-  
-  // Semaforo pelo enunciado
-  if(q.tipo_ilustracao==='semaforo'||enu.includes('semaforo')){
-    if(enu.includes('vermelho')||enu.includes('vermelha'))return SEMAFOROS.semaforo_vermelho;
-    if(enu.includes('amarelo')||enu.includes('amarela'))return SEMAFOROS.semaforo_amarelo;
-    if(enu.includes('verde'))return SEMAFOROS.semaforo_verde;
-    return SEMAFOROS.semaforo_vermelho;
-  }
-
-  // Mapa: codigo no banco -> nome do arquivo SVG no Storage
-  const MAPA_SVG={
-    'A-11':'A-11a','A-5':'A-5a','A-11a':'A-11a','A-5a':'A-5a',
-    'R-4a':'R-4a','R-4b':'R-4b','R-5a':'R-5a','R-5b':'R-5b',
-    'R-6a':'R-6a','R-8a':'R-8a','A-1a':'A-1a','A-1b':'A-1b',
-    'A-2a':'A-2a','A-2b':'A-2b','A-26a':'A-26a','A-30a':'A-30a',
-    'R-19_60':'R-19_60','R-19_40':'R-19_40','R-19_80':'R-19_80',
-    'R-19_30':'R-19_30','R-19_100':'R-19_100','R-19_110':'R-19_110',
-    'R-26_30':'R-26_30','R-26_40':'R-26_40','R-26_60':'R-26_60'
-  };
-
-  // Usar url_imagem do banco se disponivel
-  if(q.url_imagem&&q.url_imagem.startsWith('http')){
-    return '<img src="'+q.url_imagem+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.style.opacity=0">';
-  }
-
-  // Usar placa_codigo para montar URL
-  if(q.placa_codigo&&q.placa_codigo.trim()){
-    const cod=q.placa_codigo.trim();
-    const arquivo=MAPA_SVG[cod]||cod;
-    const url=SUPABASE_STORAGE+arquivo+'.svg';
-    return '<img src="'+url+'" style="max-width:90%;max-height:180px;width:auto;height:auto;object-fit:contain;display:block;" onerror="this.style.opacity=0">';
-  }
-
-  // Situacao especial
-  if(q.tipo_ilustracao==='situacao'){
-    if(enu.includes('cruzamento')||enu.includes('interse'))return PL.crz;
-    if(enu.includes('faixa')||enu.includes('pedestre'))return PL.fp;
-  }
-
-  return '';
+function faq(el){
+  const item=el.closest('.faq-item');
+  const open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!open)item.classList.add('open');
 }
-
-
-
-function responder(btn,l){
-  if(resp)return;resp=true;
-  const cResp=qatual.resposta_correta,ls=['A','B','C','D'];
-  document.querySelectorAll('.alt').forEach(b=>b.disabled=true);
-  const ok=l===cResp;
-  btn.classList.add(ok?'ok':'no');
-  if(!ok)document.querySelectorAll('.alt')[ls.indexOf(cResp)].classList.add('re');
-  document.getElementById('qcom').style.display='block';
-  document.getElementById('qnxt').style.display='block';
-  // Calcular e mostrar % de acertos em tempo real
-  const totalResp=idx+1;
-  const pctVal=Math.round(simAcertos/totalResp*100);
-  const pctAcEl=document.getElementById('qacertos-pct');
-  if(pctAcEl){
-    pctAcEl.textContent='Acertos: '+pctVal+'%';
-    pctAcEl.style.color=pctVal>=70?'#86efac':pctVal>=50?'#fde68a':'#fca5a5';
-  }
-  const pctContEl=document.getElementById('qcont-pct');
-  if(pctContEl)pctContEl.textContent=totalResp+' respondida'+(totalResp>1?'s':'');
-  const comEl=document.getElementById('qcom');
-  comEl.querySelectorAll('.feedback-msg,.motivacao-msg').forEach(e=>e.remove());
-  const MSGS_OK=['🔥 Boa! Voce esta evoluindo!','🚀 Mandou bem!','👏 Excelente! Continue assim!','✅ Correto! Voce esta preparado!','💪 Isso ai! Mais uma acertada!'];
-  const MSGS_NO=['⚠️ Essa cai muito na prova, revise!','👀 Fique atento nessa questao','📌 Essa e importante revisar','💡 Errou agora, mas nao erra na prova!','🎯 Anote esse tema para revisar'];
-  const MSGS_MOT_OK=['So mais uma 👇','Voce esta indo muito bem!','Continue, voce esta no caminho certo!','Cada questao te deixa mais preparado!'];
-  const MSGS_MOT_NO=['Respira e foca na proxima 💪','Errar faz parte do aprendizado!','Nao desanima, voce consegue!'];
-  const fb=document.createElement('div');
-  fb.textContent=(ok?MSGS_OK:MSGS_NO)[Math.floor(Math.random()*(ok?MSGS_OK:MSGS_NO).length)];
-  fb.className='feedback-msg '+(ok?'feedback-ok':'feedback-no');
-  comEl.insertBefore(fb,comEl.firstChild);
-  const restam=fila.length-(idx+1);
-  let motTxt=restam===0?'🎉 Ultima questao! Voce chegou ate aqui!':restam<=3?'🏁 Faltam so '+restam+' questao(oes)!':(ok?MSGS_MOT_OK:MSGS_MOT_NO)[Math.floor(Math.random()*(ok?MSGS_MOT_OK:MSGS_MOT_NO).length)];
-  const mot=document.createElement('div');mot.textContent=motTxt;mot.className='motivacao-msg';
-  comEl.appendChild(mot);
-  qresp++;qhoje++;
-  if(ok){acertos++;simAcertos++;if(erros_ids.includes(qatual.id))erros_ids=erros_ids.filter(x=>x!==qatual.id);
-  }
-  else{simErros++;if(!erros_ids.includes(qatual.id))erros_ids.push(qatual.id);}
-  const cat=qatual.categoria||'outros';
-  if(!catStats[cat])catStats[cat]={acertos:0,total:0};
-  catStats[cat].total++;if(ok)catStats[cat].acertos++;
-  salvar();
-  // Aviso quando chegar nas ultimas questoes gratuitas
-  if(!isPrem&&qhoje===28){
-    const nxt=document.getElementById('qnxt');
-    if(nxt)nxt.textContent='Proxima questao (restam 2 gratis) →';
-  }
-  if(!isPrem&&qhoje===29){
-    const nxt=document.getElementById('qnxt');
-    if(nxt)nxt.textContent='Ultima questao gratuita hoje →';
-  }
-}
-
-function proxQ(){if(!isPrem&&qhoje>=30&&modoAtual!=='simulado'){showPW();return;}idx++;renderQ();}
-async function salvar(){if(!user)return;await sb.from('usuarios').update({questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids:erros_ids,cat_stats:catStats}).eq('id',user.id);atuHome();}
-
-async function finalizarSimulado(){
-  if(simTimer)clearInterval(simTimer);
-  const total=fila.length,pct=Math.round(simAcertos/total*100),passou=simAcertos>=20;
-  const tempoUsado=simInicio?Math.floor((new Date()-simInicio)/1000):0;
-  nsim++;
-  await sb.from('simulados').insert({usuario_id:user?.id,acertos:simAcertos,erros:simErros,total,percentual:pct,passou,tempo_segundos:tempoUsado});
-  await sb.from('usuarios').update({total_simulados:nsim,questoes_hoje:qhoje,total_questoes:qresp,total_acertos:acertos,erros_ids,cat_stats:catStats}).eq('id',user?.id);
-  ir('resultado');
-  document.getElementById('res-acertos').textContent=simAcertos;
-  document.getElementById('res-total').textContent='de '+total;
-  document.getElementById('res-c').textContent=simAcertos;
-  document.getElementById('res-e').textContent=simErros;
-  document.getElementById('res-t').textContent=fmtTime(tempoUsado);
-  document.getElementById('res-veredicto').textContent=passou?'Voce passaria na prova!':'Voce ainda nao passaria';
-  document.getElementById('res-msg').textContent=passou?'Parabens! '+pct+'% de aproveitamento! Voce passaria na prova!':'Voce acertou '+simAcertos+' de '+total+'. Precisa de mais '+(20-simAcertos)+' acertos para passar.';
-  const circ=Math.PI*2*50;
-  document.getElementById('res-ring').style.strokeDashoffset=circ-(pct/100*circ);
-  document.getElementById('res-ring').style.stroke=passou?'#22C55E':'#EF4444';
-  const ce=document.getElementById('res-cats');
-  ce.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:10px;">Desempenho por assunto</div>';
-  Object.entries(catStats).forEach(([cat,s])=>{const p=s.total>0?Math.round(s.acertos/s.total*100):0;const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';ce.innerHTML+='<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">'+nomeAss(cat)+'</span><span style="font-size:11px;font-weight:600;color:'+cor+';">'+p+'%</span></div><div class="pbg"><div class="pfl" style="width:'+p+'%;background:'+cor+';"></div></div></div>';});
-  const pa=document.getElementById('res-proxima-acao');
-  if(!passou&&erros_ids.length>0){pa.innerHTML='<div class="card cardl"><div style="font-size:12px;font-weight:600;margin-bottom:4px;">Proximo passo</div><div style="font-size:11px;color:#666;margin-bottom:10px;">Voce tem '+erros_ids.length+' questoes para revisar.</div><button class="btn btnl" onclick="iniciarModoErros()">Revisar erros agora</button></div>';}
-  else if(passou){pa.innerHTML='<div class="card" style="background:linear-gradient(135deg,#15803d,#22c55e);border:none;padding:16px;text-align:center;"><div style="font-family:var(--FT);font-size:16px;font-weight:800;color:#fff;">Parabens! Voce esta pronto para a prova!</div></div>';}
-  else{pa.innerHTML='';}
-  atuHistorico();
-}
-
-async function atuHistorico(){
-  if(!user)return;
-  const{data}=await sb.from('simulados').select('*').eq('usuario_id',user.id).order('created_at',{ascending:false}).limit(5);
-  const el=document.getElementById('hist-simulados');
-  if(!data||data.length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;padding:10px 0;">Nenhum simulado realizado ainda</div>';return;}
-  el.innerHTML=data.map(s=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--CB);"><div><div style="font-size:11px;font-weight:600;">'+s.acertos+'/30 questoes</div><div style="font-size:10px;color:var(--CT);">'+new Date(s.created_at).toLocaleDateString('pt-BR')+'</div></div><span class="tag '+(s.passou?'tgv':'tgr')+'">'+(s.passou?'Aprovado':'Reprovado')+'</span></div>').join('');
-}
-
-function initBot(){
-  const ca=document.getElementById('chat-area');ca.innerHTML='';
-  const saved=carregarChatLocal();
-  if(saved&&saved.msgs&&saved.msgs.length>0){
-    hist=saved.msgs;
-    hist.forEach(m=>{
-      const tipo=m.role==='user'?'user':'bot';
-      const txt=Array.isArray(m.content)?m.content.find(x=>x.type==='text')?.text||'📷 Imagem':m.content;
-      addMsg(tipo,txt);
-    });
-    addMsg('bot','Bem-vindo de volta! Continuando nossa conversa...');
-    return;
-  }
-  hist=[];
-  const bemVindo='👋 Olá! Eu sou seu Professor de CNH\n\nPosso te ajudar com qualquer dúvida da prova:\n\n🎤 Pode enviar áudio\n📸 Pode mandar foto da questão\n📘 Explico passo a passo\n⚡ Respondo na hora\n\n👉 Escreva ou envie sua dúvida abaixo';
-  addMsg('bot',bemVindo);
-  hist=[{role:'assistant',content:bemVindo}];
-}
-function fmtMsg(t){return t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}
-function addMsg(tipo,txt,chips){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg '+tipo;const h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});const ftxt=tipo==='bot'?fmtMsg(txt):txt;d.innerHTML='<div class="bub">'+ftxt+'</div><div class="mt">'+h+'</div>';if(chips&&chips.length){const r=document.createElement('div');r.className='chips';chips.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;b.onclick=()=>{document.getElementById('cinp').value=c;enviar();};r.appendChild(b);});d.appendChild(r);}ca.appendChild(d);setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},50);}
-function showTyp(){const ca=document.getElementById('chat-area'),d=document.createElement('div');d.className='msg bot';d.id='typ';d.innerHTML='<div class="bub" style="display:flex;align-items:center;gap:4px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';ca.appendChild(d);setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},50);}
-async function enviar(){
-  const inp=document.getElementById('cinp'),txt=inp.value.trim();
-  if(!txt&&!imgBase64)return;
-  const displayTxt=txt||(imgBase64?'📷 Imagem enviada':'');
-  inp.value='';
-  // Build message content
-  let content;
-  if(imgBase64){
-    content=[
-      {type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgBase64}},
-      {type:'text',text:txt||'O que voce vê nessa imagem? Analise considerando questoes do Detran.'}
-    ];
-    // Show image preview in chat
-    const imgEl='<img src="data:image/jpeg;base64,'+imgBase64+'" style="max-width:200px;border-radius:10px;display:block;margin-bottom:4px;">'+(txt?'<br>'+txt:'');
-    addMsg('user',imgEl);
-    cancelarFoto();
-  }else{
-    content=txt;
-    addMsg('user',txt);
-  }
-  hist.push({role:'user',content:content});
-  showTyp();
-  try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist})});
-    document.getElementById('typ')?.remove();
-    if(!r.ok){addMsg('bot','Erro ao conectar. Verifique sua internet e tente novamente.');return;}
-    const d=await r.json();
-    const rep=d.reply||d.content?.[0]?.text||'Desculpe, tente novamente!';
-    hist.push({role:'assistant',content:rep});
-    addMsg('bot',rep);
-    salvarChatLocal();
-  }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro de conexao. Tente novamente.');}
-}
-
-function showPW(){
-  const esgotado=qresp>=30;
-  const icon=document.getElementById('pw-icon');
-  const titulo=document.getElementById('pw-titulo');
-  const sub=document.getElementById('pw-subtitulo');
-  if(icon)icon.textContent=esgotado?'🚫':'🔒';
-  if(titulo)titulo.textContent=esgotado?'Voce ja utilizou suas 30 questoes gratuitas':'Simulado disponivel no plano Premium';
-  if(sub)sub.textContent=esgotado?'Para continuar treinando sem limites, ative o plano Premium.':'Voce ainda tem questoes gratuitas para treinar. Para simulados completos, ative o Premium.';
-  document.getElementById('pw').style.display='flex';
-}
-function hidePW(){document.getElementById('pw').style.display='none';}
-
-function assinarPlano(plano){
-  const urls={mensal:'https://pay.kiwify.com.br/xY8BNrG',trimestral:'https://pay.kiwify.com.br/JdZ4969',semestral:'https://pay.kiwify.com.br/jHVTVCR'};
-  window.open(urls[plano],'_blank');
-}
-
-let todosUsers=[],filtroAtual='todos',selectedUsers=new Set();
-async function carregarAdmin(){
-  document.getElementById('admin-subtitulo').textContent='Carregando...';
-  try{
-    // Buscar AMBAS as tabelas igual ao Lobo Mecanico
-    const[r1,r2]=await Promise.all([
-      fetch(SBU+'/rest/v1/usuarios?select=*&order=id.desc',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}}),
-      fetch(SBU+'/rest/v1/assinantes?select=*&order=id.desc',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}})
-    ]);
-    const[usuarios,assinantes]=await Promise.all([r1.json(),r2.json()]);
-
-    // Montar mapa por email — assinante tem prioridade no plano
-    const mapa=new Map();
-
-    if(Array.isArray(usuarios)){
-      usuarios.forEach(u=>mapa.set((u.email||'').toLowerCase(),{
-        email:u.email,nome:u.nome||'',telefone:u.telefone||'',
-        plano:u.plano||'gratuito',acesso_ate:u.acesso_ate||null,
-        created_at:u.created_at||null,total_questoes:u.total_questoes||0,
-        total_acertos:u.total_acertos||0,total_simulados:u.total_simulados||0
-      }));
-    }
-
-    if(Array.isArray(assinantes)){
-      assinantes.forEach(a=>{
-        const key=(a.email||'').toLowerCase();
-        const ex=mapa.get(key)||{};
-        mapa.set(key,{
-          email:a.email,
-          nome:a.nome||ex.nome||'',
-          telefone:a.telefone||ex.telefone||'',
-          plano:a.plano||ex.plano||'gratuito',
-          acesso_ate:a.acesso_ate||ex.acesso_ate||null,
-          created_at:a.criado_em||ex.created_at||null,
-          total_questoes:ex.total_questoes||0,
-          total_acertos:ex.total_acertos||0,
-          total_simulados:ex.total_simulados||0
-        });
-      });
-    }
-
-    const dados=Array.from(mapa.values());
-    todosUsers=dados;admSelecionados=new Set();
-    const total=dados.length;
-    const ativos=dados.filter(u=>u.plano==='premium').length;
-    const atrasados=dados.filter(u=>u.plano==='atrasado').length;
-    const cancelados=dados.filter(u=>u.plano==='cancelado').length;
-    const grat=dados.filter(u=>!u.plano||u.plano==='gratuito').length;
-    document.getElementById('admin-subtitulo').textContent=total+' usuarios · '+ativos+' ativos';
-    const _n=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-    _n('adm-total',total);_n('adm-ativos',ativos);
-    _n('adm-atrasados',atrasados);_n('adm-cancelados',cancelados);
-    _n('adm-gratuitos',grat);
-    filtrarAdmin();
-  }catch(e){
-    document.getElementById('admin-subtitulo').textContent='Erro: '+e.message;
-    console.error('Admin erro:',e);
-  }
-}
-function setFiltro(f){filtroAtual=f;document.querySelectorAll('.admin-filtro').forEach(b=>b.classList.remove('on'));const fb=document.getElementById('f-'+f);if(fb)fb.classList.add('on');filtrarAdmin();}
-function filtrarAdmin(){
-  const busca=(document.getElementById('admin-busca')?.value||'').toLowerCase();
-  let lista=todosUsers.filter(u=>{
-    const mb=!busca||u.nome?.toLowerCase().includes(busca)||u.email?.toLowerCase().includes(busca);
-    if(!mb)return false;
-    if(filtroAtual==='premium')return u.plano==='premium';
-    if(filtroAtual==='atrasados')return u.plano==='atrasado';
-    if(filtroAtual==='cancelados')return u.plano==='cancelado';
-    if(filtroAtual==='gratuitos')return u.plano==='gratuito';
-    return true;
-  });
-  renderLista(lista);
-}
-function renderLista(users){
-  const lista=document.getElementById('admin-lista');
-  lista.innerHTML='<div style="font-size:12px;font-weight:600;margin-bottom:8px;color:#555;">'+users.length+' usuario(s)</div>';
-  if(users.length===0){lista.innerHTML+='<div class="card" style="text-align:center;font-size:12px;color:var(--CT);padding:20px;">Nenhum usuario encontrado</div>';return;}
-  users.forEach(u=>{
-    const av=u.nome?u.nome.charAt(0).toUpperCase():'?';
-    const tel=u.telefone?u.telefone.replace(/\D/g,''):'';
-    const wlink=tel?'https://wa.me/55'+tel:'';
-    const dias=u.created_at?Math.floor((new Date()-new Date(u.created_at))/(1000*60*60*24)):0;
-    const div=document.createElement('div');div.className='u-item';
-    div.innerHTML='<div class="u-av">'+av+'</div><div class="u-info"><div class="u-nome">'+(u.nome||'Sem nome')+'</div><div class="u-email">'+u.email+'</div><div style="margin-top:2px;"><span class="tag '+(u.plano==='premium'?'tgv':'tgl')+'" style="font-size:9px;">'+(u.plano||'gratuito')+'</span><span style="font-size:9px;color:var(--CT);"> · '+dias+'d</span></div></div>'+(wlink?'<button class="ubtn ubtn-w" onclick="window.open(\''+wlink+'\',\'_blank\')">WhatsApp</button>':'');
-    lista.appendChild(div);
-  });
-}
-function enviarWaMassa(){const users=todosUsers.filter(u=>selectedUsers.has(u.id)&&u.telefone);if(users.length===0){alert('Selecione usuarios com telefone.');return;}const msg=prompt('Mensagem:','Ola! Aqui e o Detran Aprovado...');if(!msg)return;users.forEach((u,i)=>{setTimeout(()=>{const tel=u.telefone.replace(/\D/g,'');window.open('https://wa.me/55'+tel+'?text='+encodeURIComponent(msg),'_blank');},i*500);});}
-async function liberarCortesia(){const email=document.getElementById('cort-email').value.trim();const ok=document.getElementById('cort-ok'),err=document.getElementById('cort-err');ok.style.display='none';err.style.display='none';if(!email){err.textContent='Digite o e-mail.';err.style.display='block';return;}const{error}=await sb.from('usuarios').update({plano:'premium'}).eq('email',email);if(error){err.textContent='Usuario nao encontrado.';err.style.display='block';return;}ok.textContent='Acesso premium liberado para '+email;ok.style.display='block';document.getElementById('cort-email').value='';carregarAdmin();}
-
-function ir(n){
-  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(v=>v.classList.remove('on'));
-  const tela=document.getElementById('tela-'+n);if(tela)tela.classList.add('on');
-  const nav=document.getElementById('nav-'+n);if(nav)nav.classList.add('on');
-  const sub=document.getElementById('ghdr-sub');
-  const tit=document.getElementById('ghdr-titulo');
-  const hdrs={home:{sub:'Ola,',tit:(user?.user_metadata?.nome||'Estudante')+'!'},treino:{sub:'Detran Aprovado',tit:'Treino'},simulado:{sub:'Detran Aprovado',tit:'Simulado'},resultado:{sub:'Detran Aprovado',tit:'Resultado'},bot:{sub:'Detran Aprovado',tit:'Prof. Detran'},perfil:{sub:'Detran Aprovado',tit:'Meu Perfil'},admin:{sub:'Painel',tit:'Administrador'}};
-  if(hdrs[n]&&sub&&tit){sub.textContent=hdrs[n].sub;tit.textContent=hdrs[n].tit;}
-  if(n==='bot')initBot();
-  if(n==='perfil')atuPerfil();
-  if(n==='admin')carregarAdmin();
-  if(n==='simulado')atuHistorico();
-}
-
-
-// ===== CHAT AVANCADO =====
-let imgBase64=null,mediaRecorder=null,isRecording=false,audioChunks=[];
-const CHAT_KEY='detran_chat_hist_'+((user?.id)||'anon');
-
-function salvarChatLocal(){
-  try{const dados={msgs:hist,ts:Date.now()};localStorage.setItem('detran_chat',JSON.stringify(dados));}catch(e){}
-}
-
-function carregarChatLocal(){
-  try{
-    const raw=localStorage.getItem('detran_chat');
-    if(!raw)return false;
-    const dados=JSON.parse(raw);
-    const sete=7*24*60*60*1000;
-    if(Date.now()-dados.ts>sete){localStorage.removeItem('detran_chat');return false;}
-    return dados;
-  }catch(e){return false;}
-}
-
-function limparChat(){
-  if(!confirm('Limpar toda a conversa?'))return;
-  hist=[];localStorage.removeItem('detran_chat');
-  const ca=document.getElementById('chat-area');ca.innerHTML='';
-  initBot();
-}
-
-function verHistorico(){
-  const dados=carregarChatLocal();
-  const banner=document.getElementById('hist-banner');
-  const info=document.getElementById('hist-info');
-  if(!banner||!info)return;
-  if(dados){
-    const dias=Math.floor((Date.now()-dados.ts)/(1000*60*60*24));
-    const expira=7-dias;
-    info.textContent='Conversa salva ha '+dias+' dia(s). Expira em '+expira+' dia(s).';
-  }else{
-    info.textContent='Nenhuma conversa salva. Conversas ficam salvas por 7 dias.';
-  }
-  banner.style.display='flex';
-}
-
-function fecharHistBanner(){
-  const b=document.getElementById('hist-banner');if(b)b.style.display='none';
-}
-
-function abrirFoto(){
-  document.getElementById('foto-input').click();
-}
-
-function cancelarFoto(){
-  imgBase64=null;
-  document.getElementById('img-preview').style.display='none';
-  document.getElementById('img-preview-src').src='';
-}
-
-function processarFoto(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    imgBase64=e.target.result.split(',')[1];
-    document.getElementById('img-preview-src').src=e.target.result;
-    document.getElementById('img-preview').style.display='block';
-  };
-  reader.readAsDataURL(file);
-  input.value='';
-}
-
-let recognition=null;
-async function toggleAudio(){
-  // Use Web Speech API for real transcription
-  const SpeechRecog=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SpeechRecog){alert('Seu navegador nao suporta reconhecimento de voz. Use o Chrome para esta funcao.');return;}
-  
-  if(isRecording){
-    isRecording=false;
-    if(recognition)recognition.stop();
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    document.getElementById('audio-status').style.display='none';
-    return;
-  }
-  
-  recognition=new SpeechRecog();
-  recognition.lang='pt-BR';
-  recognition.continuous=false;
-  recognition.interimResults=false;
-  
-  recognition.onstart=()=>{
-    isRecording=true;
-    document.getElementById('btn-audio').style.background='var(--R)';
-    document.getElementById('btn-audio').style.borderColor='var(--R)';
-    document.getElementById('audio-status').style.display='block';
-    document.getElementById('audio-status').textContent='Ouvindo... fale sua pergunta';
-  };
-  
-  recognition.onresult=e=>{
-    const transcript=e.results[0][0].transcript;
-    document.getElementById('cinp').value=transcript;
-    document.getElementById('audio-status').textContent='Transcricao: "'+transcript+'"';
-    setTimeout(()=>enviar(),800);
-  };
-  
-  recognition.onerror=e=>{
-    isRecording=false;
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    document.getElementById('audio-status').style.display='none';
-    if(e.error==='not-allowed')alert('Permissao de microfone negada. Permita o acesso nas configuracoes do navegador.');
-    else alert('Erro no reconhecimento de voz: '+e.error);
-  };
-  
-  recognition.onend=()=>{
-    isRecording=false;
-    document.getElementById('btn-audio').style.background='var(--C)';
-    document.getElementById('btn-audio').style.borderColor='var(--CB)';
-    setTimeout(()=>{document.getElementById('audio-status').style.display='none';},2000);
-  };
-  
-  recognition.start();
-}
-
-async function enviarComAudio(b64){
-  addMsg('user','🎤 Mensagem de voz enviada');
-  hist.push({role:'user',content:[{type:'text',text:'O usuario enviou um audio. Transcreva e responda como se fosse uma pergunta sobre CNH ou transito.'}]});
-  showTyp();
-  try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'Audio recebido - responda sobre CNH/Detran'}]})});
-    document.getElementById('typ')?.remove();
-    if(!r.ok){addMsg('bot','Erro ao processar audio. Tente digitar sua pergunta.');return;}
-    const d=await r.json();
-    const rep=d.content?.[0]?.text||'Nao consegui processar o audio. Pode digitar sua pergunta?';
-    hist.push({role:'assistant',content:rep});addMsg('bot',rep);
-    salvarChatLocal();
-  }catch(e){document.getElementById('typ')?.remove();addMsg('bot','Erro ao processar audio.');}
-}
-
-function scrollChatBottom(){
-  const ca=document.getElementById('chat-area');
-  if(ca)setTimeout(()=>{ca.scrollTop=ca.scrollHeight;},100);
-}
-
-
-function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function nomeAss(cat){return{sinalizacao:'Sinalizacao',legislacao:'Legislacao',direcao_defensiva:'Direcao Defensiva',primeiros_socorros:'Primeiros Socorros',meio_ambiente:'Meio Ambiente',cto:'Sinalizacao',socorros:'Primeiros Socorros'}[cat]||cat;}
-function maskTel(i){let v=i.value.replace(/\D/g,'');if(v.length>11)v=v.substr(0,11);if(v.length>6)v=v.replace(/^(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/^(\d{2})(\d{0,5})/,'($1) $2');else if(v.length>0)v=v.replace(/^(\d{0,2})/,'($1');i.value=v;}
-function tog(id,btn){const i=document.getElementById(id);const m=i.type==='password';i.type=m?'text':'password';}
-
-function trocarTab(t){
-  document.getElementById('tab-e').classList.toggle('on',t==='e');
-  document.getElementById('tab-c').classList.toggle('on',t==='c');
-  document.getElementById('fe').style.display=t==='e'?'block':'none';
-  document.getElementById('fc').style.display=t==='c'?'block':'none';
-}
-
-async function login(){
-  const e=document.getElementById('le').value.trim(),s=document.getElementById('ls').value;
-  const el=document.getElementById('el');el.style.display='none';
-  if(!e||!s){el.textContent='Preencha e-mail e senha.';el.style.display='block';return;}
-  const{data,error}=await sb.auth.signInWithPassword({email:e,password:s});
-  if(error){
-    const msgs={'Invalid login credentials':'E-mail ou senha incorretos.','Email not confirmed':'E-mail ou senha incorretos.','Too many requests':'Muitas tentativas. Aguarde alguns minutos.'};
-    el.textContent=msgs[error.message]||msgs[error.code]||'E-mail ou senha incorretos.';el.style.display='block';return;
-  }
-  await loadUser(data.user);openApp();
-}
-
-async function cad(){
-  const n=document.getElementById('cn').value.trim(),t=document.getElementById('ct').value.trim();
-  const e=document.getElementById('ce').value.trim(),s=document.getElementById('cs').value;
-  const ec=document.getElementById('ec');ec.style.display='none';
-  if(!n||!e||!s){ec.textContent='Preencha todos os campos.';ec.style.display='block';return;}
-  if(s.length<6){ec.textContent='Senha minimo 6 caracteres.';ec.style.display='block';return;}
-  const{data,error}=await sb.auth.signUp({email:e,password:s,options:{data:{nome:n,telefone:t}}});
-  if(error){
-    const msgs={'User already registered':'Este e-mail ja esta cadastrado. Faca login.','Email already in use':'Este e-mail ja esta cadastrado.','Password should be at least 6 characters':'A senha precisa ter pelo menos 6 caracteres.','Invalid email':'E-mail invalido. Verifique e tente novamente.','Signup requires a valid password':'A senha precisa ter pelo menos 6 caracteres.','email rate limit exceeded':'Muitas tentativas. Aguarde alguns minutos e tente novamente.','over_email_send_rate_limit':'Muitas tentativas. Aguarde alguns minutos.'};
-    const msg=msgs[error.message]||msgs[error.code]||('Erro: '+error.message);
-    ec.textContent=msg;ec.style.display='block';return;
-  }
-  if(data.user){
-    // Verificar se ja comprou na Kiwify antes de cadastrar
-    const rAss=await fetch(SBU+'/rest/v1/assinantes?email=eq.'+encodeURIComponent(e),{
-      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}
-    });
-    const assinante=await rAss.json();
-    const planoFinal=assinante&&assinante.length>0&&assinante[0].plano==='premium'?'premium':'gratuito';
-    const acesso_ate=assinante&&assinante.length>0?assinante[0].acesso_ate:null;
-
-    // Inserir via REST igual ao Lobo Mecanico
-    await fetch(SBU+'/rest/v1/usuarios',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SBK,
-        'Authorization':'Bearer '+SBK,
-        'Prefer':'resolution=merge-duplicates'
-      },
-      body:JSON.stringify({
-        id:data.user.id,
-        email:e,nome:n,telefone:t,
-        plano:planoFinal,acesso_ate:acesso_ate,
-        erros_ids:[],cat_stats:{}
-      })
-    });
-    // Se email nao confirmado, fazer login manual
-    if(!data.session){
-      const{data:loginData,error:loginError}=await sb.auth.signInWithPassword({email:e,password:s});
-      if(!loginError&&loginData.user){
-        await loadUser(loginData.user);openApp();return;
-      }
-    }
-    await loadUser(data.user);openApp();
-  }
-}
-
-async function salvarNovaSenha(){
-  const s1=document.getElementById('rs-senha').value;
-  const s2=document.getElementById('rs-confirma').value;
-  const err=document.getElementById('rs-err');
-  const ok=document.getElementById('rs-ok');
-  err.style.display='none';ok.style.display='none';
-  if(!s1||s1.length<6){err.textContent='A senha precisa ter pelo menos 6 caracteres.';err.style.display='block';return;}
-  if(s1!==s2){err.textContent='As senhas nao coincidem.';err.style.display='block';return;}
-  const{error}=await sb.auth.updateUser({password:s1});
-  if(error){err.textContent='Erro ao salvar senha. Tente novamente.';err.style.display='block';return;}
-  ok.textContent='✅ Senha alterada com sucesso! Redirecionando...';ok.style.display='block';
-  setTimeout(()=>{
-    document.getElementById('tela-reset').style.display='none';
-    document.getElementById('tela-login').style.display='flex';
-  },2000);
-}
-
-async function recuperarSenha(){
-  const e=document.getElementById('le').value.trim();
-  const el=document.getElementById('el');
-  if(!e){el.textContent='Digite seu e-mail para recuperar a senha.';el.style.color='var(--R)';el.style.display='block';return;}
-  const{error}=await sb.auth.resetPasswordForEmail(e,{redirectTo:'https://app.detranaprovado.com.br'});
-  el.style.display='block';
-  if(error){el.textContent='Erro ao enviar. Verifique o e-mail.';el.style.color='var(--R)';}
-  else{el.textContent='✅ Se o e-mail existir, voce receberá instruções para redefinir a senha.';el.style.color='#15803d';el.style.background='#F0FDF4';}
-}
-
-async function logout(){
-  await sb.auth.signOut();user=null;isPrem=false;isAdmin=false;qhoje=0;
-  document.getElementById('app').style.display='none';
-  document.getElementById('tela-login').style.display='flex';
-}
-
-async function loadUser(u){
-  user=u;isAdmin=u.email===ADMIN_EMAIL;
-  const{data}=await sb.from('usuarios').select('*').eq('id',u.id).single();
-  if(data){
-    // Verificar se acesso premium expirou
-    if(data.acesso_ate&&data.plano==='premium'&&!isAdmin){
-      if(new Date(data.acesso_ate)<new Date()){
-        data.plano='gratuito';
-        await fetch(SBU+'/rest/v1/usuarios?id=eq.'+u.id,{
-          method:'PATCH',
-          headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK},
-          body:JSON.stringify({plano:'gratuito'})
-        });
-      }
-    }
-    // Admin sempre premium
-    if(isAdmin)data.plano='premium';
-    isPrem=data.plano==='premium'||isAdmin;
-    qhoje=data.questoes_hoje||0;streak=data.streak||0;
-    qresp=data.total_questoes||0;acertos=data.total_acertos||0;
-    nsim=data.total_simulados||0;erros_ids=data.erros_ids||[];catStats=data.cat_stats||{};
-  }
-}
-
-function openApp(){
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='flex';
-  atuHome();ir('home');initBot();
-  // Mostrar modal de instalação (até 3 vezes)
-  setTimeout(mostrarInstalar, 1500);
-}
-
-function atuHome(){
-  const n=user?.user_metadata?.nome||user?.email?.split('@')[0]||'Estudante';
-  const ghdr=document.getElementById('ghdr-titulo');if(ghdr)ghdr.textContent=n+'!';
-  const gs=document.getElementById('ghdr-sub');if(gs)gs.textContent='Ola,';
-  document.getElementById('hstr').textContent=streak;
-  document.getElementById('hhoje').innerHTML=qhoje+'<span style="font-size:11px;font-weight:400;color:var(--CT);">/30</span>';
-  if(isPrem){const h=document.getElementById('hprem');if(h)h.style.display='inline-block';}
-  const p=qresp>0?Math.min(Math.round(acertos/qresp*100),100):0;
-  const pc=document.getElementById('pressao-card');
-  const pt=document.getElementById('pressao-titulo');
-  const pm=document.getElementById('pressao-msg');
-  const pb=document.getElementById('pressao-bar');
-  if(!pc||!pt||!pm||!pb)return;
-  document.getElementById('pressao-pct').textContent=p+'% de aproveitamento';
-  pb.style.width=p+'%';
-  if(p>=70){pc.className='pressao-card pressao-aprovado';pt.textContent='Voce passaria na prova!';pm.textContent='Continue assim!';}
-  else if(p>=50){pc.className='pressao-card pressao-quase';pt.textContent='Voce esta quase la!';pm.textContent='Falta melhorar '+(70-p)+'% para aprovacao';}
-  else if(qresp>0){pc.className='pressao-card pressao-reprovado';const faltam=Math.max(0,Math.ceil(0.7*qresp-acertos));pt.textContent='Voce ainda reprovaria hoje';pm.textContent='Faltam '+faltam+' acertos para 70%';}
-  else{pc.className='pressao-card pressao-reprovado';pt.textContent='Voce esta pronto para comecar?';pm.textContent='Faca o simulado e descubra seu nivel';}
-  const ne=erros_ids.length;
-  const ec=document.getElementById('erros-count');if(ec)ec.textContent=ne>0?ne+' questoes para revisar':'Revise o que voce errou';
-  const ec2=document.getElementById('erros-count2');if(ec2)ec2.textContent=ne>0?ne+' questoes para revisar':'Responda questoes para ver seus erros';
-  atuRecomendacao(p);atuPerfAssuntos();atuPerfil();
-}
-
-function atuRecomendacao(p){
-  const rt=document.getElementById('rec-titulo'),rd=document.getElementById('rec-desc'),rb=document.getElementById('rec-btn');
-  if(!rt||!rd||!rb)return;
-  if(qresp===0){rt.textContent='Faca seu primeiro simulado';rd.textContent='Descubra seu nivel atual';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
-  else if(erros_ids.length>5){rt.textContent='Revise seus erros agora';rd.textContent='Voce tem '+erros_ids.length+' questoes para revisar';rb.textContent='Revisar erros';rb.onclick=iniciarModoErros;}
-  else{
-    let piorCat=null,piorPct=100;
-    Object.entries(catStats).forEach(([cat,s])=>{const p2=s.total>0?Math.round(s.acertos/s.total*100):0;if(p2<piorPct){piorPct=p2;piorCat=cat;}});
-    if(piorCat&&piorPct<70){rt.textContent='Treine '+nomeAss(piorCat);rd.textContent='Voce acerta apenas '+piorPct+'% neste assunto';rb.textContent='Treinar agora';rb.onclick=()=>iniciarTreino(piorCat);}
-    else{rt.textContent='Faca mais um simulado';rd.textContent='Consistencia e o segredo da aprovacao';rb.textContent='Iniciar simulado';rb.onclick=()=>ir('simulado');}
-  }
-}
-
-function atuPerfAssuntos(){
-  ['sinalizacao','legislacao','direcao_defensiva','primeiros_socorros','meio_ambiente','cto','socorros'].forEach(cat=>{
-    const el=document.getElementById('perf-'+cat);if(!el)return;
-    const s=catStats[cat];if(!s){el.textContent='→';el.style.color='var(--CT)';return;}
-    const p=Math.round(s.acertos/s.total*100);
-    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
-    el.innerHTML='<span style="color:'+cor+';font-weight:700;">'+p+'%</span>';
-  });
-}
-
-function atuPerfil(){
-  const n=user?.user_metadata?.nome||'Estudante',e=user?.email||'';
-  const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  const _isAdm=isAdmin||(user?.email===ADMIN_EMAIL);
-  if(_isAdm){isAdmin=true;isPrem=true;}
-  _s('pnome',n);_s('pemail',e);_s('pavatar',n.charAt(0).toUpperCase());
-  _s('stot',qresp);_s('stax',qresp>0?Math.round(acertos/qresp*100)+'%':'0%');
-  _s('ssim',nsim);_s('serr',erros_ids.length);
-  const aw=document.getElementById('admin-btn-wrap');if(aw)aw.style.display=_isAdm?'flex':'none';
-  const pp=document.getElementById('pplan');
-  if(pp){if(_isAdm)pp.innerHTML='<span class="tag" style="background:#111;color:#FF6B00;">Admin</span>';
-  else if(isPrem)pp.innerHTML='<span class="tag tgl">Premium</span>';
-  else pp.innerHTML='<span class="tag tgc">Gratuito</span>';}
-  const pn=document.getElementById('p-nome');if(pn&&!pn.value)pn.value=user?.user_metadata?.nome||'';
-  const pe=document.getElementById('p-email');if(pe)pe.value=user?.email||'';
-  const pt=document.getElementById('p-tel');if(pt&&!pt.value)pt.value=user?.user_metadata?.telefone||'';
-  atuMeuPlano();
-  const el=document.getElementById('perf-assuntos-perfil');
-  if(!el)return;
-  if(Object.keys(catStats).length===0){el.innerHTML='<div style="font-size:11px;color:var(--CT);text-align:center;">Responda questoes para ver</div>';return;}
-  el.innerHTML=Object.entries(catStats).map(([cat,s])=>{
-    const p=s.total>0?Math.round(s.acertos/s.total*100):0;
-    const cor=p>=70?'#22C55E':p>=50?'var(--L)':'#EF4444';
-    return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#555;">'+nomeAss(cat)+'</span><span style="font-size:11px;font-weight:600;color:'+cor+';">'+p+'%</span></div><div class="pbg"><div class="pfl" style="width:'+p+'%;background:'+cor+';"></div></div></div>';
-  }).join('');
-}
-
-function atuMeuPlano(){
-  const el=document.getElementById('meu-plano-card');
-  const ps=document.getElementById('planos-section');
-  if(!el)return;
-  if(isPrem&&!isAdmin){
-    el.innerHTML='<div class="card" style="border:2px solid var(--L);background:var(--LC);display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">⭐</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Detran Aprovado Pro</div><div style="font-size:11px;color:var(--L);">Acesso completo e ilimitado</div></div></div>';
-    if(ps)ps.style.display='none';
-  }else{
-    el.innerHTML='<div class="card" style="display:flex;align-items:center;gap:12px;"><div style="font-size:28px;">🆓</div><div><div style="font-family:var(--FT);font-size:14px;font-weight:800;">Plano Gratuito</div><div style="font-size:11px;color:var(--CT);">30 questoes gratis para comecar</div></div></div>';
-    if(ps){ps.style.display='flex';ps.style.flexDirection='column';ps.style.gap='10px';}
-  }
-}
-
-async function salvarPerfil(){
-  const nome=document.getElementById('p-nome')?.value.trim();
-  const tel=document.getElementById('p-tel')?.value.trim();
-  const cidade=document.getElementById('p-cidade')?.value.trim();
-  const ok=document.getElementById('perfil-ok');
-  if(!nome){if(ok){ok.textContent='Digite seu nome.';ok.style.display='block';}return;}
-  if(!user)return;
-  await sb.from('usuarios').update({nome,telefone:tel,cidade}).eq('id',user.id);
-  user.user_metadata=user.user_metadata||{};user.user_metadata.nome=nome;
-  if(ok){ok.textContent='Perfil salvo!';ok.style.display='block';ok.style.background='var(--VC)';ok.style.color='#15803d';}
-  atuHome();setTimeout(()=>{if(ok)ok.style.display='none';},3000);
-}
-
-async function iniciarTreino(cat){
-  if(!isPrem&&qhoje>=30){showPW();return;}
-  modoAtual='treino';document.getElementById('qtimer').style.display='none';ir('questao');
-  // Buscar todas sem limit
-  let q=sb.from('questoes').select('*').eq('ativo',true);
-  if(cat!=='todos')q=q.eq('categoria',cat);
-  const{data}=await q;
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Nenhuma questao para este assunto ainda.';return;}
-  // Deduplicar por ID e embaralhar
-  const mapa=new Map();data.forEach(q=>mapa.set(q.id,q));
-  fila=Array.from(mapa.values()).sort(()=>Math.random()-.5).slice(0,30);
-  idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-async function iniciarModoErros(){
-  if(!isPrem){showPW();return;}
-  if(erros_ids.length===0){alert('Voce nao tem erros registrados ainda!');return;}
-  modoAtual='erros';document.getElementById('qtimer').style.display='none';ir('questao');
-  const{data}=await sb.from('questoes').select('*').in('id',erros_ids.slice(0,30)).eq('ativo',true);
-  if(!data||data.length===0){alert('Questoes nao encontradas.');return;}
-  fila=data.sort(()=>Math.random()-.5);idx=0;simAcertos=0;simErros=0;renderQ();
-}
-
-async function iniciarSimulado(){
-  if(!isPrem){showPW();return;}
-  modoAtual='simulado';ir('questao');
-  // Buscar TODAS as questoes de uma vez
-  const{data}=await sb.from('questoes').select('*').eq('ativo',true);
-  if(!data||data.length===0){document.getElementById('qenu').textContent='Banco sendo populado!';return;}
-  // Deduplicar por ID
-  const mapa=new Map();data.forEach(q=>mapa.set(q.id,q));
-  const unicas=Array.from(mapa.values());
-  // Mistura por categoria (max 8 por cat) para variedade
-  const cats=['cto','legislacao','socorros','meio_ambiente'];
-  const usados=new Set();const mistura=[];
-  cats.forEach(cat=>{
-    unicas.filter(q=>q.categoria===cat).sort(()=>Math.random()-.5)
-      .slice(0,8).forEach(q=>{usados.add(q.id);mistura.push(q);});
-  });
-  // Completar ate 30 com outras categorias
-  unicas.sort(()=>Math.random()-.5).forEach(q=>{
-    if(mistura.length<30&&!usados.has(q.id)){usados.add(q.id);mistura.push(q);}
-  });
-  fila=mistura.slice(0,30).sort(()=>Math.random()-.5);
-  idx=0;simAcertos=0;simErros=0;simSegundos=3600;simInicio=new Date();
-  const te=document.getElementById('qtimer');te.style.display='block';te.textContent='60:00';te.className='timer';
-  if(simTimer)clearInterval(simTimer);
-  simTimer=setInterval(()=>{simSegundos--;te.textContent=fmtTime(simSegundos);if(simSegundos<=300)te.classList.add('urgente');if(simSegundos<=0){clearInterval(simTimer);finalizarSimulado();}},1000);
-  renderQ();
-}
-
-function sairQuestao(){if(simTimer)clearInterval(simTimer);ir(modoAtual==='simulado'?'simulado':'treino');}
-
-function renderQ(){
-  if(idx>=fila.length){if(modoAtual==='simulado')finalizarSimulado();else{ir('treino');return;}return;}
-  qatual=fila[idx];resp=false;
-  document.getElementById('qcont').textContent='Questao '+(idx+1)+'/'+fila.length;
-  // Atualizar contador de respondidas
-  const respAte=idx;
-  const pctEl=document.getElementById('qcont-pct');
-  if(pctEl)pctEl.textContent=respAte>0?respAte+' respondida'+(respAte>1?'s':''):'Começando...';
-  const pctAc=document.getElementById('qacertos-pct');
-  if(pctAc)pctAc.textContent='';
-  document.getElementById('qcat').textContent=nomeAss(qatual.categoria)||'geral';
-  document.getElementById('qprog').style.width=((idx+1)/fila.length*100)+'%';
-  const ilHtml=getIl(qatual);
-  const ilEl=document.getElementById('qilus');
-  ilEl.innerHTML=ilHtml;
-  ilEl.style.display=ilHtml?'flex':'none';
-  document.getElementById('qenu').textContent=qatual.enunciado;
-  document.getElementById('qcom').style.display='none';
-  document.getElementById('qnxt').style.display='none';
-  document.getElementById('qcomt').textContent=qatual.comentario||'';
-  document.getElementById('qart').textContent=qatual.artigo_ctb||'';
-  const nxt=document.getElementById('qnxt');
-  if(!isPrem&&qhoje===28)nxt.textContent='Proxima (restam 2 gratis)';
-  else if(!isPrem&&qhoje===29)nxt.textContent='Ultima questao gratuita hoje';
-  else nxt.textContent='Proxima questao →';
-  const al=document.getElementById('qalts');al.innerHTML='';
-  ['A','B','C','D'].forEach((l,i)=>{
-    const op=[qatual.alternativa_a,qatual.alternativa_b,qatual.alternativa_c,qatual.alternativa_d][i];
-    const b=document.createElement('button');b.className='alt';
-    b.innerHTML='<span class="al">'+l+'</span>'+op;
-    b.onclick=()=>responder(b,l);al.appendChild(b);
-  });
-  // Animacao de entrada na questao
-  const qcard=document.getElementById('qcard');
-  if(qcard){qcard.classList.remove('fade-up');void qcard.offsetWidth;qcard.classList.add('fade-up');}
-  const ilus=document.getElementById('qilus');
-  if(ilus&&ilus.innerHTML){ilus.classList.remove('pop-in');void ilus.offsetWidth;ilus.classList.add('pop-in');}
-}
-
-async function enviarContato(){
-  const a=document.getElementById('cass').value,m=document.getElementById('cmsg').value.trim();
-  const cs=document.getElementById('csuc'),ce=document.getElementById('cerr2');
-  cs.style.display='none';ce.style.display='none';
-  if(!a||!m){ce.textContent='Preencha assunto e mensagem.';ce.style.display='block';return;}
-  await sb.from('contatos').insert({usuario_id:user?.id,email:user?.email,assunto:a,mensagem:m});
-  cs.textContent='Mensagem enviada!';cs.style.display='block';
-  document.getElementById('cass').value='';document.getElementById('cmsg').value='';
-}
-
-function mostrarInstalar(){
-  const ua=navigator.userAgent.toLowerCase();
-  if(ua.includes('iphone')||ua.includes('ipad')){alert('Para instalar no iPhone:\n1. Toque no icone de compartilhar\n2. Toque em Adicionar a Tela de Inicio\n3. Toque em Adicionar');}
-  else{alert('Para instalar no Android:\n1. Toque nos 3 pontinhos\n2. Toque em Adicionar a tela inicial\n3. Toque em Adicionar');}
-}
-
-
-function confirmarReset(){
-  const modal=document.getElementById('modal-reset');
-  if(modal)modal.style.display='flex';
-}
-function fecharReset(){
-  const modal=document.getElementById('modal-reset');
-  if(modal)modal.style.display='none';
-}
-async function executarReset(){
-  fecharReset();
-  // Reset variaveis em memoria
-  qhoje=0;qresp=0;acertos=0;nsim=0;erros_ids=[];catStats={};streak=0;
-  // Salvar no banco
-  if(user){
-    await sb.from('usuarios').update({
-      questoes_hoje:0,total_questoes:0,total_acertos:0,
-      total_simulados:0,erros_ids:[],cat_stats:{},streak:0
-    }).eq('id',user.id);
-  }
-  // Limpar localStorage relacionado
-  localStorage.removeItem('pts_total');
-  localStorage.removeItem('streak');
-  localStorage.removeItem('ultimo_acesso');
-  // Atualizar tela
-  atuHome();atuPerfil();
-  alert('✅ Progresso reiniciado com sucesso!');
-}
-
-
-// ===== INSTALAR APP =====
-function detectarOS(){
-  const ua=navigator.userAgent.toLowerCase();
-  if(/iphone|ipad|ipod/.test(ua))return'ios';
-  if(/android/.test(ua))return'android';
-  return'outros';
-}
-function mostrarInstalar(){
-  // Nao mostrar modal se estiver na tela de redefinicao de senha
-  if(document.getElementById('tela-reset').style.display==='flex')return;
-  const visto=parseInt(localStorage.getItem('instalar_visto')||'0');
-  const instalado=localStorage.getItem('instalar_ok')==='1';
-  if(instalado||visto>=3)return;
-  localStorage.setItem('instalar_visto',visto+1);
-  const modal=document.getElementById('modal-instalar');
-  if(!modal)return;
-  // Mostrar instruções corretas por OS
-  const os=detectarOS();
-  document.getElementById('inst-android').style.display=os==='android'?'block':'none';
-  document.getElementById('inst-ios').style.display=os==='ios'?'block':'none';
-  document.getElementById('inst-outros').style.display=os==='outros'?'block':'none';
-  // Contador
-  const restam=3-(visto+1);
-  const ctr=document.getElementById('inst-contador');
-  if(ctr)ctr.textContent=restam>0?'Este aviso aparecerá mais '+restam+' vez(es)':'Última vez que mostramos isso';
-  modal.style.display='flex';
-}
-function fecharInstalar(){
-  const modal=document.getElementById('modal-instalar');
-  if(modal)modal.style.display='none';
-  localStorage.setItem('instalar_ok','1');
-}
-function irInstalar(){
-  const modal=document.getElementById('modal-instalar');
-  if(modal)modal.style.display='none';
-  localStorage.setItem('instalar_ok','1');
-}
-// ========================
-// Ouvir PASSWORD_RECOVERY ANTES de qualquer coisa
-sb.auth.onAuthStateChange((event,session)=>{
-  if(event==='PASSWORD_RECOVERY'){
-    document.querySelectorAll('.lw,#app').forEach(el=>el.style.display='none');
-    document.getElementById('tela-reset').style.display='flex';
-  }
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+},{threshold:0.1});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+const sticky=document.getElementById('stickyBar');
+window.addEventListener('scroll',()=>{
+  sticky.classList.toggle('show',window.scrollY>600);
 });
-
-async function init(){
-  try{
-    const{data:{session}}=await sb.auth.getSession();
-    if(session?.user){await loadUser(session.user);openApp();}
-    else{
-      document.getElementById('tela-login').style.display='flex';
-    }
-  }catch(e){
-    console.error('Init error:',e);
-    document.getElementById('tela-login').style.display='flex';
-  }
-}
-init();
 </script>
-
-<!-- MODAL INSTALAR APP -->
-<div id="modal-instalar" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:flex-end;justify-content:center;">
-  <div style="background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;max-width:480px;animation:slideUp 0.3s ease;">
-    <!-- Handle -->
-    <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px;"></div>
-    <!-- Ícone -->
-    <div style="text-align:center;margin-bottom:16px;">
-      <div style="width:72px;height:72px;background:linear-gradient(135deg,#FF6B00,#FF9500);border-radius:18px;margin:0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(255,107,0,0.3);">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path d="M12 2L8 6h3v8h2V6h3L12 2z" fill="#fff"/><path d="M4 14v4a2 2 0 002 2h12a2 2 0 002-2v-4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
-    </div>
-    <!-- Título -->
-    <h2 style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;text-align:center;color:#1a1a1a;margin:0 0 8px;">Instale o Detran Aprovado!</h2>
-    <p style="font-size:13px;color:#666;text-align:center;margin:0 0 24px;line-height:1.5;">Tenha o app na tela inicial do seu celular e acesse muito mais rápido — sem precisar abrir o navegador.</p>
-    <!-- Instruções Android -->
-    <div id="inst-android" style="display:none;">
-      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 No Android (Chrome):</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">1</div>
-            Toque no menu <strong>⋮</strong> (3 pontos) no canto superior direito
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">2</div>
-            Selecione <strong>"Adicionar à tela inicial"</strong>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">3</div>
-            Confirme tocando em <strong>"Adicionar"</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Instruções iOS -->
-    <div id="inst-ios" style="display:none;">
-      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 No iPhone (Safari):</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">1</div>
-            Toque no ícone <strong>compartilhar</strong> <span style="font-size:14px;">⬆️</span> na barra inferior
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">2</div>
-            Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#444;">
-            <div style="width:22px;height:22px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;">3</div>
-            Toque em <strong>"Adicionar"</strong> no canto superior direito
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Instruções genéricas (fallback) -->
-    <div id="inst-outros" style="display:none;">
-      <div style="background:#f8f8f8;border-radius:14px;padding:16px;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:700;color:#FF6B00;margin-bottom:10px;">📱 Como instalar:</div>
-        <div style="font-size:12px;color:#444;line-height:1.6;">
-          No menu do seu navegador, procure a opção <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong> e confirme.
-        </div>
-      </div>
-    </div>
-    <!-- Contador -->
-    <div style="text-align:center;margin-bottom:16px;">
-      <span id="inst-contador" style="font-size:11px;color:#aaa;"></span>
-    </div>
-    <!-- Botões -->
-    <button onclick="irInstalar()" style="width:100%;background:#FF6B00;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;margin-bottom:10px;">📲 Vou instalar agora!</button>
-    <button onclick="fecharInstalar()" style="width:100%;background:#f5f5f5;color:#888;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Já instalei</button>
-  </div>
-</div>
 </body>
 </html>
